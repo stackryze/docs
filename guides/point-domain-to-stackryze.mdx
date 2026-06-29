@@ -1,0 +1,58 @@
+---
+title: "Point Domain to Stackryze"
+description: "Three ways to point an existing domain at a Stackryze-hosted service."
+---
+
+There are three ways to point a domain you own at a Stackryze service. This page picks the right one for you.
+
+## Option A — Full delegation (recommended)
+
+Delegate the entire zone to Stackryze's nameservers. We host every record type and you manage everything from one dashboard.
+
+- **Best for:** most users, full feature set (DNSSEC, modern records, API).
+- **Trade-off:** you can no longer use your registrar's DNS UI.
+- **Steps:** see [Add a custom domain](/guides/add-a-custom-domain).
+
+## Option B — Subdomain only (CNAME)
+
+Keep the apex at your registrar and point a single subdomain (`app.example.com`) at Stackryze via a `CNAME`.
+
+```dns
+app.example.com.  300  IN  CNAME  edge.stackryze.net.
+```
+
+- **Best for:** only one service needs Stackryze, or you want to keep your registrar's DNS UI for everything else.
+- **Trade-off:** DNSSEC signing has to happen at your registrar.
+
+## Option C — A-record forwarding
+
+Point an `A` record at one of Stackryze's anycast IPs.
+
+```dns
+app.example.com.  300  IN  A  192.0.2.10
+```
+
+- **Best for:** static frontends, single-service domains.
+- **Trade-off:** you manage the IP rotation if we change infrastructure.
+
+<Tabs>
+  <Tab title="Full delegation" icon="server">
+    Pros: full feature set, DNSSEC, modern record types, audit log, API.
+
+    Cons: leaves your registrar's DNS UI.
+  </Tab>
+  <Tab title="CNAME subdomain" icon="shuffle">
+    Pros: surgical, keeps your registrar's DNS UI as source of truth.
+
+    Cons: no DNSSEC for the subdomain.
+  </Tab>
+  <Tab title="A-record forwarding" icon="route">
+    Pros: works anywhere, no registrar cooperation needed.
+
+    Cons: you own IP maintenance.
+  </Tab>
+</Tabs>
+
+<Tip>
+  Not sure? Start with **full delegation** — it's reversible in two clicks from your registrar, and unlocks every Stackryze feature.
+</Tip>

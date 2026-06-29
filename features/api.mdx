@@ -1,0 +1,60 @@
+---
+title: "API"
+description: "A standards-compliant JSON/REST API for every Stackryze product."
+---
+
+<Badge color="blue">Beta</Badge>
+
+The Stackryze API exposes every product feature as a JSON/REST endpoint. The same API powers the dashboards, so anything you can click, you can script — and reverse-engineer cleanly with OpenAPI.
+
+## Quickstart
+
+<Steps>
+  <Step title="Generate an API key">
+    Open Settings → API → **Create token**. Copy the value somewhere safe — we never show it twice.
+  </Step>
+  <Step title="Make your first call">
+    ```bash
+    curl https://api.stackryze.com/v1/zones \
+      -H "Authorization: Bearer $STACKRYZE_TOKEN"
+    ```
+  </Step>
+  <Step title="Add a record">
+    ```bash
+    curl -X POST https://api.stackryze.com/v1/zones/example.com/records \
+      -H "Authorization: Bearer $STACKRYZE_TOKEN" \
+      -H "Content-Type: application/json" \
+      -d '{"type":"A","name":"@","value":"192.0.2.1"}'
+    ```
+  </Step>
+</Steps>
+
+## Endpoints
+
+| Resource | Endpoints |
+| --- | --- |
+| **Zones** | `GET/POST /v1/zones`, `GET/PATCH/DELETE /v1/zones/{id}` |
+| **Records** | `GET/POST /v1/zones/{id}/records`, `PATCH/DELETE /v1/zones/{id}/records/{record_id}` |
+| **Domains** | `GET/POST /v1/domains`, `GET/PATCH/DELETE /v1/domains/{id}` |
+| **Webhooks** | `GET/POST /v1/webhooks`, `PATCH/DELETE /v1/webhooks/{id}` |
+| **Account** | `GET /v1/account`, `PATCH /v1/account` |
+
+## Conventions
+
+- **Auth:** `Authorization: Bearer <token>` header on every request.
+- **IDs:** UUIDv4 for accounts, domains, zones, records. Slugs for zones (`example.com`).
+- **Errors:** RFC 7807 `application/problem+json` with a stable `type` URI.
+- **Rate limits:** 600 req/min for verified accounts, 60 req/min unverified.
+- **Versioning:** `/v1/` is stable; breaking changes ship in `/v2/`, never silently.
+
+## SDKs
+
+Official SDKs are planned for JavaScript, Python, and Go. Until then, the OpenAPI spec is the source of truth:
+
+```bash
+curl https://api.stackryze.com/v1/openapi.json > openapi.json
+```
+
+<Tip>
+  Looking for the interactive API reference? It's published at [api.stackryze.com/docs](https://api.stackryze.com/docs) once the API exits beta.
+</Tip>

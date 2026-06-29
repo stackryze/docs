@@ -1,0 +1,53 @@
+---
+title: "Transfer Domain"
+description: "Move a domain from any registrar to Stackryze, in three steps."
+---
+
+This guide walks you through transferring a domain from any registrar (Namecheap, GoDaddy, Google Domains, Porkbun, etc.) into Stackryze.
+
+<Warning>
+  Transferring a domain takes **5–7 days** end-to-end because most registries impose a cooldown. Plan accordingly.
+</Warning>
+
+## Before you start
+
+Make sure:
+
+- The domain is **at least 60 days old** (ICANN policy)
+- The domain is **unlocked** at your current registrar
+- You have the **transfer auth code (EPP code)** from your registrar
+- The admin contact email is one you can read
+
+## Steps
+
+<Steps>
+  <Step title="Disable privacy protection">
+    Most registrars offer WHOIS privacy. Disable it temporarily so the registry can email you.
+  </Step>
+  <Step title="Get the auth code">
+    At your registrar, find the **Transfer domain** section and copy the EPP / auth code.
+  </Step>
+  <Step title="Start the transfer at Stackryze">
+    Open [Stackryze Domains → Transfer](https://domain.stackryze.com/transfer), enter the domain, paste the auth code, and confirm.
+  </Step>
+  <Step title="Approve the transfer email">
+    The registry emails the current admin contact within minutes. Click the link to approve.
+  </Step>
+  <Step title="Wait for completion">
+    5–7 days later, the domain moves to Stackryze. We email you the moment it lands.
+  </Step>
+</Steps>
+
+## What happens during the transfer
+
+| Day | What happens |
+| --- | --- |
+| 0 | Transfer initiated; auth email sent |
+| 1 | Registry acknowledges; transfer is "pending" |
+| 2–5 | Old registrar has a window to reject (rare) |
+| 6 | Transfer completes; DNS now uses Stackryze nameservers |
+| 7 | Domain fully active in your Stackryze account |
+
+<Tip>
+  Your existing DNS keeps working the whole time — the transfer doesn't change nameservers until the very end.
+</Tip>

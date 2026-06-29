@@ -1,0 +1,55 @@
+---
+title: "Dynamic DNS"
+description: "Keep a hostname pointed at a changing IP — for homes, VPSes, and game servers."
+---
+
+Dynamic DNS (DDNS) keeps a hostname pointed at an IP address that changes. It's perfect for home servers, game servers, surveillance cameras, and anything behind residential internet.
+
+## How it works
+
+1. Your device periodically tells Stackryze its current public IP
+2. Stackryze updates the matching `A` / `AAAA` record
+3. The world keeps resolving your hostname to the live IP
+
+## Set up dynamic DNS
+
+<Steps>
+  <Step title="Create a DDNS token">
+    Open Settings → API → **Create token** with the `ddns:write` scope.
+  </Step>
+  <Step title="Add the records to your zone">
+    In the zone where you want DDNS, create an `A` record with the placeholder value `0.0.0.0`. Stackryze will treat it as a DDNS target.
+  </Step>
+  <Step title="Send updates">
+    The DDNS endpoint is simple:
+
+    ```bash
+    curl https://ddns.stackryze.com/update \
+      -d "host=home.example.com" \
+      -d "token=$STACKRYZE_DDNS_TOKEN"
+    ```
+
+    Stackryze auto-detects your public IP from the request source if you don't supply one.
+  </Step>
+</Steps>
+
+## Compatibility
+
+The Stackryze DDNS endpoint speaks the de-facto `nic/update` protocol, so the same clients that work with dyndns.org, no-ip.com, and afraid.org work with Stackryze:
+
+| Client | URL |
+| --- | --- |
+| **ddclient** | `protocol=dyndns2 server=ddns.stackryze.com` |
+| **inadyn** | `--provider dyndns2@ddns.stackryze.com` |
+| **ddns-go** | Custom provider, URL: `https://ddns.stackryze.com/update` |
+
+## IPv6
+
+Stackryze DDNS supports IPv6 out of the box. Send the `ipv6` parameter:
+
+```bash
+curl https://ddns.stackryze.com/update \
+  -d "host=home.example.com" \
+  -d "ipv6=2001:db8::1" \
+  -d "token=$STACKRYZE_DDNS_TOKEN"
+```

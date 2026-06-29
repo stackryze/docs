@@ -1,0 +1,82 @@
+---
+title: "API Quickstart"
+description: "Authenticate, make your first call, and add a DNS record via the Stackryze API."
+---
+
+This guide walks you from a fresh account to your first successful API call in under three minutes. Everything below uses `curl` for clarity; the same requests work in any HTTP client.
+
+## Prerequisites
+
+- A Stackryze account ([sign up](https://dns.stackryze.com/signup))
+- A verified account (see [Account Verification](/account-verification))
+
+## Step 1 — Get an API token
+
+Open **Settings → API** and click **Create token**. Copy the value — we never show it twice.
+
+```bash
+export STACKRYZE_TOKEN="sk_live_..."
+```
+
+## Step 2 — Make your first call
+
+List all the zones in your account:
+
+```bash
+curl https://api.stackryze.com/v1/zones \
+  -H "Authorization: Bearer $STACKRYZE_TOKEN"
+```
+
+A successful response looks like:
+
+```json
+{
+  "data": [
+    {
+      "id": "8c2e…",
+      "name": "example.com",
+      "status": "active",
+      "record_count": 12,
+      "created_at": "2026-06-12T08:23:11Z"
+    }
+  ],
+  "next_cursor": null
+}
+```
+
+## Step 3 — Add a record
+
+```bash
+curl -X POST https://api.stackryze.com/v1/zones/example.com/records \
+  -H "Authorization: Bearer $STACKRYZE_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "type": "A",
+    "name": "@",
+    "value": "192.0.2.1",
+    "ttl": 300
+  }'
+```
+
+## Step 4 — Verify the change
+
+```bash
+curl https://api.stackryze.com/v1/zones/example.com/records \
+  -H "Authorization: Bearer $STACKRYZE_TOKEN" | jq '.data[].name'
+```
+
+Or run a public lookup:
+
+```bash
+dig +short @ns1.stackryze.com example.com
+```
+
+## Next steps
+
+- Browse the full API surface — every endpoint the dashboard exposes
+- Subscribe to webhook events — see [Webhooks](/guides/webhooks)
+- Generate SDKs with `openapi-generator-cli` against our [OpenAPI spec](https://api.stackryze.com/v1/openapi.json)
+
+<Tip>
+  Hit a rate limit? Free accounts get 60 req/min, verified accounts 600 req/min, Pro 6,000 req/min.
+</Tip>

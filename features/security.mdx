@@ -1,0 +1,42 @@
+---
+title: "Security"
+description: "How Stackryze keeps your zones and accounts safe — DNSSEC, 2FA, audit logs, and more."
+---
+
+Stackryze treats security as a default, not an upsell. Every account gets strong defaults; verification unlocks advanced controls.
+
+## Defaults for everyone
+
+| Control | Free | Notes |
+| --- | --- | --- |
+| TLS 1.3 on the dashboard | ✅ | HSTS preloaded |
+| TOTP-based 2FA | ✅ | Recommended for every account |
+| WebAuthn / passkeys | ✅ | First-class, not a beta |
+| Per-zone audit log | 30 days | Forever on verified |
+| IP allowlist for API tokens | — | Available with [verification](/account-verification) |
+
+## DNSSEC
+
+DNSSEC lets resolvers cryptographically verify that answers actually came from your zone — defeating the kind of cache poisoning that took down whole registrars in 2024.
+
+Stackryze signs every enabled zone with **ECDSA P-256 + SHA-256** by default. NSEC3 with opt-out is enabled to prevent zone-walking.
+
+To turn DNSSEC on for a zone you own:
+
+1. Open the zone in the dashboard
+2. Go to **Settings → DNSSEC**
+3. Click **Enable**
+4. Copy the `DS` record we generate
+5. Paste it at your registrar
+
+See the full walkthrough in [Enable DNSSEC](/guides/enable-dnssec).
+
+## Compliance
+
+- **Data residency:** EU and US regions available on request
+- **Subprocessors:** [stackryze.com/legal/subprocessors](/legal/subprocessors)
+- **Responsible disclosure:** [security@stackryze.com](mailto:security@stackryze.com), PGP key on the website
+
+<Vault>
+  Found a security issue? Please email [security@stackryze.com](mailto:security@stackryze.com) — we respond within 24 hours and credit valid findings on our [hall of fame](/security/hall-of-fame).
+</Vault>

@@ -1,0 +1,59 @@
+---
+title: "Enable DNSSEC"
+description: "Cryptographically verify your zone in three steps."
+---
+
+DNSSEC lets resolvers verify that answers really came from your zone — defeating the kind of cache poisoning that took down whole registrars in 2024. Stackryze supports it on every zone.
+
+## Prerequisites
+
+- A verified Stackryze account (see [Account Verification](/account-verification))
+- A domain delegated to Stackryze nameservers
+
+## Steps
+
+<Steps>
+  <Step title="Open the zone">
+    Open the zone in the dashboard and navigate to **Settings → DNSSEC**.
+  </Step>
+  <Step title="Enable signing">
+    Click **Enable**. Stackryze generates an ECDSA P-256 keypair, signs the zone, and computes a `DS` record.
+  </Step>
+  <Step title="Publish the DS record at your registrar">
+    Copy the `DS` record we generate and paste it at your registrar. Example:
+
+    ```text
+    example.com.  3600  IN  DS  35221 2 1 ABC123...
+    ```
+
+    The exact UI depends on your registrar — most have a "DNSSEC" or "DS records" panel.
+  </Step>
+  <Step title="Verify the chain of trust">
+    Run:
+
+    ```bash
+    delv example.com +root
+    ```
+
+    You should see `; fully validated`.
+  </Step>
+</Steps>
+
+## Algorithm support
+
+| Algorithm | Supported |
+| --- | --- |
+| ECDSA P-256 + SHA-256 (13) | ✅ default |
+| ECDSA P-384 + SHA-384 (14) | ✅ |
+| Ed25519 (15) | ✅ |
+| Ed448 (16) | ✅ |
+| RSA-SHA256 (8) | ⚠️ legacy only |
+| RSA-SHA1 (5) | ❌ removed |
+
+## NSEC3
+
+We sign zones with NSEC3 by default to prevent zone-walking. Disable NSEC3 from **Settings → DNSSEC → NSEC mode** if you need NSEC (rare).
+
+<Tip>
+  DNSSEC + DANE + a `CAA` record is the strongest setup possible for a public-facing zone.
+</Tip>

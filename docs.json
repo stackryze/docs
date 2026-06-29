@@ -1,53 +1,142 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Mintlify Starter Kit",
+  "name": "Stackryze",
+  "description": "Affordable software for the modern web — domains, DNS, and beyond.",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#4FBE7A",
+    "light": "#7DD9A1",
+    "dark": "#2E7D4F"
   },
   "favicon": "/favicon.svg",
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg"
+  },
+  "appearance": {
+    "default": "system",
+    "strict": false
+  },
   "navigation": {
-    "pages": [
+    "tabs": [
       {
-        "group": "Getting Started",
+        "tab": "Docs",
+        "icon": "book-open",
         "pages": [
-          "index",
-          "quickstart"
+          {
+            "group": "Getting Started",
+            "pages": [
+              "index",
+              "quickstart",
+              "account-verification"
+            ]
+          },
+          {
+            "group": "Features",
+            "pages": [
+              "features/products",
+              "features/domains",
+              "features/dns",
+              "features/api",
+              "features/security",
+              "features/billing",
+              "features/pricing"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Guides",
+        "icon": "compass",
+        "pages": [
+          {
+            "group": "Integration Guides",
+            "pages": [
+              "guides/add-a-custom-domain",
+              "guides/point-domain-to-stackryze",
+              "guides/transfer-domain",
+              "guides/configure-dns-records",
+              "guides/enable-dnssec",
+              "guides/dynamic-dns",
+              "guides/api-quickstart",
+              "guides/webhooks"
+            ]
+          },
+          {
+            "group": "Billing Deconstructions",
+            "tag": "NEW",
+            "pages": [
+              "guides/billing-introduction"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Changelog",
+        "icon": "clock-rotate-left",
+        "pages": [
+          "changelog/introduction",
+          {
+            "group": "June 2026",
+            "pages": [
+              "changelog/v1-105-0",
+              "changelog/v1-101-0"
+            ]
+          },
+          {
+            "group": "May 2026",
+            "pages": [
+              "changelog/v1-99-0",
+              "changelog/v1-97-6"
+            ]
+          },
+          {
+            "group": "April 2026",
+            "pages": [
+              "changelog/v1-94-0"
+            ]
+          },
+          {
+            "group": "March 2026",
+            "pages": [
+              "changelog/v1-93-0",
+              "changelog/v1-87-0"
+            ]
+          }
         ]
       }
     ],
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
+          "anchor": "llms-full.txt",
+          "href": "/llms-full.txt",
+          "icon": "file-lines"
         },
         {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
+          "anchor": "Community",
+          "href": "https://discord.gg/stackryze",
+          "icon": "users"
+        },
+        {
+          "anchor": "Dashboard",
+          "href": "https://dns.stackryze.com/dashboard",
+          "icon": "gauge"
         }
       ]
     }
-  },
-  "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
   },
   "navbar": {
     "links": [
       {
         "label": "Support",
-        "href": "mailto:hi@mintlify.com"
+        "href": "mailto:support@stackryze.com"
       }
     ],
     "primary": {
       "type": "button",
       "label": "Dashboard",
-      "href": "https://app.mintlify.com"
+      "href": "https://dns.stackryze.com/dashboard"
     }
   },
   "contextual": {
@@ -64,9 +153,9 @@
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "github": "https://github.com/stackryze",
+      "x": "https://x.com/stackryze",
+      "linkedin": "https://linkedin.com/company/stackryze"
     }
   }
 }

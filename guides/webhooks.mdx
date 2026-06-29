@@ -1,0 +1,71 @@
+---
+title: "Webhooks"
+description: "React to zone changes, verification events, and DNSSEC rollovers in real time."
+---
+
+Webhooks let you subscribe to events on your Stackryze account — zone changes, DNSSEC rollovers, API tokens being created, and more.
+
+## Step 1 — Register an endpoint
+
+From the dashboard, go to **Settings → Webhooks** and click **Add endpoint**. Enter your URL:
+
+```text
+https://api.yourapp.com/stackryze/webhook
+```
+
+Stackryze will send a verification `POST` and only deliver real events once it gets a `200 OK`.
+
+## Step 2 — Pick events
+
+Select which events you care about:
+
+| Event | When it fires |
+| --- | --- |
+| `zone.created` | A new zone is added |
+| `zone.deleted` | A zone is removed |
+| `record.created` | A new record is published |
+| `record.updated` | A record's value or TTL changes |
+| `record.deleted` | A record is removed |
+| `dnssec.key_rollover` | A DNSSEC signing key is rotating |
+| `verification.completed` | Your account has been verified |
+| `api_token.created` | A new API token was issued |
+
+## Step 3 — Verify signatures
+
+Every webhook request includes:
+
+```http
+X-Stackryze-Signature: t=1718903829,v1=abc123...
+X-Stackryze-Event: record.updated
+X-Stackryze-Delivery: 7c91d8...
+```
+
+Verify the signature with your endpoint's signing secret:
+
+```js
+const crypto = require('crypto');
+
+function verify(req) {
+  const [tPart, sigPart] = req.headers['x-stackryze-signature'].split(',');
+  const timestamp = tPart.split('=')[1];
+  const signature = sigPart.split('=')[1];
+
+  const expected = crypto
+    .createHmac('sha256', process.env.STACKRYZE_WEBHOOK_SECRET)
+    .update(`${timestamp}.${req.rawBody}`)
+    .digest('hex');
+
+  return crypto.timingSafeEqual(
+    Buffer.from(signature),
+    Buffer.from(expected)
+  );
+}
+```
+
+## Step 4 — Respond
+
+Always respond within **5 seconds**. Return `2xx` to acknowledge. If we don't get a `2xx`, we retry with exponential backoff up to 24 hours.
+
+<Tip>
+  Use the `X-Stackryze-Delivery` header as an idempotency key — your endpoint will receive each event at least once.
+</Tip>

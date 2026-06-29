@@ -1,0 +1,88 @@
+---
+title: "Configure DNS Records"
+description: "The complete reference for every record type Stackryze supports."
+---
+
+Stackryze supports every standard DNS record type plus the modern ones (SVCB, HTTPS, TLSA) the rest of the industry is still catching up to.
+
+## Classic records
+
+<AccordionGroup>
+  <Accordion title="A and AAAA" icon="globe">
+    Map a name to an IPv4 (`A`) or IPv6 (`AAAA`) address.
+
+    ```dns
+    example.com.       3600  IN  A     192.0.2.1
+    api.example.com.   300   IN  AAAA  2001:db8::1
+    ```
+  </Accordion>
+  <Accordion title="CNAME and DNAME" icon="shuffle">
+    Alias one name to another. `CNAME` is for the leftmost label; `DNAME` redirects the whole subtree.
+
+    ```dns
+    www.example.com.  3600  IN  CNAME  example.com.
+    ```
+  </Accordion>
+  <Accordion title="MX" icon="envelope">
+    Mail exchange. Always pair with an `SPF` (TXT) record and sign with DKIM.
+
+    ```dns
+    example.com.  3600  IN  MX  10  mail.example.com.
+    ```
+  </Accordion>
+  <Accordion title="TXT" icon="quote-right">
+    Free-form text. Used for SPF, DKIM, DMARC, domain verification, and DNS-based ACME challenges.
+
+    ```dns
+    example.com.  3600  IN  TXT  "v=spf1 include:_spf.stackryze.com ~all"
+    _dmarc.example.com. 3600 IN TXT "v=DMARC1; p=reject; rua=mailto:dmarc@example.com"
+    ```
+  </Accordion>
+  <Accordion title="NS" icon="diagram-project">
+    Delegation. You almost never edit this by hand — Stackryze manages it for you.
+  </Accordion>
+  <Accordion title="SRV" icon="signal">
+    Service locator. Used for XMPP, SIP, Minecraft, Matrix, etc.
+
+    ```dns
+    _minecraft._tcp.example.com. 3600 IN SRV 0 5 25565 mc.example.com.
+    ```
+  </Accordion>
+  <Accordion title="CAA" icon="lock">
+    Restrict which CAs may issue certificates for your domain.
+
+    ```dns
+    example.com.  3600  IN  CAA  0 issue "letsencrypt.org"
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Modern records
+
+<AccordionGroup>
+  <Accordion title="SVCB and HTTPS" icon="rocket">
+    Service bindings — the modern way to tell clients *how* to connect to your origin. Stackryze has full RFC 9460 + 9461 support including `alpn`, `port`, `ech`, `ipv4hint`, and `ipv6hint`.
+
+    ```dns
+    example.com.  300  IN  HTTPS  1 . alpn="h2,h3" port=443 ipv4hint=192.0.2.1 ech="..."
+    ```
+  </Accordion>
+  <Accordion title="TLSA" icon="shield-halved">
+    DANE TLS association. Pin a CA, a leaf, or a certificate hash for a service.
+
+    ```dns
+    _443._tcp.example.com. 3600 IN TLSA 3 1 1 abc123...
+    ```
+  </Accordion>
+  <Accordion title="OPENPGPKEY" icon="key">
+    Publish an OpenPGP key in DNS, so anyone can email you encrypted without a keyserver.
+  </Accordion>
+</AccordionGroup>
+
+## Editing records
+
+You can edit records from:
+
+1. The dashboard — click any record to inline-edit
+2. The API — see [API quickstart](/guides/api-quickstart)
+3. The CLI — `stackryze records set --zone example.com ...` (preview)

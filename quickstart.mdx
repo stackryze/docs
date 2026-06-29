@@ -1,47 +1,68 @@
 ---
 title: "Quickstart"
-description: "Begin with a guide on the fastest path to a successful outcome"
+description: "Get from zero to a working DNS zone in under five minutes."
 ---
 
-Describe how someone begins using your product. What is the first thing they need to do? Are there any prerequisites?
-
-A quickstart should take someone from zero to using your product. They'll get a quick win and a sense of what they can accomplish.
+This quickstart takes you from a fresh Stackryze account to a fully delegated domain with live DNS records. Most people finish in under five minutes.
 
 ## Prerequisites
 
 Before you begin, you must have:
 
-- Requirement one (for example, Node.js 18+, a free account, an API key)
-- Requirement two (for example, a compatible device, a compatible browser, a compatible operating system)
+- A free [Stackryze](https://dns.stackryze.com/signup) account
+- A domain you own (or one of the free subdomains Stackryze Domains provides)
+- Five minutes
 
 ## Get started
 
 <Steps>
-  <Step title="Install">
-    Describe how to install your product or sign up.
-
-    ```bash
-    npm install your-package
-    ```
+  <Step title="Create your Stackryze account">
+    Sign up at [dns.stackryze.com](https://dns.stackryze.com/signup). You can use email or your existing GitHub account.
   </Step>
-  <Step title="Configure">
-    Describe any setup or configuration needed before first use.
-
-    ```bash
-    your-cli init
-    ```
+  <Step title="Add your domain">
+    From the dashboard, click **Add Domain**, then enter the apex (for example `example.com`). Stackryze will create an empty zone and give you the nameservers to delegate to.
   </Step>
-  <Step title="Run it">
-    Show the first thing a user does to see it working.
+  <Step title="Delegate at your registrar">
+    At your domain registrar, set the nameservers to the four Stackryze nameservers we provide:
 
-    ```bash
-    your-cli start
+    ```text
+    ns1.stackryze.com
+    ns2.stackryze.com
+    ns3.stackryze.com
+    ns4.stackryze.com
     ```
+
+    Propagation typically completes within 30 minutes.
+  </Step>
+  <Step title="Add your first records">
+    Open the zone and add the records you need — `A`, `AAAA`, `CNAME`, `MX`, `TXT`, plus modern record types like `SVCB`, `HTTPS`, and `TLSA`.
+
+    <Tip>
+      Save your records as a draft first — Stackryze validates the whole zone before publishing so syntax mistakes never go live.
+    </Tip>
+  </Step>
+  <Step title="Verify with a lookup">
+    Run `dig example.com @ns1.stackryze.com` (or use the built-in lookup from the dashboard) to confirm the zone is live.
   </Step>
 </Steps>
 
-<Tip>
-  Give people a way to get help. This could be a link to a support page, a chat with a customer support agent, or a forum for your product.
+## Where to go next
 
-  Example: Need help? Reach out to us at [support@yourcompany.com](mailto:support@yourcompany.com).
+<Columns cols={2}>
+  <Card title="Add a custom domain" icon="globe" href="/guides/add-a-custom-domain">
+    Wire up a domain you already own to a Stackryze-hosted service.
+  </Card>
+  <Card title="Configure DNS records" icon="list" href="/guides/configure-dns-records">
+    The complete reference for every record type Stackryze supports.
+  </Card>
+  <Card title="Enable DNSSEC" icon="shield-check" href="/guides/enable-dnssec">
+    Turn on cryptographic validation for your zone.
+  </Card>
+  <Card title="API quickstart" icon="code" href="/guides/api-quickstart">
+    Automate your zone changes with the Stackryze API.
+  </Card>
+</Columns>
+
+<Tip>
+  Need help? Reach out to us at [support@stackryze.com](mailto:support@stackryze.com) — a real person will reply within one business day.
 </Tip>

@@ -1,0 +1,57 @@
+---
+title: "DNS"
+description: "Modern DNS hosting for everyone — fast, free, and security-first."
+---
+
+Stackryze DNS is a free DNS hosting service, designed with security in mind. Running on open-source software, it's free for everyone to use.
+
+<Note>
+  The full service lives at [dns.stackryze.com](https://dns.stackryze.com). Status & live metrics are at [status.stackryze.com](https://status.stackryze.com).
+</Note>
+
+## The four pillars
+
+### 1. Modern records
+
+Native support for the record types the modern web actually uses:
+
+- **`SVCB`** — service bindings, doh, ech, ipv4hints, ipv6hints
+- **`HTTPS`** — alias for SVCB with mandatory `alpn` and `port`
+- **`TLSA`** — DANE TLS association for SMTP, HTTPS, and beyond
+
+Plus the classics: `A`, `AAAA`, `CNAME`, `MX`, `NS`, `TXT`, `SRV`, `CAA`, `PTR`, `DNAME`.
+
+### 2. Simple interface
+
+The easiest way to manage DNS. Clean, fast, intuitive — no upsells, no modal soup, no dark patterns.
+
+### 3. API-first *(under development)*
+
+Full automation using standards-compliant JSON/REST. The same API powers the dashboard, so anything you can click, you can script.
+
+### 4. Open source
+
+100% free and non-profit. Transparent and community-driven. The full DNS engine is MIT-licensed at [github.com/stackryze/DNS](https://github.com/stackryze/DNS).
+
+## Global infrastructure
+
+Strategically located authoritative nameservers ensure low latency and high availability worldwide.
+
+| Hostname | Location |
+| --- | --- |
+| `ns1.stackryze.com` | New York City, USA |
+| `ns2.stackryze.com` | Hyderabad, India |
+| `ns3.stackryze.com` | Nuremberg, Germany |
+| `ns4.stackryze.com` | São Paulo, Brazil |
+
+## Live metrics
+
+Pulled in real time from the [status page](https://status.stackryze.com).
+
+<Frame>
+  <img src="https://dns.stackryze.com/world_map.png" alt="Stackryze global nameserver map" />
+</Frame>
+
+## Closing line
+
+> No complex enterprise pricing. No hidden fees. Just pure, high-performance DNS.

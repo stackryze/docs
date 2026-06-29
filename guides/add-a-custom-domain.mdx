@@ -1,0 +1,57 @@
+---
+title: "Add a Custom Domain Integration Guide"
+description: "Wire up a domain you already own to a Stackryze-hosted service."
+---
+
+This guide walks you through adding a custom domain — one you bought at any registrar — to a Stackryze product (DNS, Domains, or the API).
+
+## Prerequisites
+
+To add a custom domain, you'll need:
+
+- A Stackryze account (free — see [quickstart](/quickstart))
+- A domain you own
+- Access to your registrar's DNS settings
+
+## Domain Setup
+
+<Steps>
+  <Step title="Sign in to Stackryze">
+    Open [dns.stackryze.com](https://dns.stackryze.com) and sign in.
+  </Step>
+  <Step title="Create your domain">
+    Click **Domains → Add Domain**, then enter the apex (for example `example.com`). Stackryze creates an empty zone and provisions four globally-distributed nameservers.
+  </Step>
+  <Step title="Get your nameservers">
+    Stackryze assigns four nameservers. Copy them — you'll need them in the next step.
+
+    ```text
+    ns1.stackryze.com
+    ns2.stackryze.com
+    ns3.stackryze.com
+    ns4.stackryze.com
+    ```
+  </Step>
+  <Step title="Delegate at your registrar">
+    At your registrar (Namecheap, Cloudflare Registrar, GoDaddy, Porkbun, etc.) set the nameservers to the four above. Save.
+
+    <Tip>
+      Propagation typically completes within 30 minutes but can take up to 24 hours.
+    </Tip>
+  </Step>
+  <Step title="Verify delegation">
+    Run:
+
+    ```bash
+    dig NS example.com @1.1.1.1 +short
+    ```
+
+    You should see the four Stackryze nameservers.
+  </Step>
+</Steps>
+
+## Next steps
+
+- Add records: see [Configure DNS records](/guides/configure-dns-records)
+- Turn on DNSSEC: see [Enable DNSSEC](/guides/enable-dnssec)
+- Automate changes: see [API quickstart](/guides/api-quickstart)
