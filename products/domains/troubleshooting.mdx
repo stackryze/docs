@@ -1,0 +1,368 @@
+---
+title: "Troubleshooting"
+description: "Common errors and how to fix them on Stackryze Domains."
+---
+
+Common problems and their solutions.
+
+<Note>
+  Stackryze Domains is currently in beta and updated daily. If you spot an issue, let us know via the support channels at the bottom of this page.
+</Note>
+
+## Login issues
+
+### "GitHub account too new"
+
+**Error:** Your GitHub account must be at least 7 days old.
+
+**Fix:**
+
+- Wait until your GitHub account is 7 days old.
+- This is a spam-prevention measure.
+- Email [support@stackryze.com](mailto:support@stackryze.com) if you believe this is an error.
+
+### "No public email on GitHub"
+
+**Error:** Your GitHub account does not have a public email address.
+
+**Fix:**
+
+1. Go to [GitHub Settings → Emails](https://github.com/settings/emails).
+2. Uncheck **Keep my email addresses private**, or add a public email.
+3. Try logging in again.
+
+### "Account banned"
+
+**Error:** Your account has been banned for violating the terms of service.
+
+**Fix:**
+
+- Review the [Terms of Service](https://domain.stackryze.com/terms).
+- Email [support@stackryze.com](mailto:support@stackryze.com) if you think this is a mistake. Include your GitHub username.
+- Banned accounts are signed out on all devices immediately.
+
+### "Registration closed"
+
+**Error:** New registrations are temporarily disabled.
+
+**Fix:**
+
+- This is rare and usually temporary.
+- Check the status page for updates.
+- Try again later or contact support.
+
+### "Login failed / Server error"
+
+**Error:** Generic login failure.
+
+**Fix:**
+
+- Clear browser cookies and cache.
+- Try a different browser.
+- Disable browser extensions temporarily.
+- Check whether GitHub is down: [GitHub Status](https://www.githubstatus.com/).
+- Email [support@stackryze.com](mailto:support@stackryze.com) if the issue persists.
+
+## Domain registration issues
+
+### "Domain name must be at least 3 characters"
+
+**Error:** Your subdomain is too short.
+
+**Fix:**
+
+- Use at least three characters.
+- Example: `abc.indevs.in` ✅, `ab.indevs.in` ❌.
+
+### "Domain name must be less than 63 characters"
+
+**Error:** Your subdomain is too long.
+
+**Fix:**
+
+- Keep it under 63 characters.
+- Use a shorter, more memorable name.
+
+### "Domain name can only contain lowercase letters, numbers, and hyphens"
+
+**Error:** Invalid characters in subdomain.
+
+**Fix:**
+
+- Use only `a-z`, `0-9`, and `-`.
+- No uppercase letters, spaces, or special characters.
+- Cannot start or end with a hyphen.
+
+**Examples:**
+
+- ✅ `my-project`
+- ✅ `api2024`
+- ❌ `My_Project` (uppercase, underscore)
+- ❌ `-myproject` (starts with a hyphen)
+- ❌ `my project` (spaces)
+
+### "Subdomain already exists"
+
+**Error:** Someone else has already registered this name.
+
+**Fix:**
+
+- Try a different name.
+- Add numbers or hyphens: `myproject2`, `my-project`.
+- Check availability first (green checkmark in the form).
+
+### "This name is in a cooling-off period"
+
+**Error:** The domain was recently deleted and is in a 7-day waiting period.
+
+**Fix:**
+
+- Wait 7 days after deletion.
+- Choose a different name.
+- The error message shows how many days remain.
+
+### "You have reached your domain limit"
+
+**Error:** You have registered the maximum number of domains (default: 5).
+
+**Fix:**
+
+- Delete unused domains from **My Domains**.
+- Email [support@stackryze.com](mailto:support@stackryze.com) to request an increase. Include your GitHub username and reason.
+
+### "At least 2 nameservers are required"
+
+**Error:** You did not provide enough nameservers.
+
+**Fix:**
+
+- Enter at least two nameservers.
+- Most providers give you 2–4.
+
+### "Invalid nameserver format"
+
+**Error:** Nameserver does not match a valid DNS hostname.
+
+**Fix:**
+
+- Use a valid hostname: `ns1.example.com`.
+- Do not include `http://`.
+- No spaces or special characters.
+- Maximum 253 characters per nameserver.
+
+**Valid formats:**
+
+- ✅ `ns1.cloudflare.com`
+- ✅ `ns-123.awsdns-12.com`
+- ❌ `http://ns1.example.com` (no protocol)
+- ❌ `ns1 example com` (no spaces)
+
+### "Duplicate nameservers are not allowed"
+
+**Error:** You entered the same nameserver twice.
+
+**Fix:**
+
+- Use different nameservers.
+- Each must be unique.
+
+### "CAPTCHA verification failed"
+
+**Error:** hCaptcha did not complete successfully.
+
+**Fix:**
+
+- Complete the CAPTCHA again.
+- Disable VPNs or proxies temporarily.
+- Try a different browser.
+- Disable ad blockers.
+- Check your internet connection.
+- Clear browser cache and cookies.
+
+## DNS and nameserver issues
+
+### Nameservers not updating
+
+**Problem:** DNS still points to old nameservers.
+
+**Fix:**
+
+1. Wait 5–10 minutes for propagation.
+2. Clear your DNS cache:
+   - **Linux:** `sudo systemd-resolve --flush-caches`
+   - **macOS:** `sudo dscacheutil -flushcache`
+   - **Windows:** `ipconfig /flushdns`
+3. Check with multiple DNS checkers:
+   - [DNS Checker](https://dnschecker.org/)
+   - [What's My DNS](https://www.whatsmydns.net/)
+4. Verify nameservers in the dashboard.
+
+### Domain not resolving
+
+**Problem:** Domain doesn't load or returns DNS errors.
+
+**Fix:**
+
+1. Verify nameservers in the dashboard.
+2. Check DNS records in your DNS provider.
+3. Confirm the zone is configured for your subdomain.
+4. Wait up to 48 hours for global propagation.
+5. Test with: `dig yourname.indevs.in` or `nslookup yourname.indevs.in`.
+
+### SSL/HTTPS not working
+
+**Problem:** Browser shows "Not Secure" or SSL errors.
+
+**Fix:**
+
+1. Configure SSL in your DNS provider (for example Cloudflare).
+2. Wait up to 24 hours for the certificate to provision.
+3. Confirm your origin server supports HTTPS.
+4. Check SSL mode settings in your provider.
+5. Verify DNS records point to the correct server.
+
+## Domain management issues
+
+### Can't renew
+
+**Problem:** The **Renew** button is disabled.
+
+**Fix:**
+
+- Renewal opens 60 days before expiry.
+- Check the expiry date on the domain.
+- If expired, confirm it is still in the 15-day grace period.
+- Email [support@stackryze.com](mailto:support@stackryze.com) if you need help.
+
+### Accidentally deleted
+
+**Problem:** Deleted a domain by mistake.
+
+**Fix:**
+
+1. Deletion is permanent and cannot be undone.
+2. Wait for the 7-day cooling-off period.
+3. After 7 days, the name becomes available again.
+4. Re-register the domain.
+
+<Warning>
+  Support cannot restore deleted domains. Be careful in the Danger Zone.
+</Warning>
+
+### Status shows "Expired" but I renewed
+
+**Problem:** Status is not updating after renewal.
+
+**Fix:**
+
+- Refresh the page (`Ctrl+F5` or `Cmd+Shift+R`).
+- Clear browser cache.
+- Sign out and sign back in.
+- Wait a few minutes for the database to update.
+- Email support if the issue persists.
+
+## General issues
+
+### Dashboard not loading
+
+**Problem:** Can't open the dashboard.
+
+**Fix:**
+
+1. Check your internet connection.
+2. Try a different browser.
+3. Clear browser cache and cookies.
+4. Disable browser extensions.
+5. Check [status.stackryze.com](https://status.stackryze.com/).
+
+### Session expired / logged out automatically
+
+**Problem:** Repeated logouts.
+
+**Fix:**
+
+1. Enable cookies in your browser.
+2. Avoid private or incognito mode.
+3. Allow third-party cookies.
+4. Try a different browser.
+5. Clear cookies and sign in again.
+
+### Changes not saving
+
+**Problem:** Updates to nameservers or settings do not save.
+
+**Fix:**
+
+1. Read the on-screen error message.
+2. Confirm all required fields are filled.
+3. Verify the nameserver format.
+4. Try again in a few minutes.
+5. Clear browser cache and retry.
+6. Email support with details of what you tried.
+
+### "Too many requests" / rate limit errors
+
+**Error:** You exceeded the rate limit for an action.
+
+**Rate limits:**
+
+| Action | Limit |
+| --- | --- |
+| Authentication | 15 attempts per 15 minutes |
+| Domain creation | 2 domains per hour |
+| Availability checks | 20 per minute |
+| General API | 100 requests per 15 minutes |
+| Session checks | 100 requests per 15 minutes |
+
+**Fix:**
+
+1. Wait for the time window shown in the error.
+2. Slow your request rate.
+3. Don't refresh repeatedly.
+4. Don't use automated scripts or bots.
+
+<Note>
+  Rate limits are per IP address and reset automatically after the time window.
+</Note>
+
+## Monitoring issues
+
+### Uptime Kuma / monitor shows "Offline"
+
+**Problem:** Your site works, but a monitoring tool reports it as **Down** (403 Forbidden or 503 Service Unavailable).
+
+**Cause:** Cloudflare's Under Attack Mode or JavaScript Challenge blocks automated bots, including monitoring tools.
+
+**Fix:** Create a WAF exception rule for your monitor.
+
+1. Go to **Cloudflare Dashboard** → **Security** → **WAF**.
+2. Click **Create rule** under Custom Rules.
+3. Set the following:
+   - **Rule name:** `Allow Monitoring`
+   - **Field:** `User Agent`
+   - **Operator:** `contains`
+   - **Value:** `Uptime-Kuma` (or your monitor's name)
+   - **Action:** `Skip`
+   - **Checkbox:** Select **All remaining custom rules** and **WAF Managed Rules**.
+4. Click **Deploy**.
+
+## Still need help?
+
+If your issue isn't listed here or the fix didn't work:
+
+<Columns cols={2}>
+  <Card title="Discord community" icon="discord" href="https://discord.gg/wr7s97cfM7">
+    Fastest way to get help — live debugging with the community.
+  </Card>
+  <Card title="Email support" icon="envelope" href="mailto:support@stackryze.com">
+    Include your GitHub username, describe the issue, attach screenshots, and list what you tried.
+  </Card>
+  <Card title="GitHub issues" icon="github" href="https://github.com/stackryze/domains-docs/issues">
+    For technical bugs — check existing issues first.
+  </Card>
+  <Card title="Documentation" icon="book" href="/products/domains/getting-started">
+    Step-by-step guides for every common task.
+  </Card>
+</Columns>
+
+**Response time:** We typically reply within 24–48 hours on business days.

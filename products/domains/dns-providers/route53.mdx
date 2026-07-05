@@ -1,0 +1,187 @@
+---
+title: "Route 53"
+description: "Connect a Stackryze Domain to AWS Route 53 in six steps."
+---
+
+Use AWS Route 53 as the DNS provider for your Stackryze Domain.
+
+## Why Route 53?
+
+- **Highly reliable** — 100% uptime SLA with global DNS infrastructure.
+- **Advanced routing** — traffic flow, geolocation, and failover policies.
+- **Full control** — complete DNS record management.
+- **Scalable** — enterprise-grade DNS for production workloads.
+- **AWS integration** — seamless with other AWS services.
+
+## Prerequisites
+
+Before you begin:
+
+- ✅ A registered Stackryze Domain on [domain.stackryze.com](https://domain.stackryze.com/).
+- ✅ An AWS account — [sign up here](https://aws.amazon.com/).
+
+<Tip>
+  Haven't registered your subdomain yet? See [Getting started](/products/domains/getting-started).
+</Tip>
+
+<Note>
+  Route 53 is a paid service. Hosted zones cost $0.50/month plus query charges. See [AWS pricing](https://aws.amazon.com/route53/pricing/) for details.
+</Note>
+
+## Step 1 — Open Route 53 in the AWS console
+
+1. Sign in to the [AWS Console](https://console.aws.amazon.com/).
+2. In the search bar, search for **Route 53**.
+3. Click the service.
+
+<img src="/products/domains/media/route53/route53_step_1.png" alt="AWS console search for Route 53" />
+
+## Step 2 — Open Hosted zones
+
+1. In the left sidebar, click **Hosted zones**.
+2. Click **Create hosted zone**.
+
+<img src="/products/domains/media/route53/route53_step_2.png" alt="Route 53 dashboard with Create hosted zone button" />
+
+## Step 3 — Create the hosted zone
+
+1. Enter your **full subdomain** (for example `yourname.indevs.in`).
+2. Fill in the details:
+   - **Domain name:** your complete subdomain from Stackryze.
+   - **Type:** select **Public Hosted Zone**.
+   - **Description:** (optional) add a note.
+3. Click **Create hosted zone**.
+
+<img src="/products/domains/media/route53/route53_step_3.png" alt="Route 53 Create hosted zone form" />
+
+<Warning>
+  Enter your complete subdomain from Stackryze Domains (`myproject.indevs.in`), not just the base domain.
+</Warning>
+
+## Step 4 — Copy the nameservers
+
+Route 53 assigns four nameservers:
+
+1. Find the **NS** record in your hosted zone.
+2. You'll see four nameservers:
+
+   ```text
+   ns-123.awsdns-45.com
+   ns-678.awsdns-90.net
+   ns-1234.awsdns-56.org
+   ns-5678.awsdns-12.co.uk
+   ```
+3. Copy all four — you'll need them in the next step.
+
+<img src="/products/domains/media/route53/route53_step_4.png" alt="Route 53 hosted zone showing NS records" />
+
+<Warning>
+  Your nameservers differ from this example. Copy the exact values AWS assigns.
+</Warning>
+
+## Step 5 — Update nameservers in Stackryze Domains
+
+1. Open [domain.stackryze.com](https://domain.stackryze.com/).
+2. Go to **My Domains**.
+3. Click your domain.
+4. In **DNS Configuration**, click **Edit**.
+5. Replace the nameservers with your Route 53 ones.
+6. Click **Save**.
+
+See [Managing domains → Updating nameservers](/products/domains/managing-domains#updating-nameservers) for the full walkthrough.
+
+<Note>
+  DNS changes propagate within 24–48 hours globally.
+</Note>
+
+## Step 6 — Create a record
+
+Add DNS records in Route 53:
+
+1. Select your hosted zone.
+2. Click **Create record**.
+
+<img src="/products/domains/media/route53/route53_step_6.1.png" alt="Route 53 hosted zone with Create record button" />
+
+3. Select a record type and fill in the form:
+   - **Record name:** `@` (for root) or your subdomain.
+   - **Record type:** `A`, `CNAME`, `AAAA`, `MX`, etc.
+   - **Value:** your target value (IP address, domain, etc.).
+   - **TTL:** `300` (5 minutes) or your preferred value.
+   - **Routing policy:** Simple routing (or an advanced policy).
+4. Click **Create records**.
+
+<img src="/products/domains/media/route53/route53_step_6.2.png" alt="Route 53 Create record form filled with A record values" />
+
+That's it — all steps are complete.
+
+<Tip>
+  **Common record types:**
+  - **A** — points to an IPv4 address (for example `192.0.2.1`).
+  - **CNAME** — points to another domain (for example `yourusername.github.io`).
+  - **AAAA** — points to an IPv6 address.
+  - **MX** — for email routing.
+  - **TXT** — for verification and SPF records.
+</Tip>
+
+<Note>
+  Route 53 supports advanced routing policies: weighted, latency-based, failover, and geolocation.
+</Note>
+
+## SSL configuration
+
+Route 53 provides DNS only — SSL certificates must be managed by your hosting provider or AWS services.
+
+**For common hosting platforms:**
+
+- **Vercel / Netlify** — automatic SSL provisioning.
+- **GitHub Pages** — automatic SSL after DNS verification.
+- **AWS services (CloudFront, ALB, API Gateway)** — use AWS Certificate Manager (ACM) for free SSL.
+- **Custom server** — use Let's Encrypt or a commercial certificate.
+
+<Tip>
+  Most modern hosting platforms provide free automatic SSL once DNS is configured. ACM certificates are free with AWS services and renew automatically.
+</Tip>
+
+## Common issues
+
+### Hosted zone not created
+
+- Confirm your IAM permissions include Route 53.
+- Confirm you selected **Public Hosted Zone**.
+- Confirm the subdomain format is correct.
+
+### DNS not resolving
+
+- Confirm nameservers are correct in the Stackryze Domains dashboard.
+- Wait 10–30 minutes for propagation.
+- Check DNS records in Route 53.
+- Verify with [DNS Checker](https://dnschecker.org/).
+- Confirm all four nameservers are entered.
+
+### High costs
+
+- Review Route 53 pricing before use.
+- Monitor query volume in CloudWatch.
+- Consider Route 53 only for production domains.
+- Use free providers for development and testing.
+
+## Advanced features
+
+- **Traffic Flow** — visual traffic policy editor.
+- **Health Checks** — monitor endpoint availability.
+- **Routing Policies** — weighted, latency, geolocation, failover.
+- **DNSSEC** — Domain Name System Security Extensions.
+- **Query Logging** — log DNS queries to CloudWatch.
+
+## Resources
+
+- [Route 53 documentation](https://docs.aws.amazon.com/route53/)
+- [Route 53 pricing](https://aws.amazon.com/route53/pricing/)
+- [AWS Certificate Manager](https://aws.amazon.com/certificate-manager/)
+- [DNS propagation checker](https://dnschecker.org/)
+
+## Need help?
+
+- [Discord community](https://discord.gg/wr7s97cfM7)
+- [Email support](mailto:support@stackryze.com)

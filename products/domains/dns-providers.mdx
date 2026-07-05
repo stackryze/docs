@@ -1,0 +1,186 @@
+---
+title: "DNS providers"
+description: "Connect your Stackryze Domain to any DNS provider — pick the one that fits your stack."
+---
+
+Stackryze Domains uses a **Bring Your Own DNS (BYOD)** approach. You can point your subdomain at any DNS provider that supports nameserver delegation.
+
+This page lists popular providers that work well with Stackryze Domains, with a setup guide for each.
+
+## Pick a provider
+
+### Cloudflare
+
+**Free tier:** Yes  
+**Features:** Fast global network, DDoS protection, free SSL, analytics  
+**Best for:** Most users, from beginners to advanced
+
+<Card title="Cloudflare setup guide" icon="cloud" href="/products/domains/dns-providers/cloudflare">
+  Step-by-step walkthrough with screenshots.
+</Card>
+
+### AWS Route 53
+
+**Free tier:** Limited (first 12 months)  
+**Features:** Highly reliable, integrates with AWS services, health checks  
+**Best for:** AWS users, enterprise applications
+
+<Card title="Route 53 setup guide" icon="aws" href="/products/domains/dns-providers/route53">
+  Step-by-step walkthrough with screenshots.
+</Card>
+
+### Google Cloud DNS
+
+**Free tier:** Limited  
+**Features:** Low latency, integrates with GCP, DNSSEC support  
+**Best for:** Google Cloud users, high-traffic applications
+
+<Card title="Google Cloud DNS setup guide" icon="google" href="/products/domains/dns-providers/google-cloud-dns">
+  Quick setup.
+</Card>
+
+### Azure DNS
+
+**Free tier:** Limited  
+**Features:** Integrates with Azure, high availability  
+**Best for:** Microsoft Azure users
+
+<Card title="Azure DNS setup guide" icon="microsoft" href="/products/domains/dns-providers/azure-dns">
+  Quick setup.
+</Card>
+
+### DigitalOcean DNS
+
+**Free tier:** Yes (with any DigitalOcean account)  
+**Features:** Simple interface, free with any DigitalOcean service  
+**Best for:** DigitalOcean users, simple setups
+
+<Card title="DigitalOcean setup guide" icon="water" href="/products/domains/dns-providers/digitalocean">
+  Step-by-step walkthrough with screenshots.
+</Card>
+
+### Hetzner DNS
+
+**Free tier:** Yes  
+**Features:** Free DNS hosting, simple API, reliable infrastructure  
+**Best for:** Hetzner customers, European users
+
+<Card title="Hetzner setup guide" icon="server" href="/products/domains/dns-providers/hetzner">
+  Quick setup.
+</Card>
+
+### ClouDNS
+
+**Free tier:** Yes  
+**Features:** Free DNS hosting, multiple record types, API access  
+**Best for:** Budget-conscious users, small projects
+
+<Card title="ClouDNS setup guide" icon="cloud" href="/products/domains/dns-providers/cloudns">
+  Quick setup.
+</Card>
+
+### Hurricane Electric (HE.net)
+
+**Free tier:** Yes  
+**Features:** Fully free, IPv6 support, DNSSEC  
+**Best for:** Advanced users, IPv6 enthusiasts
+
+<Card title="HE.net setup guide" icon="globe" href="/products/domains/dns-providers/hurricane-electric">
+  Quick setup.
+</Card>
+
+### Namecheap FreeDNS
+
+**Free tier:** Yes  
+**Features:** Free DNS hosting, easy to use  
+**Best for:** Namecheap customers, simple projects
+
+<Card title="Namecheap FreeDNS setup" icon="tag" href="/products/domains/dns-providers/namecheap">
+  Quick setup.
+</Card>
+
+### Vercel DNS
+
+**Free tier:** Yes (with a Vercel account)  
+**Features:** Automatic SSL, edge network, simple setup  
+**Best for:** Vercel users, frontend developers
+
+<Card title="Vercel DNS setup" icon="triangle" href="/products/domains/dns-providers/vercel-dns">
+  Quick setup.
+</Card>
+
+### deSEC
+
+**Free tier:** Yes  
+**Features:** Free DNSSEC-enabled DNS, privacy-focused, open source  
+**Best for:** Privacy-conscious users, DNSSEC requirements
+
+<Card title="deSEC setup" icon="shield" href="/products/domains/dns-providers/desec">
+  Quick setup.
+</Card>
+
+### PowerDNS (self-hosted)
+
+**Free tier:** Yes (open source)  
+**Features:** Self-hosted, API-driven, highly customizable  
+**Best for:** Advanced users, custom infrastructure
+
+<Card title="PowerDNS self-hosted setup" icon="server" href="/products/domains/dns-providers/powerdns">
+  Full Docker-based setup with PostgreSQL.
+</Card>
+
+### Custom DNS server
+
+**Free tier:** Depends on your software  
+**Features:** Full control, any server stack you run  
+**Best for:** Operators running their own DNS infrastructure
+
+<Card title="Custom DNS server setup" icon="wrench" href="/products/domains/dns-providers/custom">
+  Requirements and a reference zone file.
+</Card>
+
+## Choosing a provider
+
+### For beginners
+
+Start with [Cloudflare](/products/domains/dns-providers/cloudflare):
+
+- Free tier with no rate limits.
+- User-friendly dashboard.
+- Excellent global performance.
+- Built-in security features.
+
+### For AWS users
+
+[Route 53](/products/domains/dns-providers/route53) integrates cleanly with other AWS services.
+
+### For budget projects
+
+[Hurricane Electric](/products/domains/dns-providers/hurricane-electric) and [ClouDNS](/products/domains/dns-providers/cloudns) are fully free.
+
+### For enterprise
+
+[Route 53](/products/domains/dns-providers/route53), [Google Cloud DNS](/products/domains/dns-providers/google-cloud-dns), and [Azure DNS](/products/domains/dns-providers/azure-dns) provide enterprise-grade reliability with SLA guarantees.
+
+## General requirements
+
+Every DNS provider must meet these requirements:
+
+- **Nameserver support** — must provide authoritative nameservers.
+- **Zone management** — must allow you to create and manage DNS zones.
+- **Public accessibility** — nameservers must be reachable from the internet.
+- **Standard records** — must support `A`, `AAAA`, `CNAME`, `TXT`, `MX`, and other standard DNS records.
+
+<Tip>
+  Your DNS provider should let you create a zone for your subdomain (for example `yourname.indevs.in`) and provide at least two nameservers.
+</Tip>
+
+## Need help?
+
+- [FAQ](/products/domains/faq)
+- [Discord Community](https://discord.gg/wr7s97cfM7)
+- [Email support](mailto:support@stackryze.com)
+
+## Contributing
+
+Know a provider that should be listed here? [Open a pull request](https://github.com/stackryze/docs) or [file an issue](https://github.com/stackryze/domains-docs/issues).

@@ -44,9 +44,30 @@ index.mdx                       # docs landing
 quickstart.mdx                  # 5-minute DNS setup
 account-verification.mdx        # verification flow
 products/                       # one folder per product, owns its docs
-  domains/index.mdx             # domain registration
-  dns/index.mdx                 # DNS records & zones
-  hosting/index.mdx             # hosting (planned)
+  domains/                      # Stackryze Domains (indevs.in subdomains)
+    index.mdx                   #   product overview
+    getting-started.mdx         #   registration walkthrough
+    managing-domains.mdx        #   renewals, nameservers, deletion
+    faq.mdx                     #   frequently asked questions
+    troubleshooting.mdx         #   common errors and fixes
+    dns-providers.mdx           #   provider index
+    dns-providers/              #   one page per supported provider
+      cloudflare.mdx            #   (full guide)
+      route53.mdx               #   (full guide)
+      digitalocean.mdx          #   (full guide)
+      google-cloud-dns.mdx
+      azure-dns.mdx
+      hetzner.mdx
+      cloudns.mdx
+      hurricane-electric.mdx
+      namecheap.mdx
+      vercel-dns.mdx
+      desec.mdx
+      powerdns.mdx              #   (full self-host guide)
+      custom.mdx                #   (full custom DNS guide)
+    media/                      #   screenshots (Cloudflare, Route 53, DigitalOcean, dashboard)
+  dns/index.mdx                 # Stackryze DNS records & zones
+  hosting/index.mdx             # Stackryze Hosting (planned)
 features/                       # cross-product pages only
   products.mdx                  # product overview
   api.mdx                       # REST API reference

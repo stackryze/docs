@@ -1,0 +1,178 @@
+---
+title: "DigitalOcean"
+description: "Connect a Stackryze Domain to DigitalOcean DNS in six steps."
+---
+
+Use DigitalOcean DNS as the DNS provider for your Stackryze Domain.
+
+## Why DigitalOcean DNS?
+
+- **Free DNS hosting** — included with any DigitalOcean account.
+- **Simple interface** — easy-to-use control panel.
+- **Reliable infrastructure** — built on DigitalOcean's global network.
+- **Fast propagation** — quick DNS updates.
+- **API access** — automate DNS management.
+
+## Prerequisites
+
+Before you begin:
+
+- ✅ A registered Stackryze Domain on [domain.stackryze.com](https://domain.stackryze.com/).
+- ✅ A DigitalOcean account — [sign up here](https://www.digitalocean.com/).
+
+<Tip>
+  Haven't registered your subdomain yet? See [Getting started](/products/domains/getting-started).
+</Tip>
+
+## Step 1 — Sign in to DigitalOcean
+
+1. Sign in to the [DigitalOcean dashboard](https://cloud.digitalocean.com/).
+2. Open **Networking** in the left sidebar.
+
+<img src="/products/domains/media/digitalocean/digitalocean_step_1.png" alt="DigitalOcean dashboard with Networking highlighted in the sidebar" />
+
+## Step 2 — Open the Domains tab
+
+1. Click **Domains**.
+2. If this is your first time, add a payment method to continue.
+3. Click **Add a domain**.
+
+<img src="/products/domains/media/digitalocean/digitalocean_step_2.png" alt="DigitalOcean Networking Domains tab with Add a domain button" />
+
+## Step 3 — Add your domain
+
+1. In the domain field, enter your **full subdomain** (for example `yourname.indevs.in`).
+2. Click **Add Domain**.
+
+<img src="/products/domains/media/digitalocean/digitalocean_step_3.png" alt="DigitalOcean Add a domain dialog with subdomain field" />
+
+<Warning>
+  Enter your complete subdomain from Stackryze Domains (`myproject.indevs.in`), not just the base domain.
+</Warning>
+
+## Step 4 — Copy the DigitalOcean nameservers
+
+After adding the domain, DigitalOcean shows your nameservers:
+
+1. You'll see three nameservers:
+
+   ```text
+   ns1.digitalocean.com
+   ns2.digitalocean.com
+   ns3.digitalocean.com
+   ```
+2. Copy all three — you'll need them in the next step.
+
+<img src="/products/domains/media/digitalocean/digitalocean_step_4.png" alt="DigitalOcean domain record listing showing NS records" />
+
+<Note>
+  DigitalOcean uses the same nameservers for every domain. Always copy the values shown in your dashboard.
+</Note>
+
+## Step 5 — Update nameservers in Stackryze Domains
+
+1. Open [domain.stackryze.com](https://domain.stackryze.com/).
+2. Go to **My Domains**.
+3. Click your domain.
+4. In **DNS Configuration**, click **Edit**.
+5. Replace the nameservers with your DigitalOcean ones.
+6. Click **Save**.
+
+See [Managing domains → Updating nameservers](/products/domains/managing-domains#updating-nameservers) for the full walkthrough.
+
+<Note>
+  DNS changes propagate within 24–48 hours globally.
+</Note>
+
+## Step 6 — Create an A record
+
+Add your DNS records in DigitalOcean:
+
+1. Open your domain's DNS management page.
+2. Click **Create a record**.
+
+<img src="/products/domains/media/digitalocean/digitalocean_step_6.1.png" alt="DigitalOcean domain management page with Create a record highlighted" />
+
+3. Select **A** as the record type.
+4. Fill in the form:
+   - **Hostname:** `@` (for the root domain) or your subdomain name.
+   - **Will direct to:** your server's IP address (for example `192.0.2.1`).
+   - **TTL:** `3600` (one hour), or your preferred value.
+5. Click **Create Record**.
+
+<img src="/products/domains/media/digitalocean/digitalocean_step_6.2.png" alt="DigitalOcean Create a record dialog filled with A record values" />
+
+That's it — all steps are complete.
+
+<Tip>
+  **Common record types:**
+  - **A** — points to an IPv4 address.
+  - **CNAME** — points to another domain (for example GitHub Pages).
+  - **AAAA** — points to an IPv6 address.
+  - **MX** — for email routing.
+</Tip>
+
+## SSL configuration
+
+DigitalOcean DNS provides DNS only — SSL certificates must be managed by your hosting provider.
+
+**For common hosting platforms:**
+
+- **Vercel / Netlify** — automatic SSL provisioning.
+- **GitHub Pages** — automatic SSL after DNS verification.
+- **DigitalOcean App Platform** — free automatic SSL.
+- **Custom server** — use Let's Encrypt or a commercial certificate.
+
+<Tip>
+  Most modern hosting platforms provide free automatic SSL once DNS is configured.
+</Tip>
+
+## Common issues
+
+### Domain not added
+
+- Confirm you entered the complete subdomain.
+- Confirm you have an active DigitalOcean account.
+- Confirm the subdomain format is correct.
+- Refresh the page and retry.
+
+### DNS not resolving
+
+- Confirm nameservers are correct in the Stackryze Domains dashboard.
+- Wait 10–30 minutes for propagation.
+- Check DNS records in DigitalOcean.
+- Verify with [DNS Checker](https://dnschecker.org/).
+- Confirm all three nameservers are entered.
+
+### Records not updating
+
+- Check the TTL value — changes may be cached.
+- Verify record syntax is correct.
+- Confirm there are no conflicting records.
+- Wait for the TTL period to expire before expecting changes.
+
+### Domain not working after setup
+
+- Confirm nameservers in the Stackryze Domains dashboard match DigitalOcean.
+- Check DNS records in DigitalOcean.
+- Clear browser and DNS cache.
+- Wait up to 48 hours for full propagation.
+
+## Advanced features
+
+- **API access** — manage DNS programmatically.
+- **IPv6 support** — full AAAA support.
+- **CAA records** — Certificate Authority Authorization.
+- **SRV records** — service records.
+- **Bulk operations** — manage multiple records efficiently.
+
+## Resources
+
+- [DigitalOcean DNS documentation](https://docs.digitalocean.com/products/networking/dns/)
+- [DigitalOcean API reference](https://docs.digitalocean.com/reference/api/api-reference/#tag/Domains)
+- [DNS propagation checker](https://dnschecker.org/)
+
+## Need help?
+
+- [Discord community](https://discord.gg/wr7s97cfM7)
+- [Email support](mailto:support@stackryze.com)

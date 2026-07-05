@@ -1,0 +1,800 @@
+---
+title: "PowerDNS (self-hosted)"
+description: "Self-host your nameservers with PowerDNS + PostgreSQL behind Docker."
+---
+
+PowerDNS Authoritative Server is a versatile, open-source nameserver with multiple storage backends and an HTTP API. Stackryze uses PowerDNS to power `ns1.stackryze.com` and `ns2.stackryze.com`, which serve all `indevs.in` subdomains.
+
+<Warning>
+  **Advanced setup — not recommended for beginners.**
+  PowerDNS requires comfort with Linux, DNS internals, Docker, and database administration. If that's not you, start with [Cloudflare](/products/domains/dns-providers/cloudflare) instead.
+</Warning>
+
+## Why PowerDNS?
+
+- **Complete control** — own your DNS infrastructure.
+- **Multiple backends** — PostgreSQL, SQLite, BIND zone files, and more.
+- **RESTful HTTP API** — programmatic DNS management.
+- **High performance** — built for millions of queries.
+- **DNSSEC support** — built in.
+- **Active development** — regular updates and security patches.
+
+## Prerequisites
+
+Before you begin, confirm you have:
+
+- ✅ Linux server(s) with root access (minimum two for redundancy).
+- ✅ Docker and Docker Compose (20.10.0+ recommended).
+- ✅ A Stackryze Domain registered at [domain.stackryze.com](https://domain.stackryze.com/).
+- ✅ At least one public static IP.
+- ✅ Working knowledge of DNS zones and nameserver delegation.
+- ✅ Familiarity with PostgreSQL (if using the database backend).
+
+<Note>
+  For production, you need at least two nameservers for redundancy. This guide starts with a single-server setup for learning, then covers replication.
+</Note>
+
+## Docker images
+
+PowerDNS publishes official images at [hub.docker.com/u/powerdns](https://hub.docker.com/u/powerdns):
+
+| Image | Purpose | Use case |
+| --- | --- | --- |
+| `powerdns/pdns-auth-48` | Authoritative v4.8 | Production-ready |
+| `powerdns/pdns-auth-49` | Authoritative v4.9 | Latest stable |
+| `powerdns/pdns-auth-master` | Development build | Testing only — not for production |
+| `powerdns/pdns-recursor` | Recursive resolver | Caching resolver (not used here) |
+| `powerdns/dnsdist` | DNS load balancer | Advanced load balancing |
+
+<Note>
+  This guide uses `powerdns/pdns-auth-49` — the latest stable authoritative server.
+</Note>
+
+## Architecture overview
+
+```
+[Internet Users] → DNS query → [PowerDNS Auth Server]
+                                    │
+                                    │ reads records
+                                    ▼
+                            [PostgreSQL Backend]
+                                    │
+                                    ▼
+                            (DNS Records)
+
+[Admin/API] → HTTP API → [PowerDNS Auth Server] → port 53 UDP/TCP
+[Admin/API] → port 8081 → [PowerDNS Auth Server]
+```
+
+## Install with Docker and PostgreSQL
+
+PostgreSQL is a solid production backend for PowerDNS — robust, standards-compliant, and feature-rich.
+
+### Step 1 — Create docker-compose.yml
+
+```yaml
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: powerdns-postgres
+    environment:
+      POSTGRES_DB: powerdns
+      POSTGRES_USER: pdns
+      POSTGRES_PASSWORD: pdns-password
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./schema-postgres.sql:/docker-entrypoint-initdb.d/schema.sql:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pdns"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  powerdns:
+    image: powerdns/pdns-auth-49:latest
+    container_name: powerdns-auth
+    hostname: n1.yourdomain.com
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "8081:8081/tcp"
+    environment:
+      - PDNS_AUTH_API_KEY=your-secure-random-api-key-here
+    volumes:
+      - ./pdns-postgres.conf:/etc/powerdns/pdns.d/custom.conf:ro
+    restart: unless-stopped
+
+volumes:
+  postgres-data:
+```
+
+### Step 2 — Create the PostgreSQL schema
+
+Create `schema-postgres.sql` with the official PowerDNS 4.7+ schema:
+
+```sql
+CREATE TABLE domains (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  master VARCHAR(128) DEFAULT NULL,
+  last_check INT DEFAULT NULL,
+  type TEXT NOT NULL,
+  notified_serial BIGINT DEFAULT NULL,
+  account VARCHAR(40) DEFAULT NULL,
+  options TEXT DEFAULT NULL,
+  catalog TEXT DEFAULT NULL,
+  CONSTRAINT c_lowercase_name CHECK (((name)::TEXT = LOWER((name)::TEXT)))
+);
+
+CREATE UNIQUE INDEX name_index ON domains(name);
+CREATE INDEX catalog_idx ON domains(catalog);
+
+CREATE TABLE records (
+  id BIGSERIAL PRIMARY KEY,
+  domain_id INT DEFAULT NULL,
+  name VARCHAR(255) DEFAULT NULL,
+  type VARCHAR(10) DEFAULT NULL,
+  content VARCHAR(65535) DEFAULT NULL,
+  ttl INT DEFAULT NULL,
+  prio INT DEFAULT NULL,
+  disabled BOOL DEFAULT 'f',
+  ordername VARCHAR(255),
+  auth BOOL DEFAULT 't',
+  CONSTRAINT domain_exists FOREIGN KEY(domain_id) REFERENCES domains(id) ON DELETE CASCADE,
+  CONSTRAINT c_lowercase_name CHECK (((name)::TEXT = LOWER((name)::TEXT)))
+);
+
+CREATE INDEX rec_name_index ON records(name);
+CREATE INDEX nametype_index ON records(name,type);
+CREATE INDEX domain_id ON records(domain_id);
+CREATE INDEX recordorder ON records (domain_id, ordername text_pattern_ops);
+
+CREATE TABLE supermasters (
+  ip INET NOT NULL,
+  nameserver VARCHAR(255) NOT NULL,
+  account VARCHAR(40) NOT NULL,
+  PRIMARY KEY(ip, nameserver)
+);
+
+CREATE TABLE comments (
+  id SERIAL PRIMARY KEY,
+  domain_id INT NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  type VARCHAR(10) NOT NULL,
+  modified_at INT NOT NULL,
+  account VARCHAR(40) DEFAULT NULL,
+  comment VARCHAR(65535) NOT NULL,
+  CONSTRAINT domain_exists FOREIGN KEY(domain_id) REFERENCES domains(id) ON DELETE CASCADE,
+  CONSTRAINT c_lowercase_name CHECK (((name)::TEXT = LOWER((name)::TEXT)))
+);
+
+CREATE INDEX comments_domain_id_idx ON comments (domain_id);
+CREATE INDEX comments_name_type_idx ON comments (name, type);
+CREATE INDEX comments_order_idx ON comments (domain_id, modified_at);
+
+CREATE TABLE domainmetadata (
+  id SERIAL PRIMARY KEY,
+  domain_id INT REFERENCES domains(id) ON DELETE CASCADE,
+  kind VARCHAR(32),
+  content TEXT
+);
+
+CREATE INDEX domainidmetaindex ON domainmetadata(domain_id);
+
+CREATE TABLE cryptokeys (
+  id SERIAL PRIMARY KEY,
+  domain_id INT REFERENCES domains(id) ON DELETE CASCADE,
+  flags INT NOT NULL,
+  active BOOL,
+  published BOOL DEFAULT TRUE,
+  content TEXT
+);
+
+CREATE INDEX domainidindex ON cryptokeys(domain_id);
+
+CREATE TABLE tsigkeys (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(255),
+  algorithm VARCHAR(50),
+  secret VARCHAR(255),
+  CONSTRAINT c_lowercase_name CHECK (((name)::TEXT = LOWER((name)::TEXT)))
+);
+
+CREATE UNIQUE INDEX namealgoindex ON tsigkeys(name, algorithm);
+```
+
+### Step 3 — Create the PowerDNS config
+
+Create `pdns-postgres.conf`:
+
+```ini
+# Database Backend - PostgreSQL
+launch=gpgsql
+gpgsql-host=postgres
+gpgsql-port=5432
+gpgsql-dbname=powerdns
+gpgsql-user=pdns
+gpgsql-password=pdns-password
+gpgsql-dnssec=yes
+
+# API Configuration
+api=yes
+api-key=your-secure-random-api-key-here
+webserver=yes
+webserver-address=0.0.0.0
+webserver-port=8081
+webserver-allow-from=0.0.0.0/0
+
+# Server Configuration
+master=yes
+guardian=yes
+daemon=no
+disable-syslog=yes
+log-dns-details=no
+loglevel=4
+
+# Performance
+cache-ttl=20
+query-cache-ttl=20
+negquery-cache-ttl=60
+```
+
+### Step 4 — Start the services
+
+```bash
+docker-compose up -d
+```
+
+### Step 5 — Verify the connection
+
+```bash
+# Confirm PostgreSQL is running
+docker exec -it powerdns-postgres psql -U pdns -d powerdns -c "\dt"
+
+# Expected tables: domains, records, supermasters, comments,
+# domainmetadata, cryptokeys, tsigkeys
+
+# Test the API
+curl -H "X-API-Key: your-secure-random-api-key-here" \
+  http://localhost:8081/api/v1/servers/localhost
+```
+
+### Step 6 — Allow DNS traffic
+
+```bash
+# UFW (Ubuntu/Debian)
+sudo ufw allow 53/tcp
+sudo ufw allow 53/udp
+
+# Optional: restrict the API to your IP
+sudo ufw allow from YOUR_IP_ADDRESS to any port 8081
+
+# iptables
+sudo iptables -A INPUT -p tcp --dport 53 -j ACCEPT
+sudo iptables -A INPUT -p udp --dport 53 -j ACCEPT
+```
+
+<Warning>
+  Never expose port 8081 (API) to the public internet without authentication and IP restrictions. Use a VPN, SSH tunnel, or firewall rules.
+</Warning>
+
+## Manage zones via the API
+
+PowerDNS exposes a RESTful HTTP API for zone and record management.
+
+### Create a zone
+
+```bash
+curl -X POST http://YOUR_SERVER_IP:8081/api/v1/servers/localhost/zones \
+  -H "X-API-Key: your-secure-random-api-key-here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "yourname.indevs.in.",
+    "kind": "Native",
+    "masters": [],
+    "nameservers": ["n1.yourdomain.com.", "n2.yourdomain.com."]
+  }'
+```
+
+<Warning>
+  Zone names must end with a dot — for example `yourname.indevs.in.`.
+</Warning>
+
+### Add an A record
+
+```bash
+curl -X PATCH http://YOUR_SERVER_IP:8081/api/v1/servers/localhost/zones/yourname.indevs.in. \
+  -H "X-API-Key: your-secure-random-api-key-here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "rrsets": [
+      {
+        "name": "yourname.indevs.in.",
+        "type": "A",
+        "ttl": 3600,
+        "changetype": "REPLACE",
+        "records": [
+          {
+            "content": "192.0.2.1",
+            "disabled": false
+          }
+        ]
+      }
+    ]
+  }'
+```
+
+### Add a CNAME record
+
+```bash
+curl -X PATCH http://YOUR_SERVER_IP:8081/api/v1/servers/localhost/zones/yourname.indevs.in. \
+  -H "X-API-Key: your-secure-random-api-key-here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "rrsets": [
+      {
+        "name": "www.yourname.indevs.in.",
+        "type": "CNAME",
+        "ttl": 3600,
+        "changetype": "REPLACE",
+        "records": [
+          {
+            "content": "yourname.indevs.in.",
+            "disabled": false
+          }
+        ]
+      }
+    ]
+  }'
+```
+
+### List all zones
+
+```bash
+curl -H "X-API-Key: your-secure-random-api-key-here" \
+  http://YOUR_SERVER_IP:8081/api/v1/servers/localhost/zones | jq .
+```
+
+### View zone details
+
+```bash
+curl -H "X-API-Key: your-secure-random-api-key-here" \
+  http://YOUR_SERVER_IP:8081/api/v1/servers/localhost/zones/yourname.indevs.in. | jq .
+```
+
+### Delete a record
+
+```bash
+curl -X PATCH http://YOUR_SERVER_IP:8081/api/v1/servers/localhost/zones/yourname.indevs.in. \
+  -H "X-API-Key: your-secure-random-api-key-here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "rrsets": [
+      {
+        "name": "www.yourname.indevs.in.",
+        "type": "CNAME",
+        "changetype": "DELETE"
+      }
+    ]
+  }'
+```
+
+## Register with Stackryze Domains
+
+Once your PowerDNS server is running:
+
+1. Open [domain.stackryze.com](https://domain.stackryze.com/).
+2. Go to **My Domains**.
+3. Click your domain.
+4. In **DNS Configuration**, click **Edit**.
+5. Enter your PowerDNS nameserver hostnames:
+   - **Primary:** `n1.yourdomain.com` (must have an `A` record pointing to your server IP).
+   - **Secondary:** `n2.yourdomain.com` (for redundancy, pointing to the secondary server).
+6. Click **Save**.
+
+<Warning>
+  Your nameserver hostnames (`n1.yourdomain.com`) must have `A` records in their parent zone pointing to your PowerDNS server IPs. Set up glue records with your registrar if needed.
+</Warning>
+
+## Test DNS resolution
+
+### Test against your server directly
+
+```bash
+# A record
+dig @YOUR_SERVER_IP yourname.indevs.in
+
+# Specific record types
+dig @YOUR_SERVER_IP yourname.indevs.in A
+dig @YOUR_SERVER_IP www.yourname.indevs.in CNAME
+
+# Delegation
+dig @YOUR_SERVER_IP yourname.indevs.in NS
+```
+
+### Test through public DNS
+
+```bash
+# Wait 5–10 minutes for propagation
+dig yourname.indevs.in @8.8.8.8
+dig yourname.indevs.in @1.1.1.1
+```
+
+### Online tools
+
+- [DNS Checker](https://dnschecker.org/) — global propagation.
+- [What's My DNS](https://www.whatsmydns.net/) — worldwide propagation.
+- [IntoDNS](https://intodns.com/) — DNS health check.
+
+## High availability with master-slave replication
+
+For production DNS, run at least two nameservers for redundancy. PowerDNS supports master-slave replication using **AXFR (Authoritative Zone Transfer)**.
+
+### How AXFR works
+
+1. The **master** (n1) holds the authoritative data.
+2. The **slave** (n2) periodically pulls zone updates from the master.
+3. Zone data is transferred via AXFR over TCP port 53.
+4. The slave stays in sync automatically.
+
+**Benefits:**
+
+- Redundancy if the master fails.
+- Load distribution across both servers.
+- Geographic distribution for performance.
+- Automatic synchronization.
+
+**Stackryze infrastructure:**
+
+- `ns1.stackryze.com` — **master (primary)**.
+- `ns2.stackryze.com` — **slave (secondary)**.
+
+When a user updates their nameservers through the Stackryze platform, the API updates n1; n2 receives changes via AXFR.
+
+### Master configuration (`n1.yourdomain.com`)
+
+Create `pdns-master.conf`:
+
+```ini
+# Database Backend
+launch=gpgsql
+gpgsql-host=postgres
+gpgsql-port=5432
+gpgsql-dbname=powerdns
+gpgsql-user=pdns
+gpgsql-password=pdns-password
+gpgsql-dnssec=yes
+
+# API Configuration
+api=yes
+api-key=your-secure-api-key
+webserver=yes
+webserver-address=0.0.0.0
+webserver-port=8081
+webserver-allow-from=127.0.0.1,YOUR_ADMIN_IP
+
+# Master Configuration
+master=yes
+slave=no
+
+# AXFR Settings
+allow-axfr-ips=SLAVE_SERVER_IP
+also-notify=SLAVE_SERVER_IP
+only-notify=SLAVE_SERVER_IP
+
+# Performance
+cache-ttl=20
+query-cache-ttl=20
+negquery-cache-ttl=60
+```
+
+<Warning>
+  Replace `SLAVE_SERVER_IP` with your secondary server's IP (for example `203.0.113.2`).
+</Warning>
+
+### Slave configuration (`n2.yourdomain.com`)
+
+Create `pdns-slave.conf`:
+
+```ini
+# Database Backend
+launch=gpgsql
+gpgsql-host=postgres
+gpgsql-port=5432
+gpgsql-dbname=powerdns
+gpgsql-user=pdns
+gpgsql-password=pdns-password
+gpgsql-dnssec=yes
+
+# Slave Configuration
+master=no
+slave=yes
+
+# Performance
+cache-ttl=20
+query-cache-ttl=20
+negquery-cache-ttl=60
+
+# Logging
+loglevel=4
+log-dns-queries=no
+```
+
+### Set up replication
+
+**Step 1 — Add the master as a supermaster on the slave:**
+
+```bash
+docker exec -it powerdns-postgres-slave psql -U pdns -d powerdns -e \
+  "INSERT INTO supermasters (ip, nameserver, account)
+   VALUES ('MASTER_SERVER_IP', 'n1.yourdomain.com.', 'admin');"
+```
+
+Replace `MASTER_SERVER_IP` with the master's IP.
+
+**Step 2 — Create the zone on the master as `Master`:**
+
+```bash
+curl -X POST http://MASTER_IP:8081/api/v1/servers/localhost/zones \
+  -H "X-API-Key: your-secure-api-key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "yourname.indevs.in.",
+    "kind": "Master",
+    "masters": [],
+    "nameservers": ["n1.yourdomain.com.", "n2.yourdomain.com."]
+  }'
+```
+
+**Step 3 — Verify replication:**
+
+```bash
+# Query the slave directly
+dig @SLAVE_SERVER_IP yourname.indevs.in SOA
+
+# Compare SOA serial numbers
+dig @MASTER_IP yourname.indevs.in SOA
+dig @SLAVE_IP yourname.indevs.in SOA
+# Serials should match.
+```
+
+### How updates propagate
+
+1. Admin makes a change on the **master** (n1) via API.
+2. Master increments the zone's SOA serial.
+3. Master sends **NOTIFY** to the slave (n2).
+4. Slave requests **AXFR** from the master.
+5. Master transfers the full zone.
+6. Slave updates its local database.
+7. Both servers serve identical DNS data.
+
+### Firewall for AXFR
+
+**On the master:**
+
+```bash
+# DNS queries from anyone
+sudo ufw allow 53/tcp
+sudo ufw allow 53/udp
+
+# AXFR from the slave only
+sudo ufw allow from SLAVE_SERVER_IP to any port 53 proto tcp
+```
+
+**On the slave:**
+
+```bash
+sudo ufw allow 53/tcp
+sudo ufw allow 53/udp
+```
+
+### Troubleshooting replication
+
+**Slave not receiving zones:**
+
+```bash
+docker logs powerdns-auth-master | grep AXFR
+docker logs powerdns-auth-slave | grep AXFR
+
+docker exec powerdns-auth-slave pdns_control retrieve yourname.indevs.in
+```
+
+**AXFR denied:**
+
+- Confirm `allow-axfr-ips` on the master includes the slave IP.
+- Confirm the firewall allows TCP 53 from slave to master.
+- Confirm the slave IP is correct in the master config.
+
+## Security best practices
+
+### Restrict API access
+
+```ini
+# pdns.conf
+webserver-allow-from=127.0.0.1,YOUR_ADMIN_IP/32
+```
+
+### Use strong API keys
+
+```bash
+openssl rand -base64 32
+```
+
+### Enable DNSSEC (optional)
+
+```bash
+docker exec -it powerdns-auth pdnsutil secure-zone yourname.indevs.in
+docker exec -it powerdns-auth pdnsutil show-zone yourname.indevs.in
+```
+
+### Keep software updated
+
+```bash
+docker-compose pull
+docker-compose up -d
+```
+
+### Monitor logs
+
+```bash
+docker-compose logs -f powerdns
+```
+
+### Disable query logging in production
+
+```ini
+# pdns.conf
+log-dns-queries=no
+log-dns-details=no
+```
+
+Query logging can hurt performance and fill disk.
+
+## Common issues
+
+### Port 53 already in use
+
+Another service (often `systemd-resolved`) is using port 53.
+
+```bash
+sudo lsof -i :53
+
+# Stop systemd-resolved
+sudo systemctl stop systemd-resolved
+sudo systemctl disable systemd-resolved
+
+# Or configure it to not bind to port 53
+sudo nano /etc/systemd/resolved.conf
+# Set: DNSStubListener=no
+sudo systemctl restart systemd-resolved
+```
+
+### Database connection failed
+
+- Verify the database container is running: `docker-compose ps`.
+- Confirm credentials match in `docker-compose.yml` and `pdns.conf`.
+- Wait 30–60 seconds after starting the database before starting PowerDNS.
+- Check database logs: `docker-compose logs postgres`.
+
+### DNS queries not responding
+
+```bash
+docker-compose ps
+docker-compose logs powerdns
+sudo netstat -tulpn | grep :53
+dig @127.0.0.1 yourname.indevs.in
+sudo ufw status
+```
+
+### API returns 401 Unauthorized
+
+- Confirm the `X-API-Key` header matches the key in `pdns.conf`.
+- Confirm `api=yes` is set.
+- Restart PowerDNS after config changes: `docker-compose restart powerdns`.
+- Test the API directly: `curl http://localhost:8081/api`.
+
+### Zone not found
+
+```bash
+curl -H "X-API-Key: your-key" \
+  http://localhost:8081/api/v1/servers/localhost/zones
+
+docker exec -it powerdns-postgres psql -U pdns -d powerdns -e \
+  "SELECT * FROM domains;"
+```
+
+Confirm the zone name ends with a dot (`yourname.indevs.in.`).
+
+## Monitoring and maintenance
+
+### Server statistics
+
+```bash
+curl -H "X-API-Key: your-secure-random-api-key-here" \
+  http://YOUR_SERVER_IP:8081/api/v1/servers/localhost/statistics | jq .
+```
+
+### Backup
+
+**SQLite:**
+
+```bash
+docker exec powerdns-auth sqlite3 /var/lib/powerdns/pdns.sqlite3 .dump \
+  > backup-$(date +%Y%m%d).sql
+```
+
+**PostgreSQL:**
+
+```bash
+docker exec powerdns-postgres pg_dump -U pdns powerdns \
+  > backup-$(date +%Y%m%d).sql
+```
+
+### Restore
+
+**SQLite:**
+
+```bash
+docker exec -i powerdns-auth sqlite3 /var/lib/powerdns/pdns.sqlite3 \
+  < backup-20260114.sql
+```
+
+**PostgreSQL:**
+
+```bash
+docker exec -i powerdns-postgres psql -U pdns -d powerdns \
+  < backup-20260114.sql
+```
+
+## Performance tuning
+
+```ini
+# pdns.conf
+cache-ttl=20
+negquery-cache-ttl=60
+query-cache-ttl=20
+max-cache-entries=1000000
+```
+
+## Resources
+
+- [Official documentation](https://doc.powerdns.com/authoritative/index.html)
+- [Docker Hub](https://hub.docker.com/u/powerdns)
+- [Docker README](https://github.com/PowerDNS/pdns/blob/master/Docker-README.md)
+- [HTTP API](https://doc.powerdns.com/authoritative/http-api/index.html)
+- [PostgreSQL backend](https://doc.powerdns.com/authoritative/backends/generic-postgresql.html)
+- [GitHub](https://github.com/PowerDNS/pdns)
+- [Community forum](https://community.powerdns.com)
+
+## Simpler alternatives
+
+If PowerDNS feels heavy, try one of these instead:
+
+- [Cloudflare](/products/domains/dns-providers/cloudflare) — recommended for beginners.
+- [Hurricane Electric](/products/domains/dns-providers/hurricane-electric) — free, simple interface.
+- [deSEC](/products/domains/dns-providers/desec) — privacy-focused, with an API.
+- [ClouDNS](/products/domains/dns-providers/cloudns) — free tier with good features.
+
+## How Stackryze uses PowerDNS
+
+Stackryze runs PowerDNS to power our authoritative nameservers:
+
+- `ns1.stackryze.com` (primary) — PostgreSQL backend, receives updates from the API.
+- `ns2.stackryze.com` (secondary) — PostgreSQL replication from n1.
+
+These servers manage DNS delegation for every `indevs.in` subdomain through the PowerDNS HTTP API — zone creation and record management are fully automated when users register domains.
+
+<Tip>
+  Beginners should start with [Cloudflare](/products/domains/dns-providers/cloudflare). Self-hosting DNS requires significant expertise in system administration, security, and DNS protocols.
+</Tip>
+
+## Need help?
+
+- [Discord community](https://discord.gg/wr7s97cfM7)
+- [Email support](mailto:support@stackryze.com)

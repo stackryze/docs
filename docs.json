@@ -62,9 +62,37 @@
         "icon": "tags",
         "groups": [
           {
-            "group": "Stackryze Domains",
+            "group": "Getting started",
             "pages": [
-              "products/domains/index"
+              "products/domains/index",
+              "products/domains/getting-started",
+              "products/domains/managing-domains"
+            ]
+          },
+          {
+            "group": "DNS providers",
+            "pages": [
+              "products/domains/dns-providers",
+              "products/domains/dns-providers/cloudflare",
+              "products/domains/dns-providers/route53",
+              "products/domains/dns-providers/digitalocean",
+              "products/domains/dns-providers/google-cloud-dns",
+              "products/domains/dns-providers/azure-dns",
+              "products/domains/dns-providers/hetzner",
+              "products/domains/dns-providers/cloudns",
+              "products/domains/dns-providers/hurricane-electric",
+              "products/domains/dns-providers/namecheap",
+              "products/domains/dns-providers/vercel-dns",
+              "products/domains/dns-providers/desec",
+              "products/domains/dns-providers/powerdns",
+              "products/domains/dns-providers/custom"
+            ]
+          },
+          {
+            "group": "Help",
+            "pages": [
+              "products/domains/faq",
+              "products/domains/troubleshooting"
             ]
           }
         ]

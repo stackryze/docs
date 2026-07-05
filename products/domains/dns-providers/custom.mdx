@@ -1,0 +1,193 @@
+---
+title: "Custom DNS server"
+description: "Run your own DNS infrastructure and point a Stackryze Domain at it."
+---
+
+If you prefer to run your own DNS infrastructure, you can use custom DNS servers with Stackryze Domains. This guide covers the requirements and a reference setup.
+
+## Requirements
+
+Your custom DNS servers must meet these requirements:
+
+- **Publicly accessible** — reachable from the internet.
+- **Authoritative** — configured as authoritative for your subdomain.
+- **Reliable** — uptime above 99% recommended.
+- **Standards compliant** — follow DNS RFCs.
+- **Multiple servers** — at least two for redundancy.
+
+## Popular DNS server software
+
+### BIND9
+
+**Platform:** Linux, BSD, Windows  
+**Difficulty:** Advanced  
+**Best for:** Enterprise setups, experienced administrators
+
+[BIND documentation](https://www.isc.org/bind/)
+
+### PowerDNS
+
+**Platform:** Linux, BSD  
+**Difficulty:** Intermediate to advanced  
+**Best for:** Modern setups, API-driven management
+
+[PowerDNS documentation](https://doc.powerdns.com/)
+
+### NSD
+
+**Platform:** Linux, BSD  
+**Difficulty:** Intermediate  
+**Best for:** Authoritative-only DNS, security-focused setups
+
+[NSD documentation](https://www.nlnetlabs.nl/projects/nsd/)
+
+### Knot DNS
+
+**Platform:** Linux, BSD  
+**Difficulty:** Intermediate  
+**Best for:** High-performance setups, DNSSEC
+
+[Knot DNS documentation](https://www.knot-dns.cz/)
+
+## Setup overview
+
+### Step 1 — Install DNS server software
+
+Choose and install your preferred DNS server on your server(s).
+
+### Step 2 — Configure the zone
+
+Create a zone file for your subdomain:
+
+```bind
+$TTL 3600
+@       IN      SOA     ns1.yourdomain.com. admin.yourdomain.com. (
+                        2024010101 ; Serial
+                        3600       ; Refresh
+                        1800       ; Retry
+                        604800     ; Expire
+                        86400 )    ; Minimum TTL
+
+; Nameservers
+@       IN      NS      ns1.yourdomain.com.
+@       IN      NS      ns2.yourdomain.com.
+
+; A Records
+@       IN      A       192.0.2.1
+www     IN      A       192.0.2.1
+
+; AAAA Records (IPv6)
+@       IN      AAAA    2001:db8::1
+
+; CNAME Records
+blog    IN      CNAME   yourusername.github.io.
+```
+
+### Step 3 — Test your configuration
+
+Before registering, test your DNS servers:
+
+```bash
+# Test nameserver response
+dig @ns1.yourdomain.com yourname.indevs.in
+
+# Test from an external resolver
+dig yourname.indevs.in @8.8.8.8
+```
+
+### Step 4 — Register with Stackryze Domains
+
+Create your registration in the dashboard:
+
+```json
+{
+  "owner": {
+    "username": "yourgithubusername",
+    "email": "your@email.com"
+  },
+  "record": {
+    "NS": [
+      "ns1.yourdomain.com",
+      "ns2.yourdomain.com"
+    ]
+  }
+}
+```
+
+Then in the Stackryze Domains dashboard:
+
+1. Open **My Domains** → your domain → **DNS Configuration**.
+2. Replace the nameservers with your custom ones.
+3. Click **Save**.
+
+## Best practices
+
+### Use multiple nameservers
+
+Always configure at least two nameservers for redundancy:
+
+- **Primary:** `ns1.yourdomain.com`
+- **Secondary:** `ns2.yourdomain.com`
+
+### Geographic distribution
+
+Place nameservers in different geographic locations for reliability and performance.
+
+### Monitor uptime
+
+Use monitoring tools to ensure your nameservers stay available:
+
+- UptimeRobot
+- Pingdom
+- StatusCake
+
+### Keep software updated
+
+Update your DNS server regularly to patch vulnerabilities.
+
+### Enable DNSSEC (optional)
+
+For stronger security, enable DNSSEC on your nameservers.
+
+## Common issues
+
+### Nameservers not responding
+
+- Check firewall rules (allow UDP/TCP 53).
+- Verify the DNS service is running.
+- Test with `dig @your-nameserver-ip yourdomain.com`.
+
+### Zone not loading
+
+- Check zone file syntax.
+- Review DNS server logs.
+- Verify the zone is loaded in configuration.
+
+### Slow DNS resolution
+
+- Optimize TTL values.
+- Enable DNS caching.
+- Check server resources (CPU, memory).
+
+## Security considerations
+
+### Restrict zone transfers
+
+Only allow zone transfers to authorized secondaries:
+
+```bind
+allow-transfer { 192.0.2.2; };
+```
+
+### Rate limiting
+
+Implement rate limiting to prevent DNS amplification attacks.
+
+### Glue records
+
+If your nameserver hostnames are under the same zone you're delegating, set up glue records with your registrar.
+
+## Need help?
+
+- [Discord community](https://discord.gg/wr7s97cfM7)
+- [Email support](mailto:support@stackryze.com)

@@ -1,0 +1,230 @@
+---
+title: "Managing domains"
+description: "Update nameservers, renew, and delete Stackryze Domains from your dashboard."
+---
+
+Learn how to manage your registered domains, update nameservers, renew them, and delete them when you're done.
+
+## Accessing your domains
+
+1. Sign in at [domain.stackryze.com](https://domain.stackryze.com/).
+2. Click **My Domains** in the sidebar.
+
+You'll see every domain you own with its status, expiry date, and nameservers.
+
+## Domain overview
+
+Each domain shows:
+
+- **Domain name** — your subdomain (for example `yourname.indevs.in`).
+- **Status** — Active, Expiring Soon, or Expired.
+- **Registered on** — registration date.
+- **Expiry date** — when the domain expires.
+- **Registration period** — current validity (one year, fixed).
+- **DNS configuration** — current nameservers.
+
+<img src="/products/domains/media/dashboard/img_1.png" alt="Stackryze Domains dashboard showing domain detail page" />
+
+## Updating nameservers
+
+To change your DNS provider:
+
+<Steps>
+  <Step title="Set up the new provider">
+    Create the zone at your new provider first. See the [DNS providers](/products/domains/dns-providers) list for step-by-step guides.
+  </Step>
+  <Step title="Open DNS Configuration in the dashboard">
+    Go to **My Domains** and click **Manage** on your domain. Scroll to **DNS Configuration** and click **Edit**.
+  </Step>
+  <Step title="Replace the nameservers">
+    Replace `ns1.stackryze.com` and `ns2.stackryze.com` with your new ones:
+
+    - **Primary nameserver:** `ns1.example.com`
+    - **Secondary nameserver:** `ns2.example.com`
+  </Step>
+  <Step title="Save">
+    Click **Save**.
+  </Step>
+</Steps>
+
+<Note>
+  DNS changes propagate in 5–10 minutes, but can take up to 48 hours globally.
+</Note>
+
+### Verify propagation
+
+```bash
+dig NS yourname.indevs.in
+```
+
+Or use [DNS Checker](https://dnschecker.org/) or [What's My DNS](https://www.whatsmydns.net/).
+
+## Renewing domains
+
+Domains are valid for one year from registration.
+
+### When you can renew
+
+- Renewal opens 60 days before expiry.
+- Email reminders go out at 60 days and 10 days before expiry.
+
+### How to renew
+
+1. Go to **My Domains**.
+2. Find your domain in the list.
+3. Click **Renew** (the green button on the right).
+4. Confirm.
+5. Expiry extends by one year.
+
+<img src="/products/domains/media/dashboard/domain-list.png" alt="Domain list with Renew button highlighted" />
+
+<Tip>
+  Renewal is 100% free — there is no charge to extend a Stackryze Domain.
+</Tip>
+
+<Note>
+  If you click **Renew** before the 60-day window, you'll see a message showing when renewal becomes available.
+</Note>
+
+<img src="/products/domains/media/dashboard/cannot-renew.png" alt="Cannot renew message shown when outside the renewal window" />
+
+### What if you don't renew?
+
+| Timeline | What happens |
+| --- | --- |
+| Day 0 | Domain expires (status moves to Expired automatically). |
+| Days 1–15 | Grace period — domain still works, DNS remains active. |
+| Day 15 | Soft-deleted; DNS records removed. |
+| Days 15–22 | Cooling-off period (7 days) — name cannot be registered by anyone. |
+| Day 22+ | Name becomes available for registration again. |
+
+<Warning>
+  You can only renew during the 15-day grace period. Once day 15 passes, the domain is deleted and cannot be renewed.
+</Warning>
+
+## Deleting domains
+
+If you no longer need a domain, delete it from the **Danger Zone**.
+
+1. Scroll to the **Danger Zone** at the bottom of the domain page.
+2. Click **Delete Domain**.
+3. Confirm.
+
+<Warning>
+  DNS records are removed immediately. Your domain stops working right away.
+</Warning>
+
+### Cooling-off period
+
+After deletion:
+
+- A 7-day cooling-off period begins immediately.
+- The name cannot be registered by you or anyone else during this time.
+- Deletion is permanent — domains cannot be restored.
+
+<Warning>
+  Once you delete a domain, it enters a 7-day cooling-off period. After 7 days, the name becomes available for anyone to register. Restoration is not possible.
+</Warning>
+
+## Domain status reference
+
+| Status | Meaning |
+| --- | --- |
+| **Active** | Working normally. |
+| **Expiring Soon** | Less than 60 days until expiry. |
+| **Expired** | Past expiry but in the 15-day grace period. |
+| **Pending Deletion** | Scheduled for deletion. |
+| **Deleted** | Removed from DNS (cooling off for 7 days). |
+| **Pending DNS** | Waiting for DNS records to be created (automatic retry). |
+
+## Activity history
+
+Every change to your domains is recorded:
+
+1. Click **History** in the sidebar.
+2. Review the full audit log: registrations, nameserver updates, renewals, deletions, and login events.
+
+## Domain limits and quotas
+
+### Default limits
+
+- **Domains per account:** 5
+- **Domain length:** 3–63 characters
+- **Nameservers required:** at least 2
+- **Renewal window:** 60 days before expiry
+- **Grace period:** 15 days after expiry
+- **Cooling-off period:** 7 days after deletion
+
+### Need more domains?
+
+Email [support@stackryze.com](mailto:support@stackryze.com) with:
+
+- Your GitHub username.
+- The reason for the increase.
+- How many domains you need.
+
+We reply within 1–2 business days.
+
+## Common issues
+
+### Nameservers not updating
+
+1. Wait 5–10 minutes for propagation.
+2. Clear your DNS cache (`sudo dscacheutil -flushcache` on macOS, `ipconfig /flushdns` on Windows).
+3. Confirm the nameservers are correct in the dashboard.
+4. Check [DNS Checker](https://dnschecker.org/).
+
+### Domain not resolving
+
+1. Verify nameservers in the dashboard.
+2. Check DNS records in your DNS provider.
+3. Confirm the zone is configured for your subdomain.
+4. Wait up to 48 hours for global propagation.
+
+### Can't renew
+
+- Renewal opens 60 days before expiry.
+- Check the expiry date on the domain.
+- If expired, confirm it is still within the 15-day grace period.
+
+### Accidentally deleted
+
+1. Wait for the 7-day cooling-off period to complete.
+2. Re-register the domain once available.
+3. Deletions are permanent — support cannot restore.
+
+<Tip>
+  Set a calendar reminder for 60 days before expiry. We also email you at 60 and 10 days out.
+</Tip>
+
+## Best practices
+
+### Maintenance
+
+- Review your domains monthly.
+- Set calendar reminders for renewals.
+- Keep your account email current.
+- Watch activity history for unexpected changes.
+
+### DNS configuration
+
+- Pick a reliable DNS provider. [Cloudflare](/products/domains/dns-providers/cloudflare) is a good default.
+- Configure proper DNS records (A, CNAME, MX, TXT).
+- Test your domain after every change.
+- Keep a backup of your nameservers.
+
+### Security
+
+- Enable two-factor authentication on GitHub.
+- Review activity history regularly.
+- Never share account credentials.
+- Report suspicious activity to [security@stackryze.com](mailto:security@stackryze.com).
+
+## Need help?
+
+- [Troubleshooting](/products/domains/troubleshooting)
+- [Getting started](/products/domains/getting-started)
+- [DNS providers](/products/domains/dns-providers)
+- [Discord Community](https://discord.gg/wr7s97cfM7)
+- [Email Support](mailto:support@stackryze.com)
+- [GitHub Issues](https://github.com/stackryze/domains-docs/issues)

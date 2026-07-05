@@ -1,0 +1,167 @@
+---
+title: "FAQ"
+description: "Quick answers to the most common Stackryze Domains questions."
+---
+
+Quick answers to common questions. For detailed guides, follow the links below.
+
+<Note>
+  Stackryze Domains is currently in beta and updated daily. If you spot an issue, let us know via the support channels at the bottom of this page.
+</Note>
+
+## General
+
+### How long is my domain valid?
+
+One year from registration. You can renew 60 days before expiry.
+
+See [Managing domains → Renewing domains](/products/domains/managing-domains#renewing-domains).
+
+### Is there a cost?
+
+No. Stackryze Domains is 100% free, with no hidden fees.
+
+### How many domains can I register?
+
+Five by default. Need more? Email [support@stackryze.com](mailto:support@stackryze.com).
+
+See [Managing domains → Domain limits and quotas](/products/domains/managing-domains#domain-limits-and-quotas).
+
+## Registration
+
+### Can I change my subdomain name after registration?
+
+No. Subdomain names are fixed at registration. To rename, delete the domain and register a new one.
+
+### What if I make a mistake during registration?
+
+Delete the domain within 15 days and register again. The name becomes available after the 7-day cooling-off period.
+
+See the [Getting started guide](/products/domains/getting-started).
+
+### Why was my domain registration rejected?
+
+Common reasons: name too short or long, invalid characters, already taken, or in a cooling-off period.
+
+See [Troubleshooting → Domain registration issues](/products/domains/troubleshooting#domain-registration-issues).
+
+## DNS and nameservers
+
+### What are nameservers?
+
+Nameservers tell the internet where to find DNS for your domain. The defaults are `ns1.stackryze.com` and `ns2.stackryze.com`.
+
+See [DNS providers](/products/domains/dns-providers).
+
+### Can I use my own DNS provider?
+
+Yes — Cloudflare, Route 53, Google Cloud DNS, DigitalOcean, and more. We document the setup for each.
+
+Start with [Cloudflare setup](/products/domains/dns-providers/cloudflare).
+
+### How long does DNS propagation take?
+
+Typically 5–10 minutes, but up to 48 hours globally.
+
+See [Troubleshooting → DNS and nameserver issues](/products/domains/troubleshooting#dns-and-nameserver-issues).
+
+## Domain management
+
+### How do I renew my domain?
+
+Open **My Domains**, click **Renew**, confirm. It's free.
+
+See [Managing domains → Renewing domains](/products/domains/managing-domains#renewing-domains).
+
+### What happens if my domain expires?
+
+| Timeline | What happens |
+| --- | --- |
+| Days 1–15 | Grace period — domain still works. |
+| Day 15 | Deleted, DNS removed. |
+| Days 15–22 | Cooling-off period. |
+| Day 22+ | Available for registration again. |
+
+See [Managing domains → What if you don't renew?](/products/domains/managing-domains#what-if-you-dont-renew).
+
+### How do I delete a domain?
+
+Open the domain page → **Danger Zone** → **Delete Domain**. DNS is removed immediately.
+
+See [Managing domains → Deleting domains](/products/domains/managing-domains#deleting-domains).
+
+### Can I restore a deleted domain?
+
+No. Once deleted, a domain enters a 7-day cooling-off period. After that, anyone can register it again as a new domain.
+
+See [Managing domains → Deleting domains](/products/domains/managing-domains#deleting-domains).
+
+## Account and security
+
+### Why do I need a GitHub account?
+
+GitHub OAuth provides secure, accountable authentication. It prevents spam and lets us tie activity to a real identity.
+
+### Can I use a brand-new GitHub account?
+
+GitHub accounts must be at least seven days old.
+
+See [Troubleshooting → Login issues](/products/domains/troubleshooting#login-issues).
+
+### How do I change my email address?
+
+Your account email is linked to GitHub. Update it in your [GitHub email settings](https://github.com/settings/emails).
+
+## Troubleshooting
+
+### My domain isn't resolving
+
+Check nameservers, confirm DNS records exist at your provider, and wait up to 48 hours for propagation.
+
+See [Troubleshooting → DNS and nameserver issues](/products/domains/troubleshooting#dns-and-nameserver-issues).
+
+### I can't renew my domain
+
+Renewal opens 60 days before expiry. Check your expiry date.
+
+See [Troubleshooting → Domain management issues](/products/domains/troubleshooting#domain-management-issues).
+
+### I accidentally deleted my domain
+
+Deletion is permanent. Wait for the 7-day cooling-off period, then re-register the name.
+
+See [Troubleshooting → Domain management issues](/products/domains/troubleshooting#domain-management-issues).
+
+## Support
+
+### How do I contact support?
+
+- **Discord** — [Join the community](https://discord.gg/wr7s97cfM7) (fastest).
+- **General** — [support@stackryze.com](mailto:support@stackryze.com).
+- **Security** — [security@stackryze.com](mailto:security@stackryze.com).
+- **Abuse** — [reportabuse@stackryze.com](mailto:reportabuse@stackryze.com).
+
+<Warning>
+  We only contact you from official `@stackryze.com` addresses. Anything else is not from us.
+</Warning>
+
+### How long does support take to respond?
+
+Typically 24–48 hours on business days. Discord is faster for live help.
+
+## More help
+
+<Columns cols={2}>
+  <Card title="Getting started" icon="rocket" href="/products/domains/getting-started">
+    Register your first domain.
+  </Card>
+  <Card title="Managing domains" icon="gear" href="/products/domains/managing-domains">
+    Renewals, updates, deletions.
+  </Card>
+  <Card title="DNS providers" icon="server" href="/products/domains/dns-providers">
+    Setup guides for popular providers.
+  </Card>
+  <Card title="Troubleshooting" icon="wrench" href="/products/domains/troubleshooting">
+    Common issues and fixes.
+  </Card>
+</Columns>
