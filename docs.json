@@ -49,12 +49,46 @@
             "group": "Features",
             "pages": [
               "features/products",
-              "features/domains",
-              "features/dns",
               "features/api",
               "features/security",
               "features/billing",
               "features/pricing"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Domains",
+        "icon": "tags",
+        "groups": [
+          {
+            "group": "Stackryze Domains",
+            "pages": [
+              "features/domains"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "StackNS",
+        "icon": "globe",
+        "groups": [
+          {
+            "group": "Stackryze DNS",
+            "pages": [
+              "features/dns"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Hosting",
+        "icon": "server",
+        "groups": [
+          {
+            "group": "Stackryze Hosting",
+            "pages": [
+              "features/hosting"
             ]
           }
         ]
