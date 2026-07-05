@@ -142,7 +142,6 @@
           {
             "group": "Domains",
             "pages": [
-              "changelog/domains/index",
               "changelog/domains/v1.0.0",
               "changelog/domains/v0.7.0",
               "changelog/domains/v0.6.0",
@@ -152,7 +151,6 @@
           {
             "group": "Hosting",
             "pages": [
-              "changelog/hosting/index",
               "changelog/hosting/v0.3.0",
               "changelog/hosting/v0.2.0",
               "changelog/hosting/v0.1.0"
@@ -161,7 +159,6 @@
           {
             "group": "StackNS",
             "pages": [
-              "changelog/stackns/index",
               "changelog/stackns/v1.115.0",
               "changelog/stackns/v1.110.0",
               "changelog/stackns/v1.105.0",
