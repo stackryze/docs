@@ -6,6 +6,62 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: 0.05em !important;
 }
 
+/* Stackryze sidebar-header logo — Mintlify applies `h-6` (24px) + `max-w-48`
+   via Tailwind utility classes on the <img class="nav-logo …"> element.
+   The logo sits in the same flex row as the dark-mode toggle pill.
+   Toggle uses responsive sizing: mobile `h-[2.375rem]` (38px) and
+   desktop `lg:h-7` (28px). To keep both elements on a clean shared
+   baseline, the logo MUST match the toggle's height at each breakpoint.
+   Touching only the <img> + its <a> wrapper — nothing else in the row. */
+a:has(.nav-logo),
+.sidebar-content a:has(.nav-logo),
+nav a:has(.nav-logo) {
+  display: inline-flex !important;
+  align-items: center !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  max-height: 38px !important;
+  flex-shrink: 0 !important;
+  align-self: center !important;
+}
+.nav-logo,
+img.nav-logo,
+a:has(.nav-logo) img.nav-logo {
+  height: 30px !important;
+  max-height: 30px !important;
+  width: auto !important;
+  max-width: 220px !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  flex-shrink: 0 !important;
+  vertical-align: middle !important;
+  /* Keep proportions of the 300×44 viewBox */
+  aspect-ratio: 300 / 44 !important;
+}
+@media (min-width: 1024px) {
+  a:has(.nav-logo),
+  .sidebar-content a:has(.nav-logo),
+  nav a:has(.nav-logo) {
+    height: 28px !important;
+    min-height: 28px !important;
+    max-height: 28px !important;
+  }
+  .nav-logo,
+  img.nav-logo {
+    height: 22px !important;
+    max-height: 22px !important;
+    max-width: 180px !important;
+  }
+}
+
+/* Theme toggle — give the sun and moon icons a visible gap between them.
+   The pill uses `justify-between` to push the two icons to opposite ends,
+   so adding margin to the sun pushes it leftward (away from the moon).
+   No Tailwind utility classes are overridden — only icon-side spacing. */
+button[aria-label="Toggle dark mode"] svg:first-of-type {
+  margin-right: 10px !important;
+}
+
 .welcome-page .card-group {
   margin: 3rem auto 8rem;
   max-width: 70rem;

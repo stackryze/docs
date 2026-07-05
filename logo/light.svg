@@ -1,4 +1,4 @@
-<svg width="240" height="36" viewBox="0 0 240 36" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Stackryze">
+<svg width="100%" height="100%" viewBox="0 0 300 44" preserveAspectRatio="xMidYMid meet" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Stackryze">
   <title>Stackryze</title>
   <!--
     Stackryze docs lockup (light).
@@ -7,13 +7,14 @@
     Path data is duplicated here because Mintlify docs serve this
     asset as a static .svg file and cannot import from a .ts module.
     Keep in sync with src/components/ui/logo-paths.ts in the web app.
+    Sized via styles.css to fill the navbar at 36-40px tall.
   -->
-  <!-- bi-stack mark — scaled (28x28) to match the wordmark cap-height -->
-  <g transform="translate(4 4) scale(1.75)" fill="#09090B">
+  <!-- bi-stack mark — scaled (36x36) to match the wordmark cap-height -->
+  <g transform="translate(4 4) scale(2.25)" fill="#09090B">
     <path d="m14.12 10.163 1.715.858c.22.11.22.424 0 .534L8.267 15.34a.6.6 0 0 1-.534 0L.165 11.555a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0l5.317-2.66Z"/>
     <path d="m14.12 6.576 1.715.858c.22.11.22.424 0 .534l-7.568 3.784a.6.6 0 0 1-.534 0L.165 7.968a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0Z" opacity="0.72"/>
     <path d="M7.733.063a.6.6 0 0 1 .534 0l7.568 3.784a.3.3 0 0 1 0 .535L8.267 8.165a.6.6 0 0 1-.534 0L.165 4.382a.299.299 0 0 1 0-.535Z" opacity="0.85"/>
   </g>
   <!-- Wordmark — sized to visually match the mark -->
-  <text x="40" y="26" font-family="Geist, Inter, ui-sans-serif, system-ui, -apple-system, sans-serif" font-size="22" font-weight="600" letter-spacing="-0.4" fill="#09090B">Stackryze</text>
+  <text x="50" y="32" font-family="Geist, Inter, ui-sans-serif, system-ui, -apple-system, sans-serif" font-size="28" font-weight="600" letter-spacing="-0.5" fill="#09090B">Stackryze</text>
 </svg>
