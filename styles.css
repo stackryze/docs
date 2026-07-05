@@ -54,6 +54,22 @@ a:has(.nav-logo) img.nav-logo {
   }
 }
 
+/* Changelog table — version-number links keep the default text color and
+   only color the underline in the active green brand color. */
+table a[href*="/changelog/"] {
+  text-decoration-color: #4FBE7A !important;
+  text-underline-offset: 2px !important;
+}
+table a[href*="/changelog/"]:hover {
+  text-decoration-color: #2E7D4F !important;
+}
+.dark table a[href*="/changelog/"] {
+  text-decoration-color: #7DD9A1 !important;
+}
+.dark table a[href*="/changelog/"]:hover {
+  text-decoration-color: #4FBE7A !important;
+}
+
 /* Theme toggle — give the sun and moon icons a visible gap between them.
    The pill uses `justify-between` to push the two icons to opposite ends,
    so adding margin to the sun pushes it leftward (away from the moon).
