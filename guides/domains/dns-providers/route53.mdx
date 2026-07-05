@@ -21,7 +21,7 @@ Before you begin:
 - ✅ An AWS account — [sign up here](https://aws.amazon.com/).
 
 <Tip>
-  Haven't registered your subdomain yet? See [Getting started](/products/domains/getting-started).
+  Haven't registered your subdomain yet? See [Getting started](/guides/domains/getting-started).
 </Tip>
 
 <Note>
@@ -34,14 +34,14 @@ Before you begin:
 2. In the search bar, search for **Route 53**.
 3. Click the service.
 
-<img src="/products/domains/media/route53/route53_step_1.png" alt="AWS console search for Route 53" />
+<img src="/guides/domains/media/route53/route53_step_1.png" alt="AWS console search for Route 53" />
 
 ## Step 2 — Open Hosted zones
 
 1. In the left sidebar, click **Hosted zones**.
 2. Click **Create hosted zone**.
 
-<img src="/products/domains/media/route53/route53_step_2.png" alt="Route 53 dashboard with Create hosted zone button" />
+<img src="/guides/domains/media/route53/route53_step_2.png" alt="Route 53 dashboard with Create hosted zone button" />
 
 ## Step 3 — Create the hosted zone
 
@@ -52,7 +52,7 @@ Before you begin:
    - **Description:** (optional) add a note.
 3. Click **Create hosted zone**.
 
-<img src="/products/domains/media/route53/route53_step_3.png" alt="Route 53 Create hosted zone form" />
+<img src="/guides/domains/media/route53/route53_step_3.png" alt="Route 53 Create hosted zone form" />
 
 <Warning>
   Enter your complete subdomain from Stackryze Domains (`myproject.indevs.in`), not just the base domain.
@@ -73,7 +73,7 @@ Route 53 assigns four nameservers:
    ```
 3. Copy all four — you'll need them in the next step.
 
-<img src="/products/domains/media/route53/route53_step_4.png" alt="Route 53 hosted zone showing NS records" />
+<img src="/guides/domains/media/route53/route53_step_4.png" alt="Route 53 hosted zone showing NS records" />
 
 <Warning>
   Your nameservers differ from this example. Copy the exact values AWS assigns.
@@ -88,7 +88,7 @@ Route 53 assigns four nameservers:
 5. Replace the nameservers with your Route 53 ones.
 6. Click **Save**.
 
-See [Managing domains → Updating nameservers](/products/domains/managing-domains#updating-nameservers) for the full walkthrough.
+See [Managing domains → Updating nameservers](/guides/domains/managing-domains#updating-nameservers) for the full walkthrough.
 
 <Note>
   DNS changes propagate within 24–48 hours globally.
@@ -101,7 +101,7 @@ Add DNS records in Route 53:
 1. Select your hosted zone.
 2. Click **Create record**.
 
-<img src="/products/domains/media/route53/route53_step_6.1.png" alt="Route 53 hosted zone with Create record button" />
+<img src="/guides/domains/media/route53/route53_step_6.1.png" alt="Route 53 hosted zone with Create record button" />
 
 3. Select a record type and fill in the form:
    - **Record name:** `@` (for root) or your subdomain.
@@ -111,7 +111,7 @@ Add DNS records in Route 53:
    - **Routing policy:** Simple routing (or an advanced policy).
 4. Click **Create records**.
 
-<img src="/products/domains/media/route53/route53_step_6.2.png" alt="Route 53 Create record form filled with A record values" />
+<img src="/guides/domains/media/route53/route53_step_6.2.png" alt="Route 53 Create record form filled with A record values" />
 
 That's it — all steps are complete.
 

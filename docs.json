@@ -32,14 +32,13 @@
     "strict": false
   },
   "navigation": {
-    "products": [
+    "tabs": [
       {
-        "product": "Docs",
-        "description": "Getting started, account setup, and cross-product references.",
+        "tab": "Docs",
         "icon": "book",
         "groups": [
           {
-            "group": "Getting started",
+            "group": "Getting Started",
             "pages": [
               "index",
               "quickstart",
@@ -47,17 +46,31 @@
             ]
           },
           {
-            "group": "Reference",
+            "group": "Domains",
             "pages": [
-              "features/products",
-              "features/api",
-              "features/security",
-              "features/billing",
-              "features/pricing"
+              "docs/domains/index"
             ]
           },
           {
-            "group": "Guides",
+            "group": "StackNS",
+            "pages": [
+              "docs/dns/index"
+            ]
+          },
+          {
+            "group": "Hosting",
+            "pages": [
+              "docs/hosting/index"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Guides",
+        "icon": "compass",
+        "groups": [
+          {
+            "group": "Integration Guides",
             "pages": [
               "guides/add-a-custom-domain",
               "guides/point-domain-to-stackryze",
@@ -66,88 +79,76 @@
               "guides/enable-dnssec",
               "guides/dynamic-dns",
               "guides/api-quickstart",
-              "guides/webhooks",
+              "guides/webhooks"
+            ]
+          },
+          {
+            "group": "Billing Deconstructions",
+            "tag": "NEW",
+            "pages": [
               "guides/billing-introduction"
             ]
           },
           {
+            "group": "Domains",
+            "pages": [
+              "guides/domains/getting-started",
+              "guides/domains/managing-domains",
+              "guides/domains/dns-providers",
+              "guides/domains/dns-providers/cloudflare",
+              "guides/domains/dns-providers/route53",
+              "guides/domains/dns-providers/digitalocean",
+              "guides/domains/dns-providers/google-cloud-dns",
+              "guides/domains/dns-providers/azure-dns",
+              "guides/domains/dns-providers/hetzner",
+              "guides/domains/dns-providers/cloudns",
+              "guides/domains/dns-providers/hurricane-electric",
+              "guides/domains/dns-providers/namecheap",
+              "guides/domains/dns-providers/vercel-dns",
+              "guides/domains/dns-providers/desec",
+              "guides/domains/dns-providers/powerdns",
+              "guides/domains/dns-providers/custom",
+              "guides/domains/faq",
+              "guides/domains/troubleshooting"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Changelog",
+        "icon": "calendar-days",
+        "groups": [
+          {
             "group": "Changelog",
             "pages": [
-              "changelog/introduction",
+              "changelog/introduction"
+            ]
+          },
+          {
+            "group": "June 2026",
+            "pages": [
               "changelog/v1.105.0",
-              "changelog/v1.101.0",
+              "changelog/v1.101.0"
+            ]
+          },
+          {
+            "group": "May 2026",
+            "pages": [
               "changelog/v1.99.0",
-              "changelog/v1.97.6",
-              "changelog/v1.94.0",
+              "changelog/v1.97.6"
+            ]
+          },
+          {
+            "group": "April 2026",
+            "pages": [
+              "changelog/v1.94.0"
+            ]
+          },
+          {
+            "group": "March 2026",
+            "pages": [
               "changelog/v1.93.0",
               "changelog/v1.87.0"
-            ]
-          }
-        ]
-      },
-      {
-        "product": "Domains",
-        "description": "Free subdomains for founders, freelancers, and small teams.",
-        "icon": "tags",
-        "groups": [
-          {
-            "group": "Getting started",
-            "pages": [
-              "products/domains/index",
-              "products/domains/getting-started",
-              "products/domains/managing-domains"
-            ]
-          },
-          {
-            "group": "DNS providers",
-            "pages": [
-              "products/domains/dns-providers",
-              "products/domains/dns-providers/cloudflare",
-              "products/domains/dns-providers/route53",
-              "products/domains/dns-providers/digitalocean",
-              "products/domains/dns-providers/google-cloud-dns",
-              "products/domains/dns-providers/azure-dns",
-              "products/domains/dns-providers/hetzner",
-              "products/domains/dns-providers/cloudns",
-              "products/domains/dns-providers/hurricane-electric",
-              "products/domains/dns-providers/namecheap",
-              "products/domains/dns-providers/vercel-dns",
-              "products/domains/dns-providers/desec",
-              "products/domains/dns-providers/powerdns",
-              "products/domains/dns-providers/custom"
-            ]
-          },
-          {
-            "group": "Help",
-            "pages": [
-              "products/domains/faq",
-              "products/domains/troubleshooting"
-            ]
-          }
-        ]
-      },
-      {
-        "product": "StackNS",
-        "description": "Authoritative DNS hosting — fast, secure, free.",
-        "icon": "globe",
-        "groups": [
-          {
-            "group": "Stackryze DNS",
-            "pages": [
-              "products/dns/index"
-            ]
-          }
-        ]
-      },
-      {
-        "product": "Hosting",
-        "description": "Affordable, transparent hosting with the same Stackryze guarantees.",
-        "icon": "server",
-        "groups": [
-          {
-            "group": "Stackryze Hosting",
-            "pages": [
-              "products/hosting/index"
             ]
           }
         ]

@@ -7,7 +7,7 @@ PowerDNS Authoritative Server is a versatile, open-source nameserver with multip
 
 <Warning>
   **Advanced setup — not recommended for beginners.**
-  PowerDNS requires comfort with Linux, DNS internals, Docker, and database administration. If that's not you, start with [Cloudflare](/products/domains/dns-providers/cloudflare) instead.
+  PowerDNS requires comfort with Linux, DNS internals, Docker, and database administration. If that's not you, start with [Cloudflare](/guides/domains/dns-providers/cloudflare) instead.
 </Warning>
 
 ## Why PowerDNS?
@@ -776,10 +776,10 @@ max-cache-entries=1000000
 
 If PowerDNS feels heavy, try one of these instead:
 
-- [Cloudflare](/products/domains/dns-providers/cloudflare) — recommended for beginners.
-- [Hurricane Electric](/products/domains/dns-providers/hurricane-electric) — free, simple interface.
-- [deSEC](/products/domains/dns-providers/desec) — privacy-focused, with an API.
-- [ClouDNS](/products/domains/dns-providers/cloudns) — free tier with good features.
+- [Cloudflare](/guides/domains/dns-providers/cloudflare) — recommended for beginners.
+- [Hurricane Electric](/guides/domains/dns-providers/hurricane-electric) — free, simple interface.
+- [deSEC](/guides/domains/dns-providers/desec) — privacy-focused, with an API.
+- [ClouDNS](/guides/domains/dns-providers/cloudns) — free tier with good features.
 
 ## How Stackryze uses PowerDNS
 
@@ -791,7 +791,7 @@ Stackryze runs PowerDNS to power our authoritative nameservers:
 These servers manage DNS delegation for every `indevs.in` subdomain through the PowerDNS HTTP API — zone creation and record management are fully automated when users register domains.
 
 <Tip>
-  Beginners should start with [Cloudflare](/products/domains/dns-providers/cloudflare). Self-hosting DNS requires significant expertise in system administration, security, and DNS protocols.
+  Beginners should start with [Cloudflare](/guides/domains/dns-providers/cloudflare). Self-hosting DNS requires significant expertise in system administration, security, and DNS protocols.
 </Tip>
 
 ## Need help?

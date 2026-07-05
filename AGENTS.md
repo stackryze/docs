@@ -43,38 +43,13 @@ docs.json                       # navigation, theme, colors, logos
 index.mdx                       # docs landing
 quickstart.mdx                  # 5-minute DNS setup
 account-verification.mdx        # verification flow
-products/                       # one folder per product, owns its docs
-  domains/                      # Stackryze Domains (indevs.in subdomains)
-    index.mdx                   #   product overview
-    getting-started.mdx         #   registration walkthrough
-    managing-domains.mdx        #   renewals, nameservers, deletion
-    faq.mdx                     #   frequently asked questions
-    troubleshooting.mdx         #   common errors and fixes
-    dns-providers.mdx           #   provider index
-    dns-providers/              #   one page per supported provider
-      cloudflare.mdx            #   (full guide)
-      route53.mdx               #   (full guide)
-      digitalocean.mdx          #   (full guide)
-      google-cloud-dns.mdx
-      azure-dns.mdx
-      hetzner.mdx
-      cloudns.mdx
-      hurricane-electric.mdx
-      namecheap.mdx
-      vercel-dns.mdx
-      desec.mdx
-      powerdns.mdx              #   (full self-host guide)
-      custom.mdx                #   (full custom DNS guide)
-    media/                      #   screenshots (Cloudflare, Route 53, DigitalOcean, dashboard)
-  dns/index.mdx                 # Stackryze DNS records & zones
-  hosting/index.mdx             # Stackryze Hosting (planned)
-features/                       # cross-product pages only
-  products.mdx                  # product overview
-  api.mdx                       # REST API reference
-  security.mdx                  # DNSSEC, access controls
-  billing.mdx                   # invoices, payment methods
-  pricing.mdx                   # plan tiers & pricing
-guides/
+docs/                           # one folder per product — overview & reference content
+  domains/                      #   Stackryze Domains (indevs.in subdomains)
+    index.mdx                   #     product overview (anchor for the Domains tab)
+    media/                      #     screenshots (Cloudflare, Route 53, DigitalOcean, dashboard)
+  dns/index.mdx                 #   Stackryze DNS records & zones (anchor for the StackNS tab)
+  hosting/index.mdx             #   Stackryze Hosting (planned; anchor for the Hosting tab)
+guides/                         # all task-oriented and how-to content
   add-a-custom-domain.mdx
   point-domain-to-stackryze.mdx
   transfer-domain.mdx
@@ -84,23 +59,30 @@ guides/
   api-quickstart.mdx
   webhooks.mdx
   billing-introduction.mdx
+  domains/                      # Stackryze Domains how-to guides (under the Guides tab)
+    getting-started.mdx         #   registration walkthrough
+    managing-domains.mdx        #   renewals, nameservers, deletion
+    faq.mdx                     #   frequently asked questions
+    troubleshooting.mdx         #   common errors and fixes
+    dns-providers.mdx           #   provider index
+    dns-providers/              #   one page per supported provider
+      cloudflare.mdx            #     (full guide)
+      route53.mdx               #     (full guide)
+      digitalocean.mdx          #     (full guide)
+      google-cloud-dns.mdx
+      azure-dns.mdx
+      hetzner.mdx
+      cloudns.mdx
+      hurricane-electric.mdx
+      namecheap.mdx
+      vercel-dns.mdx
+      desec.mdx
+      powerdns.mdx              #     (full self-host guide)
+      custom.mdx                #     (full custom DNS guide)
 changelog/
   introduction.mdx
   v1-*.mdx                      # one file per release
 ```
-
-## Navigation
-
-The site uses Mintlify's `products` pattern in `docs.json`. The product switcher at the top of the page exposes every product as a child of the docs deployment:
-
-| Product | Purpose |
-| --- | --- |
-| **Docs** | Getting started, reference, guides, changelog. |
-| **Domains** | Stackryze Domains docs (indevs.in subdomains). |
-| **StackNS** | Stackryze DNS docs. |
-| **Hosting** | Stackryze Hosting docs (planned). |
-
-When adding pages, register them under the matching product's groups. Cross-product pages (`features/*`, `guides/*`, `changelog/*`) live in the **Docs** product.
 
 ## Voice anchors
 
