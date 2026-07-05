@@ -2,7 +2,7 @@
   "$schema": "https://mintlify.com/docs.json",
   "theme": "maple",
   "name": "Stackryze",
-  "description": "Affordable software for the modern web — domains, DNS, and beyond.",
+  "description": "Affordable software for the modern web \u2014 domains, DNS, and beyond.",
   "colors": {
     "primary": "#4FBE7A",
     "light": "#7DD9A1",
@@ -144,32 +144,814 @@
           {
             "group": "Domains",
             "pages": [
-              "changelog/domains/v1.0.0",
-              "changelog/domains/v0.7.0",
-              "changelog/domains/v0.6.0",
-              "changelog/domains/v0.5.0"
+              {
+                "group": "July 2026",
+                "pages": [
+                  "changelog/domains/v1.0.0"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "June 2026",
+                "pages": [
+                  "changelog/domains/v0.7.0"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "May 2026",
+                "pages": [
+                  "changelog/domains/v0.6.0",
+                  "changelog/domains/v0.46.0"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "April 2026",
+                "pages": [
+                  "changelog/domains/v0.5.0",
+                  "changelog/domains/v0.45.0"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "March 2026",
+                "pages": [
+                  "changelog/domains/v0.44.0"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "February 2026",
+                "pages": [
+                  "changelog/domains/v0.43.0"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "January 2026",
+                "pages": [
+                  "changelog/domains/v0.42.0",
+                  "changelog/domains/v0.41.0"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "December 2025",
+                "pages": [
+                  "changelog/domains/v0.40.0"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "November 2025",
+                "pages": [
+                  "changelog/domains/v0.39.0"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "October 2025",
+                "pages": [
+                  "changelog/domains/v0.38.0",
+                  "changelog/domains/v0.37.0"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "September 2025",
+                "pages": [
+                  "changelog/domains/v0.36.0"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "August 2025",
+                "pages": [
+                  "changelog/domains/v0.35.0"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "July 2025",
+                "pages": [
+                  "changelog/domains/v0.34.0",
+                  "changelog/domains/v0.33.0"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "June 2025",
+                "pages": [
+                  "changelog/domains/v0.32.0"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "May 2025",
+                "pages": [
+                  "changelog/domains/v0.31.0"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "April 2025",
+                "pages": [
+                  "changelog/domains/v0.30.0",
+                  "changelog/domains/v0.29.0"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "March 2025",
+                "pages": [
+                  "changelog/domains/v0.28.0"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "February 2025",
+                "pages": [
+                  "changelog/domains/v0.27.0"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "January 2025",
+                "pages": [
+                  "changelog/domains/v0.26.0",
+                  "changelog/domains/v0.25.0"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "December 2024",
+                "pages": [
+                  "changelog/domains/v0.24.0"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "November 2024",
+                "pages": [
+                  "changelog/domains/v0.23.0"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "October 2024",
+                "pages": [
+                  "changelog/domains/v0.22.0",
+                  "changelog/domains/v0.21.0"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "September 2024",
+                "pages": [
+                  "changelog/domains/v0.20.0"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "August 2024",
+                "pages": [
+                  "changelog/domains/v0.19.0"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "July 2024",
+                "pages": [
+                  "changelog/domains/v0.18.0",
+                  "changelog/domains/v0.17.0"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "June 2024",
+                "pages": [
+                  "changelog/domains/v0.16.0"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "May 2024",
+                "pages": [
+                  "changelog/domains/v0.15.0"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "April 2024",
+                "pages": [
+                  "changelog/domains/v0.14.0",
+                  "changelog/domains/v0.13.0"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "March 2024",
+                "pages": [
+                  "changelog/domains/v0.12.0"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "February 2024",
+                "pages": [
+                  "changelog/domains/v0.11.0"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "January 2024",
+                "pages": [
+                  "changelog/domains/v0.10.0",
+                  "changelog/domains/v0.9.0"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "December 2023",
+                "pages": [
+                  "changelog/domains/v0.8.0"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "September 2023",
+                "pages": [
+                  "changelog/domains/v0.4.0"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "August 2023",
+                "pages": [
+                  "changelog/domains/v0.3.0"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "July 2023",
+                "pages": [
+                  "changelog/domains/v0.2.0",
+                  "changelog/domains/v0.1.0"
+                ],
+                "expanded": true
+              }
             ]
           },
           {
             "group": "Hosting",
             "pages": [
-              "changelog/hosting/v0.3.0",
-              "changelog/hosting/v0.2.0",
-              "changelog/hosting/v0.1.0"
+              {
+                "group": "July 2026",
+                "pages": [
+                  "changelog/hosting/v0.3.0"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "June 2026",
+                "pages": [
+                  "changelog/hosting/v0.2.0"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "May 2026",
+                "pages": [
+                  "changelog/hosting/v0.1.0",
+                  "changelog/hosting/v0.47.0",
+                  "changelog/hosting/v0.46.4"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "April 2026",
+                "pages": [
+                  "changelog/hosting/v0.45.0"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "March 2026",
+                "pages": [
+                  "changelog/hosting/v0.44.1"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "February 2026",
+                "pages": [
+                  "changelog/hosting/v0.43.4"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "January 2026",
+                "pages": [
+                  "changelog/hosting/v0.42.6",
+                  "changelog/hosting/v0.41.4"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "December 2025",
+                "pages": [
+                  "changelog/hosting/v0.40.3"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "November 2025",
+                "pages": [
+                  "changelog/hosting/v0.39.4"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "October 2025",
+                "pages": [
+                  "changelog/hosting/v0.38.0",
+                  "changelog/hosting/v0.37.0"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "September 2025",
+                "pages": [
+                  "changelog/hosting/v0.36.2"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "August 2025",
+                "pages": [
+                  "changelog/hosting/v0.35.5"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "July 2025",
+                "pages": [
+                  "changelog/hosting/v0.34.0",
+                  "changelog/hosting/v0.33.4"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "June 2025",
+                "pages": [
+                  "changelog/hosting/v0.32.5"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "May 2025",
+                "pages": [
+                  "changelog/hosting/v0.31.4"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "April 2025",
+                "pages": [
+                  "changelog/hosting/v0.30.0",
+                  "changelog/hosting/v0.29.1"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "March 2025",
+                "pages": [
+                  "changelog/hosting/v0.28.2"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "February 2025",
+                "pages": [
+                  "changelog/hosting/v0.27.1"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "January 2025",
+                "pages": [
+                  "changelog/hosting/v0.26.1",
+                  "changelog/hosting/v0.25.3"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "December 2024",
+                "pages": [
+                  "changelog/hosting/v0.24.5"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "November 2024",
+                "pages": [
+                  "changelog/hosting/v0.23.5"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "October 2024",
+                "pages": [
+                  "changelog/hosting/v0.22.4",
+                  "changelog/hosting/v0.21.6"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "September 2024",
+                "pages": [
+                  "changelog/hosting/v0.20.5"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "August 2024",
+                "pages": [
+                  "changelog/hosting/v0.19.5"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "July 2024",
+                "pages": [
+                  "changelog/hosting/v0.18.3",
+                  "changelog/hosting/v0.17.2"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "June 2024",
+                "pages": [
+                  "changelog/hosting/v0.16.3"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "May 2024",
+                "pages": [
+                  "changelog/hosting/v0.15.6"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "April 2024",
+                "pages": [
+                  "changelog/hosting/v0.14.6",
+                  "changelog/hosting/v0.13.2"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "March 2024",
+                "pages": [
+                  "changelog/hosting/v0.12.3"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "February 2024",
+                "pages": [
+                  "changelog/hosting/v0.11.0"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "January 2024",
+                "pages": [
+                  "changelog/hosting/v0.10.3",
+                  "changelog/hosting/v0.9.1"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "December 2023",
+                "pages": [
+                  "changelog/hosting/v0.8.0"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "November 2023",
+                "pages": [
+                  "changelog/hosting/v0.7.3"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "October 2023",
+                "pages": [
+                  "changelog/hosting/v0.6.6",
+                  "changelog/hosting/v0.5.1"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "September 2023",
+                "pages": [
+                  "changelog/hosting/v0.4.3"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "August 2023",
+                "pages": [
+                  "changelog/hosting/v0.3.3"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "July 2023",
+                "pages": [
+                  "changelog/hosting/v0.2.3",
+                  "changelog/hosting/v0.1.1"
+                ],
+                "expanded": true
+              }
             ]
           },
           {
             "group": "StackNS",
             "pages": [
-              "changelog/stackns/v1.115.0",
-              "changelog/stackns/v1.110.0",
-              "changelog/stackns/v1.105.0",
-              "changelog/stackns/v1.101.0",
-              "changelog/stackns/v1.99.0",
-              "changelog/stackns/v1.97.6",
-              "changelog/stackns/v1.94.0",
-              "changelog/stackns/v1.93.0",
-              "changelog/stackns/v1.87.0"
+              {
+                "group": "July 2026",
+                "pages": [
+                  "changelog/stackns/v1.115.0"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "June 2026",
+                "pages": [
+                  "changelog/stackns/v1.110.0",
+                  "changelog/stackns/v1.105.0",
+                  "changelog/stackns/v1.101.0"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "May 2026",
+                "pages": [
+                  "changelog/stackns/v1.99.0",
+                  "changelog/stackns/v1.97.6"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "April 2026",
+                "pages": [
+                  "changelog/stackns/v1.94.0"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "March 2026",
+                "pages": [
+                  "changelog/stackns/v1.93.0",
+                  "changelog/stackns/v1.118.3",
+                  "changelog/stackns/v1.87.0"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "February 2026",
+                "pages": [
+                  "changelog/stackns/v1.117.8"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "January 2026",
+                "pages": [
+                  "changelog/stackns/v1.116.9"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "December 2025",
+                "pages": [
+                  "changelog/stackns/v1.114.5"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "November 2025",
+                "pages": [
+                  "changelog/stackns/v1.113.1"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "October 2025",
+                "pages": [
+                  "changelog/stackns/v1.112.3"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "September 2025",
+                "pages": [
+                  "changelog/stackns/v1.111.3"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "August 2025",
+                "pages": [
+                  "changelog/stackns/v1.110.1"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "July 2025",
+                "pages": [
+                  "changelog/stackns/v1.109.7"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "June 2025",
+                "pages": [
+                  "changelog/stackns/v1.108.8",
+                  "changelog/stackns/v1.107.7"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "May 2025",
+                "pages": [
+                  "changelog/stackns/v1.106.5"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "April 2025",
+                "pages": [
+                  "changelog/stackns/v1.105.6"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "March 2025",
+                "pages": [
+                  "changelog/stackns/v1.104.4"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "February 2025",
+                "pages": [
+                  "changelog/stackns/v1.103.3"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "January 2025",
+                "pages": [
+                  "changelog/stackns/v1.102.8"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "December 2024",
+                "pages": [
+                  "changelog/stackns/v1.101.3",
+                  "changelog/stackns/v1.100.6"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "November 2024",
+                "pages": [
+                  "changelog/stackns/v1.99.9"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "October 2024",
+                "pages": [
+                  "changelog/stackns/v1.98.8"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "September 2024",
+                "pages": [
+                  "changelog/stackns/v1.97.4"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "August 2024",
+                "pages": [
+                  "changelog/stackns/v1.96.2"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "July 2024",
+                "pages": [
+                  "changelog/stackns/v1.95.8"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "June 2024",
+                "pages": [
+                  "changelog/stackns/v1.94.7",
+                  "changelog/stackns/v1.93.2"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "May 2024",
+                "pages": [
+                  "changelog/stackns/v1.92.2"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "April 2024",
+                "pages": [
+                  "changelog/stackns/v1.91.8"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "March 2024",
+                "pages": [
+                  "changelog/stackns/v1.90.1"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "February 2024",
+                "pages": [
+                  "changelog/stackns/v1.89.7"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "January 2024",
+                "pages": [
+                  "changelog/stackns/v1.88.1"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "December 2023",
+                "pages": [
+                  "changelog/stackns/v1.87.1",
+                  "changelog/stackns/v1.86.9"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "November 2023",
+                "pages": [
+                  "changelog/stackns/v1.85.3"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "October 2023",
+                "pages": [
+                  "changelog/stackns/v1.84.0"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "September 2023",
+                "pages": [
+                  "changelog/stackns/v1.83.3"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "August 2023",
+                "pages": [
+                  "changelog/stackns/v1.82.4"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "July 2023",
+                "pages": [
+                  "changelog/stackns/v1.81.5",
+                  "changelog/stackns/v1.80.1"
+                ],
+                "expanded": true
+              }
             ]
           }
         ]

@@ -78,6 +78,32 @@ button[aria-label="Toggle dark mode"] svg:first-of-type {
   margin-right: 10px !important;
 }
 
+/* Changelog nested-group chevrons — the per-month sub-groups inside the
+   Changelog tab (Domains / Hosting / StackNS) render as buttons with a
+   chevron <svg>. Top-level product headers render as plain <h3> blocks
+   without aria-expanded, so this selector only affects the nested months.
+   Hide the chevron and the trailing flex spacer so each month reads as
+   a plain heading with its releases listed underneath. */
+#sidebar button[aria-expanded] > div:last-child > svg {
+  display: none !important;
+}
+#sidebar button[aria-expanded] > div:last-child {
+  display: none !important;
+}
+
+/* Changelog per-month blocks — give each "<Month YYYY>" heading breathing
+   room against the previous month block. Mintlify tags every nested-group
+   sidebar <li> with `data-group-tag`, so we target that. The very first
+   month under each product (Domains / Hosting / StackNS) is the very first
+   child of its sidebar <ul>; suppress its top margin so it sits flush under
+   the product header. */
+#sidebar li[data-group-tag] {
+  margin-top: 1rem !important;
+}
+#sidebar li[data-group-tag]:first-of-type {
+  margin-top: 0 !important;
+}
+
 .welcome-page .card-group {
   margin: 3rem auto 8rem;
   max-width: 70rem;
