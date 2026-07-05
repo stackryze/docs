@@ -1,30 +1,19 @@
 ---
-title: "Introduction"
-description: "Track every Stackryze release, feature, improvement, and platform update."
+sidebarTitle: "Introduction"
+title: "Changelog"
+description: "Track every Stackryze release, feature, improvement, and platform update. Complete version history with detailed changelogs for each release."
+icon: "calendar-days"
+keywords: ["Stackryze", "changelog", "release notes", "product updates"]
 ---
 
-Welcome to the Stackryze changelog. We log everything that ships — features, fixes, deprecations, even the dashboard polish. Every release includes the date, the highlights, and links to the deeper guides.
+## Version Logs
 
-If you'd like release notes in your inbox, subscribe at [stackryze.com/changelog/subscribe](https://stackryze.com/changelog/subscribe) (no more than one email per release).
-
-## How to read this
-
-- **Major versions** (X.0.0) ship breaking changes — see the upgrade guide at the top of every major release.
-- **Minor versions** (x.X.0) ship features.
-- **Patch versions** (x.x.X) ship fixes and platform polish.
-
-## Cadence
-
-We ship a release **every two weeks**. If something is critical (security, data integrity), we ship out-of-band and badge it `HOTFIX` at the top of the entry.
-
-## Subscribe via RSS
-
-The changelog is also available as an RSS feed — useful for AI agents and dashboards:
-
-```text
-https://stackryze.com/changelog/rss.xml
-```
-
-<Card title="Latest release" icon="rocket" href="/changelog/v1-105-0">
-  v1.105.0 (June 22, 2026) — Bring Your Own Processor, Rust SDK, Korean wallets, and more.
-</Card>
+| Version | Release Date | Highlights |
+|---------|--------------|------------|
+| [v1.105.0](/changelog/v1.105.0) | June 22, 2026 | Bring Your Own Processor (BYOP), official Rust SDK release, Korean wallets and Przelewy24 payment methods, `brand_id` on every webhook payload, decimal-aware currency handling, higher entitlement limits, branded recovery emails, analytics v2.1, and dashboard polish |
+| [v1.101.0](/changelog/v1.101.0) | June 2, 2026 | Automatic subscription payment retries to recover failed renewal revenue, business-level proration defaults with per-product-collection overrides, and business name collection for B2B invoices |
+| [v1.99.0](/changelog/v1.99.0) | May 25, 2026 | Stacked discount codes (up to 20 per checkout, payment, or subscription), seven new customer notification emails for refunds and subscription lifecycle events, Sunbit BNPL for US customers, checkout payment page overhaul lifting success rates by 2–3%, product form rework with live preview and autosave, and Business Settings redesign |
+| [v1.97.6](/changelog/v1.97.6) | May 7, 2026 | Entitlements launch with five new fulfillment integrations (Discord, GitHub, Telegram, Framer, Notion), subscription cancellation reasons in the customer portal, configurable INR e-mandate floor, adaptive currency fees inclusive setting, Stackryze Desktop app for macOS/Windows/Linux, stablecoin payments (USDC/USDP/USDG), import existing license keys, and `require_phone_number` for checkout sessions |
+| [v1.94.0](/changelog/v1.94.0) | April 8, 2026 | Abandoned Cart Recovery, Subscription Dunning, discount metadata, recovery webhooks, Pix payments for Brazil, and WeChat Pay for Chinese customers |
+| [v1.93.0](/changelog/v1.93.0) | March 28, 2026 | Checkout redesign with improved loading states, net revenue analytics, business-level payment method disabling, payout breakdown, Visa RDR configuration, DoNotBill proration mode, scheduled plan changes, and delete customer payment method API |
+| [v1.87.0](/changelog/v1.87.0) | March 9, 2026 | Webhook signature verification v2 (HMAC-SHA256 with replay protection), zone import from BIND format, per-record comments, audit log export to JSONL, dashboard dark mode polish, and 14 minor bug fixes |
