@@ -134,6 +134,12 @@
         "icon": "calendar-days",
         "groups": [
           {
+            "group": "All releases",
+            "pages": [
+              "changelog/introduction"
+            ]
+          },
+          {
             "group": "Domains",
             "pages": [
               "changelog/domains/index"
@@ -156,12 +162,6 @@
               "changelog/stackns/v1.94.0",
               "changelog/stackns/v1.93.0",
               "changelog/stackns/v1.87.0"
-            ]
-          },
-          {
-            "group": "All releases",
-            "pages": [
-              "changelog/introduction"
             ]
           }
         ]

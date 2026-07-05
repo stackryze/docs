@@ -97,12 +97,12 @@ guides/                         # all task-oriented and how-to content
       powerdns.mdx              #     (full self-host guide)
       custom.mdx                #     (full custom DNS guide)
 changelog/
-  domains/index.mdx         # Stackryze Domains releases (default — alphabetical first)
+  introduction.mdx          # "All releases" landing (sidebar top — flat view with product tabs)
+  domains/index.mdx         # Stackryze Domains releases
   hosting/index.mdx         # Stackryze Hosting releases
   stackns/                  # Stackryze DNS releases
     index.mdx
     v1.X.Y.mdx               # one file per release
-  introduction.mdx          # flat "all releases" view with product tabs
 ```
 
 ## Voice anchors
