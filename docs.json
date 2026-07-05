@@ -1,12 +1,20 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
+  "theme": "maple",
   "name": "Stackryze",
   "description": "Affordable software for the modern web — domains, DNS, and beyond.",
   "colors": {
     "primary": "#4FBE7A",
     "light": "#7DD9A1",
     "dark": "#2E7D4F"
+  },
+  "fonts": {
+    "body": {
+      "family": "Inter",
+      "source": "/fonts/Inter-Variable.woff2",
+      "format": "woff2",
+      "weight": 400
+    }
   },
   "favicon": "/favicon.svg",
   "logo": {
@@ -21,8 +29,8 @@
     "tabs": [
       {
         "tab": "Docs",
-        "icon": "book-open",
-        "pages": [
+        "icon": "book",
+        "groups": [
           {
             "group": "Getting Started",
             "pages": [
@@ -48,7 +56,7 @@
       {
         "tab": "Guides",
         "icon": "compass",
-        "pages": [
+        "groups": [
           {
             "group": "Integration Guides",
             "pages": [
@@ -73,9 +81,14 @@
       },
       {
         "tab": "Changelog",
-        "icon": "clock-rotate-left",
-        "pages": [
-          "changelog/introduction",
+        "icon": "calendar-days",
+        "groups": [
+          {
+            "group": "Changelog",
+            "pages": [
+              "changelog/introduction"
+            ]
+          },
           {
             "group": "June 2026",
             "pages": [
@@ -105,39 +118,31 @@
           }
         ]
       }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "llms-full.txt",
-          "href": "/llms-full.txt",
-          "icon": "file-lines"
-        },
-        {
-          "anchor": "Community",
-          "href": "https://discord.gg/stackryze",
-          "icon": "users"
-        },
-        {
-          "anchor": "Dashboard",
-          "href": "https://dns.stackryze.com/dashboard",
-          "icon": "gauge"
-        }
-      ]
-    }
+    ]
   },
   "navbar": {
     "links": [
       {
+        "label": "llms-full.txt",
+        "icon": "file-lines",
+        "href": "/llms-full.txt"
+      },
+      {
+        "label": "Community",
+        "icon": "discord",
+        "href": "https://discord.gg/stackryze"
+      },
+      {
         "label": "Support",
+        "icon": "envelope",
         "href": "mailto:support@stackryze.com"
+      },
+      {
+        "label": "Dashboard",
+        "icon": "house",
+        "href": "https://dns.stackryze.com/dashboard"
       }
-    ],
-    "primary": {
-      "type": "button",
-      "label": "Dashboard",
-      "href": "https://dns.stackryze.com/dashboard"
-    }
+    ]
   },
   "contextual": {
     "options": [
