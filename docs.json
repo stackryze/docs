@@ -9,6 +9,12 @@
     "dark": "#2E7D4F"
   },
   "fonts": {
+    "heading": {
+      "family": "ApfelGrotezk",
+      "source": "/fonts/ApfelGrotezk-Regular.woff2",
+      "format": "woff2",
+      "weight": 400
+    },
     "body": {
       "family": "Inter",
       "source": "/fonts/Inter-Variable.woff2",
