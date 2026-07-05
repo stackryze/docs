@@ -7,13 +7,16 @@ Every Stackryze Domain follows the same naming rules. The rules are enforced at 
 
 ## The shape
 
-A Stackryze Domain is a single label under `indevs.in`:
+A Stackryze Domain is a single label under one of the four Stackryze namespaces:
 
 ```text
 <your-label>.indevs.in
+<your-label>.sryze.cc
+<your-label>.ryzedns.org
+<your-label>.nx.kg
 ```
 
-`<your-label>` is the part you choose. The `indevs.in` suffix is fixed — it identifies the registry and never changes.
+`<your-label>` is the part you choose. The namespace suffix is fixed at registration and never changes — the same naming rules apply to all four namespaces.
 
 ## Length
 
@@ -23,7 +26,7 @@ A Stackryze Domain is a single label under `indevs.in`:
 | Maximum | 63 characters |
 | Recommended | 8–24 characters |
 
-A 3-character name like `abc.indevs.in` is valid but rare. Names in the 8–24 range are easier to read, share, and remember.
+A 3-character name like `abc.indevs.in` is valid but rare. Names in the 8–24 range are easier to read, share, and remember. The same length bounds apply under every namespace.
 
 ## Allowed characters
 
@@ -40,7 +43,7 @@ It may **not** contain:
 - Underscores or any other punctuation
 - Internationalized characters (`münchen`, `日本語`, emojis)
 
-The system lowercases anything you type, so `MyProject.indevs.in` and `myproject.indevs.in` resolve to the same name.
+The system lowercases anything you type, so `MyProject.indevs.in` and `myproject.indevs.in` resolve to the same name. Case insensitivity applies across all four namespaces.
 
 ## Position rules for hyphens
 
@@ -61,7 +64,7 @@ The system lowercases anything you type, so `MyProject.indevs.in` and `myproject
 
 ## Case insensitivity
 
-DNS is case-insensitive. The registry treats `MyProject.indevs.in` and `myproject.indevs.in` as the same name. To avoid ambiguity, always write and share your domain in lowercase.
+DNS is case-insensitive. The registry treats `MyProject.indevs.in` and `myproject.indevs.in` as the same name. To avoid ambiguity, always write and share your domain in lowercase, regardless of which namespace it lives under.
 
 ## Uniqueness and reuse
 
@@ -89,7 +92,7 @@ A few heuristics that hold up over time:
 ## Where to go next
 
 <Columns cols={2}>
-  <Card title="Overview" icon="circle-info" href="/docs/domains/overview">
+  <Card title="Stackryze Domains" icon="circle-info" href="/docs/domains">
     What a Stackryze Domain is.
   </Card>
   <Card title="Domain lifecycle" icon="clock" href="/docs/domains/domain-lifecycle">

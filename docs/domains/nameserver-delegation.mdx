@@ -9,7 +9,7 @@ Every Stackryze Domain is delegated to authoritative nameservers the moment you 
 
 A delegation is a set of `NS` records that says "for queries about this zone, ask these nameservers." Whoever controls those nameservers controls the DNS for the domain.
 
-For a Stackryze Domain, the registry holds the parent `indevs.in` zone. When you register, the registry writes `NS` records under your subdomain pointing at the nameservers you specified. From that point on, every resolver on the internet queries those nameservers for everything under your subdomain.
+For a Stackryze Domain, the registry holds the parent zone (`indevs.in`, `sryze.cc`, `ryzedns.org`, or `nx.kg`). When you register, the registry writes `NS` records under your subdomain pointing at the nameservers you specified. From that point on, every resolver on the internet queries those nameservers for everything under your subdomain.
 
 ## Default delegation
 
@@ -19,6 +19,8 @@ If you don't change anything during registration, your domain is delegated to St
 yourname.indevs.in.  IN  NS  ns1.stackryze.com.
 yourname.indevs.in.  IN  NS  ns2.stackryze.com.
 ```
+
+The same delegation applies under every namespace.
 
 You then manage records inside the [Stackryze DNS dashboard](https://dns.stackryze.com). This is the path of least resistance — one dashboard, one place to add records, free DNSSEC, modern record types, and an API.
 
@@ -37,7 +39,7 @@ A few constraints apply to every BYOD setup:
 - **At least two nameservers.** A single nameserver is a single point of failure.
 - **Publicly reachable.** Stackryze doesn't accept RFC 1918 addresses or hidden primaries.
 - **Authoritative for your subdomain.** The provider must serve the zone you delegated, not just forward to it.
-- **Glue records, if needed.** If your nameservers are themselves under `indevs.in`, glue records must be in place. The dashboard handles this automatically.
+- **Glue records, if needed.** If your nameservers are themselves under one of the four Stackryze namespaces, glue records must be in place. The dashboard handles this automatically.
 
 ## What changes when you BYOD
 

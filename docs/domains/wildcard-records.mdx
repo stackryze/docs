@@ -3,7 +3,7 @@ title: "Wildcard records"
 description: "Catch-all DNS for every sub-subdomain under your Stackryze Domain."
 ---
 
-Every Stackryze Domain supports wildcard DNS records. A wildcard record matches any sub-subdomain that doesn't have its own record, which lets you run multi-tenant apps or per-customer subdomains without managing a record for every one.
+Every Stackryze Domain supports wildcard DNS records under all four namespaces (`indevs.in`, `sryze.cc`, `ryzedns.org`, `nx.kg`). A wildcard record matches any sub-subdomain that doesn't have its own record, which lets you run multi-tenant apps or per-customer subdomains without managing a record for every one.
 
 ## What a wildcard is
 
@@ -13,15 +13,15 @@ A wildcard record uses `*` as the leftmost label:
 *.yourname.indevs.in.  300  IN  CNAME  yourname.indevs.in.
 ```
 
-With this record in place, anything under `*.yourname.indevs.in` resolves — `app.yourname.indevs.in`, `tenant-42.yourname.indevs.in`, `anything-you-can-think-of.yourname.indevs.in` — to the same target.
+With this record in place, anything under `*.yourname.indevs.in` resolves — `app.yourname.indevs.in`, `tenant-42.yourname.indevs.in`, `anything-you-can-think-of.yourname.indevs.in` — to the same target. The same shape applies under every namespace (`*.yourname.sryze.cc`, `*.yourname.ryzedns.org`, `*.yourname.nx.kg`).
 
 ## When wildcards pay off
 
 Wildcards are useful when you don't know the names ahead of time:
 
-- **Multi-tenant apps** — every customer gets `<tenant>.yourname.indevs.in` for free, no per-tenant DNS edits.
-- **Preview environments** — every pull request gets `<pr-number>.yourname.indevs.in` without touching the zone.
-- **User subdomains** — `<username>.yourname.indevs.in` for a social product, dynamically resolved.
+- **Multi-tenant apps** — every customer gets `<tenant>.yourname.<namespace>` for free, no per-tenant DNS edits.
+- **Preview environments** — every pull request gets `<pr-number>.yourname.<namespace>` without touching the zone.
+- **User subdomains** — `<username>.yourname.<namespace>` for a social product, dynamically resolved.
 - **Catch-all landing pages** — show a default page for any typo, no 404.
 
 ## When they don't

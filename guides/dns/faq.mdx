@@ -1,0 +1,129 @@
+---
+title: "FAQ"
+description: "Common questions about Stackryze DNS — pricing, limits, DNSSEC, and the API."
+---
+
+Quick answers to the questions we get most. For deeper reference material, follow the links into the [StackNS documentation](/docs/dns).
+
+<Note>
+  Stackryze DNS is free for everyone. Verification raises zone limits and unlocks advanced features.
+</Note>
+
+## Pricing and limits
+
+### Is Stackryze DNS really free?
+
+Yes. The base service is free for any account. Unverified accounts get three zones; verified accounts get unlimited.
+
+### What does verification unlock?
+
+Verified accounts get unlimited zones, scoped API tokens, DNSSEC, webhooks, and the audit log. See [Account verification](/account-verification).
+
+### Are there rate limits?
+
+Yes — per-token, per-IP, per-zone. The dynamic-DNS endpoint has a relaxed limit, configurable via `X-Forwarded-For`. See the [API reference](/docs/dns/api) for the exact numbers.
+
+## Zones and records
+
+### How many records can one zone hold?
+
+Up to 10,000 records per zone. Most zones are well under 100. The limit exists to keep anycast lookups fast.
+
+### What record types do you support?
+
+Every classic record plus the modern ones: `SVCB`, `HTTPS`, `TLSA`, `OPENPGPKEY`, `CAA`, and others. See [Supported records](/docs/dns/supported-records) for the full list.
+
+### Can I import a BIND zone file?
+
+Yes. The dashboard accepts zone files in BIND format. The CLI also supports `stackryze zones import --file example.com.zone`.
+
+### What is the minimum TTL?
+
+30 seconds. Lower values are clamped.
+
+## Nameservers and delegation
+
+### Where are your nameservers?
+
+Four anycast sites in NYC, Hyderabad, Nuremberg, and São Paulo. See [Nameservers](/docs/dns/nameservers).
+
+### Can I bring my own nameservers?
+
+Yes — set custom NS records on your zone. Stackryze still serves as a backup, and DNSSEC continues to work.
+
+### Why do my NS records show all four of your nameservers?
+
+That's the default. You can replace any of them with your own; the four we publish are a fallback.
+
+## DNSSEC
+
+### Do you support DNSSEC?
+
+Yes, opt-in per zone. Default algorithm is ED25519; ECDSA P-256 and RSA are available.
+
+### Will enabling DNSSEC break anything?
+
+No — the change is additive. Until you publish the `DS` record at your registrar, validating resolvers won't trust the chain, but standard resolvers are unaffected.
+
+### How do I roll the KSK?
+
+Open the zone, go to **Settings → DNSSEC → Rollover**. The new key is published alongside the old one for the rollover period.
+
+## Dynamic DNS
+
+### How do I push an IP update?
+
+```bash
+curl -X POST https://dns.stackryze.com/api/v1/dynamic/update \
+  -H "Authorization: Bearer $TOKEN" \
+  -d '{"zone":"example.com","name":"home","type":"A","value":"192.0.2.1"}'
+```
+
+See [Dynamic DNS](/docs/dns/dynamic-dns) and the [Dynamic DNS guide](/guides/dynamic-dns).
+
+### Can I use the same token for DDNS and zone management?
+
+You can, but it's better practice to issue a scoped token limited to `dynamic:update` for DDNS clients.
+
+## API
+
+### Where is the API base URL?
+
+```
+https://dns.stackryze.com/api/v1
+```
+
+### How do I authenticate?
+
+Bearer tokens. Generate one in **Settings → API tokens**. See the [API reference](/docs/dns/api).
+
+### Are breaking changes versioned?
+
+Yes. The `/v1` namespace is stable. Breaking changes ship under a new version (`/v2`) and the old version continues to work.
+
+### Can I scope a token to one zone?
+
+Yes. Scoped zone tokens are the recommended pattern for CI/CD and DDNS clients.
+
+## Troubleshooting
+
+### My record changes aren't showing up.
+
+Check TTL and propagation. Stackryze pushes changes globally within seconds, but downstream resolvers cache up to the TTL. Run `dig +trace` to see where the stale answer comes from.
+
+### I get `NXDOMAIN` for a record that exists.
+
+The most common cause is a missing trailing dot. `example.com` is a relative name inside the zone, but `app.example.com.` (with the trailing dot) is fully qualified.
+
+### My zone won't load in the dashboard.
+
+If the dashboard is failing to fetch a zone, the API may be rate-limiting. Wait a minute and reload.
+
+## Where to go next
+
+- [API reference](/docs/dns/api) — full endpoint list.
+- [Supported records](/docs/dns/supported-records) — every record type.
+- [Nameservers](/docs/dns/nameservers) — where your zone lives.
+- [DNSSEC](/docs/dns/dnssec) — how to enable it.
+- [Dynamic DNS](/docs/dns/dynamic-dns) — push IP updates.
+- [Account verification](/account-verification) — unlock unlimited zones.

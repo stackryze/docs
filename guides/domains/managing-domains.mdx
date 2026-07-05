@@ -16,14 +16,14 @@ You'll see every domain you own with its status, expiry date, and nameservers.
 
 Each domain shows:
 
-- **Domain name** — your subdomain (for example `yourname.indevs.in`).
+- **Domain name** — your subdomain (for example `yourname.indevs.in`, `yourname.sryze.cc`, `yourname.ryzedns.org`, or `yourname.nx.kg`).
 - **Status** — Active, Expiring Soon, or Expired.
 - **Registered on** — registration date.
 - **Expiry date** — when the domain expires.
 - **Registration period** — current validity (one year, fixed).
 - **DNS configuration** — current nameservers.
 
-<img src="/guides/domains/media/dashboard/img_1.png" alt="Stackryze Domains dashboard showing domain detail page" />
+<img src="/docs/domains/media/dashboard/img_1.png" alt="Stackryze Domains dashboard showing domain detail page" />
 
 ## Updating nameservers
 
@@ -76,7 +76,7 @@ Domains are valid for one year from registration.
 4. Confirm.
 5. Expiry extends by one year.
 
-<img src="/guides/domains/media/dashboard/domain-list.png" alt="Domain list with Renew button highlighted" />
+<img src="/docs/domains/media/dashboard/domain-list.png" alt="Domain list with Renew button highlighted" />
 
 <Tip>
   Renewal is 100% free — there is no charge to extend a Stackryze Domain.
@@ -86,7 +86,7 @@ Domains are valid for one year from registration.
   If you click **Renew** before the 60-day window, you'll see a message showing when renewal becomes available.
 </Note>
 
-<img src="/guides/domains/media/dashboard/cannot-renew.png" alt="Cannot renew message shown when outside the renewal window" />
+<img src="/docs/domains/media/dashboard/cannot-renew.png" alt="Cannot renew message shown when outside the renewal window" />
 
 ### What if you don't renew?
 
@@ -148,7 +148,7 @@ Every change to your domains is recorded:
 
 ### Default limits
 
-- **Domains per account:** 5
+- **Names per account:** up to 4 — one of each namespace (`indevs.in`, `sryze.cc`, `ryzedns.org`, `nx.kg`).
 - **Domain length:** 3–63 characters
 - **Nameservers required:** at least 2
 - **Renewal window:** 60 days before expiry
@@ -164,6 +164,23 @@ Email [support@stackryze.com](mailto:support@stackryze.com) with:
 - How many domains you need.
 
 We reply within 1–2 business days.
+
+## Public-suffix behavior
+
+Every registered Stackryze Domain is submitted to the **Public Suffix List** (PSL), the same list browsers, certificate authorities, and password managers consult to decide where one registrable name ends and the next begins. Once a name is on the list, the boundary is enforced by the consumers — not by Stackryze.
+
+What that gives you in practice:
+
+- **Browsers scope cookies correctly.** Chrome, Firefox, Safari, and their derivatives treat `yourname.indevs.in` the same way they treat `example.com` — cookies set on the registered label don't leak to sibling names under `indevs.in`.
+- **Cross-origin isolation holds.** A page on `app.yourname.indevs.in` cannot read cookies or storage set by a sibling name unless that sibling explicitly opts in. The same boundary exists between any two Stackryze Domains.
+- **Certificate authorities are strict.** When you request a TLS cert for `yourname.indevs.in`, the CA verifies you control the registered label — exactly as they do for `yourname.example.com`. A malicious party cannot register a sibling prefix and trick the CA into issuing them a cert that overlaps yours.
+- **Password managers segregate credentials.** 1Password, Bitwarden, Chrome's password store, and others treat each registered Stackryze Domain as its own origin for credential scoping.
+
+You don't have to do anything special to benefit from this — it follows from your name being on the PSL, and PSL-aware tools already respect the boundary by default.
+
+<Note>
+  Stackryze submits each registered name to the PSL; it is the PSL consumers (browsers, CAs, password managers) that enforce the boundary. Mainstream browsers, certificate authorities, and password managers all consult the PSL.
+</Note>
 
 ## Common issues
 

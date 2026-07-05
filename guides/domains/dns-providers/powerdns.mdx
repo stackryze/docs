@@ -3,7 +3,11 @@ title: "PowerDNS (self-hosted)"
 description: "Self-host your nameservers with PowerDNS + PostgreSQL behind Docker."
 ---
 
-PowerDNS Authoritative Server is a versatile, open-source nameserver with multiple storage backends and an HTTP API. Stackryze uses PowerDNS to power `ns1.stackryze.com` and `ns2.stackryze.com`, which serve all `indevs.in` subdomains.
+PowerDNS Authoritative Server is a versatile, open-source nameserver with multiple storage backends and an HTTP API. Stackryze uses PowerDNS to power `ns1.stackryze.com` and `ns2.stackryze.com`, which serve all Stackryze Domain subdomains under `indevs.in`, `sryze.cc`, `ryzedns.org`, and `nx.kg`.
+
+<Note>
+  The walkthrough below uses `yourname.indevs.in` as a working example. If you registered under one of the other namespaces (`sryze.cc`, `ryzedns.org`, `nx.kg`), substitute the namespace everywhere you see `indevs.in`.
+</Note>
 
 <Warning>
   **Advanced setup — not recommended for beginners.**

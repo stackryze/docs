@@ -1,22 +1,80 @@
 ---
-title: "Stackryze DNS"
+title: "Introduction"
+sidebarTitle: "Introduction"
 description: "Modern DNS hosting for everyone — fast, free, and security-first."
 ---
 
-Stackryze DNS is a free authoritative DNS hosting service, designed with security in mind. Running on open-source software, it's free for everyone to use.
+Stackryze DNS is the authoritative DNS hosting service behind every Stackryze Domain and available as a standalone product for any domain you own. It is free, security-first, and built on the same open-source engine the rest of the Stackryze surface runs on.
 
 <Note>
   The full service lives at [dns.stackryze.com](https://dns.stackryze.com). Status & live metrics are at [status.stackryze.com](https://status.stackryze.com).
 </Note>
 
+## What it is
+
+A managed authoritative DNS service. You give Stackryze a zone, it serves it from a global anycast network. You add records through the dashboard, the API, or by bringing your own zone file.
+
+| Aspect | Value |
+| --- | --- |
+| Cost | Free |
+| Authentication | Stackryze account |
+| Authoritative servers | 4 globally distributed |
+| Modern record support | `SVCB`, `HTTPS`, `TLSA`, plus classics |
+| DNSSEC | Yes, opt-in |
+| API | REST, JSON |
+| Quota | 3 zones free; verified accounts get unlimited |
+
+## Who it's for
+
+Stackryze DNS is built for the same audience as the rest of Stackryze:
+
+- **Founders** launching a product and want clean, debuggable DNS without paying for it.
+- **Freelancers** managing DNS for client domains and tired of upsell-heavy dashboards.
+- **Small teams** that need a unified DNS surface for staging, production, and per-customer zones.
+- **The curious** who want to learn DNS hands-on with a modern API.
+
+## The four pillars
+
+Every Stackryze product is built around the same guarantees. For DNS specifically:
+
+1. **Modern records.** Native support for `SVCB`, `HTTPS`, `TLSA`, plus every classic record type. The modern web's primitives, not just the 1990s subset.
+2. **Simple interface.** The dashboard is small, fast, and free of modal soup and upsells.
+3. **API-first.** The same JSON/REST API powers the dashboard. Anything you can click, you can script.
+4. **Open source.** The authoritative engine is MIT-licensed at [github.com/stackryze/DNS](https://github.com/stackryze/DNS).
+
+## What you get
+
+Out of the box on every zone:
+
+- **Global anycast** — four nameservers in NYC, Hyderabad, Nuremberg, and São Paulo.
+- **DNSSEC** with automated signing and rollover.
+- **Wildcard records** at any depth.
+- **Free TLS** via automatic ACME integration if you want to terminate HTTPS at the edge.
+- **API tokens** with scoped permissions.
+- **Webhooks** for zone and record change events.
+- **Audit log** of every change.
+
+## What it isn't
+
+Stackryze DNS is not:
+
+- **A recursive resolver.** It's authoritative only — it answers queries for zones you host, it doesn't fetch answers from upstream resolvers on your behalf.
+- **A registrar.** It hosts DNS for domains you bring (from any registrar) or for Stackryze Domains. It doesn't sell top-level domains.
+- **A CDN.** There's no caching layer or edge logic. If you want caching and DDoS protection in front of your origin, pair Stackryze DNS with a CDN (Cloudflare, Fastly, etc.).
+
+## How it fits the Stackryze surface
+
+| Product | Role |
+| --- | --- |
+| Stackryze DNS | The resolution. Hosted authoritative DNS for any zone. |
+| Stackryze Domains | The name. Free subdomains under `indevs.in`. |
+| Stackryze API | The automation layer. Same APIs that power the dashboard. |
+
 ## Concepts
 
-Start with the overview, then dive into the concept that matches what you're working on.
+Dive into the concept that matches what you're working on.
 
 <Columns cols={2}>
-  <Card title="Overview" icon="circle-info" href="/docs/dns/overview">
-    What Stackryze DNS is and who it's for.
-  </Card>
   <Card title="Zones and records" icon="layer-group" href="/docs/dns/zones-and-records">
     The mental model behind DNS data.
   </Card>
@@ -56,14 +114,5 @@ Once you understand the concepts, the guides walk you through the actual steps.
   </Card>
   <Card title="Dynamic DNS guide" icon="bolt" href="/guides/dynamic-dns">
     Set up a DDNS client.
-  </Card>
-  <Card title="API quickstart" icon="code" href="/guides/api-quickstart">
-    First API call in five minutes.
-  </Card>
-  <Card title="Webhooks" icon="webhook" href="/guides/webhooks">
-    Subscribe to zone and record events.
-  </Card>
-  <Card title="Billing" icon="credit-card" href="/guides/billing-introduction">
-    How Stackryze is funded.
   </Card>
 </Columns>

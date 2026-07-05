@@ -49,7 +49,6 @@
             "group": "Domains",
             "pages": [
               "docs/domains/index",
-              "docs/domains/overview",
               "docs/domains/subdomain-naming",
               "docs/domains/email-forwarding",
               "docs/domains/wildcard-records",
@@ -62,7 +61,6 @@
             "group": "StackNS",
             "pages": [
               "docs/dns/index",
-              "docs/dns/overview",
               "docs/dns/zones-and-records",
               "docs/dns/supported-records",
               "docs/dns/nameservers",
@@ -74,8 +72,7 @@
           {
             "group": "Hosting",
             "pages": [
-              "docs/hosting/index",
-              "docs/hosting/overview"
+              "docs/hosting/index"
             ]
           }
         ]
@@ -85,46 +82,53 @@
         "icon": "compass",
         "groups": [
           {
-            "group": "Integration Guides",
-            "pages": [
-              "guides/add-a-custom-domain",
-              "guides/point-domain-to-stackryze",
-              "guides/transfer-domain",
-              "guides/configure-dns-records",
-              "guides/enable-dnssec",
-              "guides/dynamic-dns",
-              "guides/api-quickstart",
-              "guides/webhooks"
-            ]
-          },
-          {
-            "group": "Billing Deconstructions",
-            "tag": "NEW",
-            "pages": [
-              "guides/billing-introduction"
-            ]
-          },
-          {
             "group": "Domains",
             "pages": [
               "guides/domains/getting-started",
               "guides/domains/managing-domains",
-              "guides/domains/dns-providers",
-              "guides/domains/dns-providers/cloudflare",
-              "guides/domains/dns-providers/route53",
-              "guides/domains/dns-providers/digitalocean",
-              "guides/domains/dns-providers/google-cloud-dns",
-              "guides/domains/dns-providers/azure-dns",
-              "guides/domains/dns-providers/hetzner",
-              "guides/domains/dns-providers/cloudns",
-              "guides/domains/dns-providers/hurricane-electric",
-              "guides/domains/dns-providers/namecheap",
-              "guides/domains/dns-providers/vercel-dns",
-              "guides/domains/dns-providers/desec",
-              "guides/domains/dns-providers/powerdns",
-              "guides/domains/dns-providers/custom",
+              {
+                "group": "DNS providers",
+                "expanded": false,
+                "pages": [
+                  "guides/domains/dns-providers",
+                  "guides/domains/dns-providers/cloudflare",
+                  "guides/domains/dns-providers/route53",
+                  "guides/domains/dns-providers/digitalocean",
+                  "guides/domains/dns-providers/google-cloud-dns",
+                  "guides/domains/dns-providers/azure-dns",
+                  "guides/domains/dns-providers/hetzner",
+                  "guides/domains/dns-providers/cloudns",
+                  "guides/domains/dns-providers/hurricane-electric",
+                  "guides/domains/dns-providers/namecheap",
+                  "guides/domains/dns-providers/vercel-dns",
+                  "guides/domains/dns-providers/desec",
+                  "guides/domains/dns-providers/powerdns",
+                  "guides/domains/dns-providers/custom"
+                ]
+              },
               "guides/domains/faq",
               "guides/domains/troubleshooting"
+            ]
+          },
+          {
+            "group": "Hosting",
+            "pages": [
+              "guides/hosting/index",
+              "guides/hosting/getting-started",
+              "guides/hosting/manage-projects",
+              "guides/hosting/faq"
+            ]
+          },
+          {
+            "group": "StackNS",
+            "pages": [
+              "guides/dns/index",
+              "guides/add-a-custom-domain",
+              "guides/point-domain-to-stackryze",
+              "guides/configure-dns-records",
+              "guides/enable-dnssec",
+              "guides/dynamic-dns",
+              "guides/dns/faq"
             ]
           }
         ]

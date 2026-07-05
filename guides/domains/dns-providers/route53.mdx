@@ -34,25 +34,25 @@ Before you begin:
 2. In the search bar, search for **Route 53**.
 3. Click the service.
 
-<img src="/guides/domains/media/route53/route53_step_1.png" alt="AWS console search for Route 53" />
+<img src="/docs/domains/media/route53/route53_step_1.png" alt="AWS console search for Route 53" />
 
 ## Step 2 — Open Hosted zones
 
 1. In the left sidebar, click **Hosted zones**.
 2. Click **Create hosted zone**.
 
-<img src="/guides/domains/media/route53/route53_step_2.png" alt="Route 53 dashboard with Create hosted zone button" />
+<img src="/docs/domains/media/route53/route53_step_2.png" alt="Route 53 dashboard with Create hosted zone button" />
 
 ## Step 3 — Create the hosted zone
 
-1. Enter your **full subdomain** (for example `yourname.indevs.in`).
+1. Enter your **full subdomain** (for example `yourname.indevs.in` — or whichever of the four Stackryze namespaces you registered under).
 2. Fill in the details:
    - **Domain name:** your complete subdomain from Stackryze.
    - **Type:** select **Public Hosted Zone**.
    - **Description:** (optional) add a note.
 3. Click **Create hosted zone**.
 
-<img src="/guides/domains/media/route53/route53_step_3.png" alt="Route 53 Create hosted zone form" />
+<img src="/docs/domains/media/route53/route53_step_3.png" alt="Route 53 Create hosted zone form" />
 
 <Warning>
   Enter your complete subdomain from Stackryze Domains (`myproject.indevs.in`), not just the base domain.
@@ -73,7 +73,7 @@ Route 53 assigns four nameservers:
    ```
 3. Copy all four — you'll need them in the next step.
 
-<img src="/guides/domains/media/route53/route53_step_4.png" alt="Route 53 hosted zone showing NS records" />
+<img src="/docs/domains/media/route53/route53_step_4.png" alt="Route 53 hosted zone showing NS records" />
 
 <Warning>
   Your nameservers differ from this example. Copy the exact values AWS assigns.
@@ -101,7 +101,7 @@ Add DNS records in Route 53:
 1. Select your hosted zone.
 2. Click **Create record**.
 
-<img src="/guides/domains/media/route53/route53_step_6.1.png" alt="Route 53 hosted zone with Create record button" />
+<img src="/docs/domains/media/route53/route53_step_6.1.png" alt="Route 53 hosted zone with Create record button" />
 
 3. Select a record type and fill in the form:
    - **Record name:** `@` (for root) or your subdomain.
@@ -111,7 +111,7 @@ Add DNS records in Route 53:
    - **Routing policy:** Simple routing (or an advanced policy).
 4. Click **Create records**.
 
-<img src="/guides/domains/media/route53/route53_step_6.2.png" alt="Route 53 Create record form filled with A record values" />
+<img src="/docs/domains/media/route53/route53_step_6.2.png" alt="Route 53 Create record form filled with A record values" />
 
 That's it — all steps are complete.
 

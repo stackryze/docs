@@ -3,11 +3,11 @@ title: "Email forwarding"
 description: "How forwarding from your Stackryze Domain to any inbox works, and what it does and doesn't do."
 ---
 
-Every Stackryze Domain comes with email forwarding at `<anything>@<name>.indevs.in`. It's the simplest way to have a stable, project-specific email address without running a mail server.
+Every Stackryze Domain — under `indevs.in`, `sryze.cc`, `ryzedns.org`, or `nx.kg` — comes with email forwarding at `<anything>@<name>.<namespace>`. It's the simplest way to have a stable, project-specific email address without running a mail server.
 
 ## What forwarding is
 
-A forwarded address receives mail at `<anything>@<name>.indevs.in` and delivers it to a destination inbox you control. The destination is a normal address on Gmail, Outlook, Fastmail, iCloud, ProtonMail, or any other provider.
+A forwarded address receives mail at `<anything>@<name>.<namespace>` and delivers it to a destination inbox you control. The destination is a normal address on Gmail, Outlook, Fastmail, iCloud, ProtonMail, or any other provider.
 
 In DNS terms, the address doesn't receive mail directly. Stackryze runs a forwarding MTA that accepts the message on your behalf, rewrites the envelope, and re-sends it to your real inbox.
 
@@ -22,10 +22,10 @@ In DNS terms, the address doesn't receive mail directly. Stackryze runs a forwar
 
 Forwarding is not full email hosting:
 
-- **No mailbox.** You can't log in to a "you@yourname.indevs.in" inbox. Mail is delivered to a third-party mailbox.
-- **No sending from your domain.** You can't send mail *as* `you@yourname.indevs.in` from a forwarded address. For that, you need a real mail provider (Fastmail, ProtonMail, Google Workspace, etc.) with SMTP credentials.
+- **No mailbox.** You can't log in to a `you@<name>.<namespace>` inbox. Mail is delivered to a third-party mailbox.
+- **No sending from your domain.** You can't send mail *as* `you@<name>.<namespace>` from a forwarded address. For that, you need a real mail provider (Fastmail, ProtonMail, Google Workspace, etc.) with SMTP credentials.
 - **No calendar, contacts, or storage.** It's an address, not a mail suite.
-- **No IMAP/POP.** You access your mail at the destination, not at `indevs.in`.
+- **No IMAP/POP.** You access your mail at the destination, not at any Stackryze namespace.
 
 ## How it works under the hood
 
@@ -39,7 +39,7 @@ These records are managed for you — you don't need to touch the DNS zone to en
 
 ## Sending mail from your domain (separate problem)
 
-If you want to **send** mail *as* `you@yourname.indevs.in`, you need SMTP credentials from a real mail provider. The forwarding MTA only handles inbound mail.
+If you want to **send** mail *as* `you@<name>.<namespace>`, you need SMTP credentials from a real mail provider. The forwarding MTA only handles inbound mail.
 
 Common pairings:
 
@@ -47,7 +47,7 @@ Common pairings:
 | --- | --- |
 | Stackryze Domains | Fastmail / ProtonMail / Google Workspace |
 
-When you switch the destination of a forward, the destination changes but the address doesn't — people can keep sending to `you@yourname.indevs.in` and you'll still get it.
+When you switch the destination of a forward, the destination changes but the address doesn't — people can keep sending to `you@<name>.<namespace>` and you'll still get it.
 
 ## Limits and quotas
 
@@ -63,7 +63,7 @@ Forwarding is provided to humans, not to bulk senders. If a forwarded address st
 ## Where to go next
 
 <Columns cols={2}>
-  <Card title="Overview" icon="circle-info" href="/docs/domains/overview">
+  <Card title="Stackryze Domains" icon="circle-info" href="/docs/domains">
     What a Stackryze Domain is.
   </Card>
   <Card title="Wildcard records" icon="asterisk" href="/docs/domains/wildcard-records">

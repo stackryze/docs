@@ -1,0 +1,35 @@
+---
+title: "Connect a Git repository"
+description: "Push to deploy from any Git host — planned for Stackryze Hosting."
+---
+
+<Note>
+  Stackryze Hosting is in planning. This guide documents the intended workflow and will be filled in once the product launches.
+</Note>
+
+When Hosting ships, you will connect a Git repository in three steps:
+
+## Steps
+
+<Steps>
+  <Step title="Authorize GitHub, GitLab, or Bitbucket">
+    Sign in to [hosting.stackryze.com](https://hosting.stackryze.com) and click **Connect Repository**. Choose your host and grant read access.
+  </Step>
+  <Step title="Pick a repository and branch">
+    Select the repo and the branch Stackryze should build from. The default branch builds to production.
+  </Step>
+  <Step title="Confirm">
+    Stackryze performs a starter build to verify access and stores an initial deploy. The branch URL is your project's primary URL.
+  </Step>
+</Steps>
+
+## What you get
+
+- **Preview environments** for every pull request.
+- **Automatic HTTPS** via Stackryze DNS ACME integration.
+- **Build logs** streamed in real time, retained for 30 days.
+
+## What this depends on
+
+- [Stackryze DNS](/docs/dns) — every hosted project ships with a Stackryze DNS zone, pre-wired.
+- [Account verification](/account-verification) — required to create production deploys.
