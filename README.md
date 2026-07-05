@@ -1,55 +1,67 @@
-# Mintlify Starter Kit
+# Stackryze Docs
 
-Use the starter kit to get your docs deployed and ready to customize.
+The source for [docs.stackryze.com](https://docs.stackryze.com), built on [Mintlify](https://mintlify.com).
 
-Click the green **Use this template** button at the top of this repo to copy the Mintlify starter kit. The starter kit contains examples with
+This repo contains:
 
-- Guide pages
-- Navigation
-- Customizations
-- API reference pages
-- Use of popular components
+- Product reference — DNS, Domains, Billing, Security, Pricing
+- Integration guides — connect domains, configure records, automate via API
+- The Stackryze changelog — every release, every fix, every minor improvement
 
-**[Follow the full quickstart guide](https://starter.mintlify.com/quickstart)**
+## Stack
 
-## AI-assisted writing
+- **Framework:** Mintlify (MDX + YAML frontmatter)
+- **Config:** `docs.json` — navigation, theme, colors, logos
+- **Content:** `.mdx` files under `features/`, `guides/`, and `changelog/`
+- **Logos:** `logo/light.svg`, `logo/dark.svg`, `favicon.svg`
 
-Set up your AI coding tool to work with Mintlify:
+## Local development
+
+Install the Mintlify CLI:
+
+```bash
+npm i -g mint
+```
+
+From the repo root (where `docs.json` lives), run:
+
+```bash
+mint dev
+```
+
+Preview at `http://localhost:3000`.
+
+## Editing content
+
+- Pages are MDX. YAML frontmatter at the top of every file declares `title` and `description`.
+- Navigation lives in `docs.json` — add a page there once it's written.
+- Use Mintlify components (`<Card>`, `<Steps>`, `<Tip>`, `<Note>`, `<Columns>`, `<CodeGroup>`) — see the Mintlify skill for the full reference.
+
+Install the Mintlify skill for your editor:
 
 ```bash
 npx skills add https://mintlify.com/docs
 ```
 
-This command installs Mintlify's documentation skill for your configured AI tools like Claude Code, Cursor, Windsurf, and others. The skill includes component reference, writing standards, and workflow guidance.
+## Brand
 
-See the [AI tools guides](/ai-tools) for tool-specific setup.
+This docs site uses the Stackryze bi-stack mark — the same mark that ships in the marketing site navbar. If you change the mark, update **three** files together:
 
-## Development
+- `docs/logo/light.svg`
+- `docs/logo/dark.svg`
+- `docs/favicon.svg`
 
-Install the [Mintlify CLI](https://www.npmjs.com/package/mint) to preview your documentation changes locally. To install, use the following command:
+And mirror the change in the web app at `stackryze/public/logos/` so the favicon and OG image stay in sync.
 
-```
-npm i -g mint
-```
+Brand guidelines live in [`stackryze/BRAND.md`](../stackryze/BRAND.md).
 
-Run the following command at the root of your documentation, where your `docs.json` is located:
+## Publishing
 
-```
-mint dev
-```
+The docs deploy automatically when changes land on the default branch. The Mintlify GitHub app reads this repo and builds on every push.
 
-View your local preview at `http://localhost:3000`.
-
-## Publishing changes
-
-Install our GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app) to propagate changes from your repo to your deployment. Changes are deployed to production automatically after pushing to the default branch.
+If a page 404s locally, double-check that `docs.json` lists it under `navigation.tabs[].pages` — Mintlify will not auto-discover pages.
 
 ## Need help?
 
-### Troubleshooting
-
-- If your dev environment isn't running: Run `mint update` to ensure you have the most recent version of the CLI.
-- If a page loads as a 404: Make sure you are running in a folder with a valid `docs.json`.
-
-### Resources
-- [Mintlify documentation](https://mintlify.com/docs)
+- Stackryze product questions — [support@stackryze.com](mailto:support@stackryze.com)
+- Mintlify component reference — [mintlify.com/docs](https://mintlify.com/docs)
