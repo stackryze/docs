@@ -43,10 +43,12 @@ docs.json                       # navigation, theme, colors, logos
 index.mdx                       # docs landing
 quickstart.mdx                  # 5-minute DNS setup
 account-verification.mdx        # verification flow
-features/
+products/                       # one folder per product, owns its docs
+  domains/index.mdx             # domain registration
+  dns/index.mdx                 # DNS records & zones
+  hosting/index.mdx             # hosting (planned)
+features/                       # cross-product pages only
   products.mdx                  # product overview
-  domains.mdx                   # domain registration
-  dns.mdx                       # DNS records & zones
   api.mdx                       # REST API reference
   security.mdx                  # DNSSEC, access controls
   billing.mdx                   # invoices, payment methods
