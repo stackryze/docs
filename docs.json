@@ -64,7 +64,7 @@
           {
             "group": "Stackryze Domains",
             "pages": [
-              "features/domains"
+              "products/domains/index"
             ]
           }
         ]
@@ -76,7 +76,7 @@
           {
             "group": "Stackryze DNS",
             "pages": [
-              "features/dns"
+              "products/dns/index"
             ]
           }
         ]
@@ -88,7 +88,7 @@
           {
             "group": "Stackryze Hosting",
             "pages": [
-              "features/hosting"
+              "products/hosting/index"
             ]
           }
         ]
