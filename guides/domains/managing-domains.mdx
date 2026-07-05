@@ -27,25 +27,29 @@ Each domain shows:
 
 ## Updating nameservers
 
-To change your DNS provider:
+Every Stackryze Domain keeps the two Stackryze nameservers in the zone (`ns1.stackryze.com` and `ns2.stackryze.com`) and supports up to **4 additional custom nameservers** for redundancy or to point at a third-party provider alongside Stackryze. The maximum number of NS records per domain is **6** — 2 Stackryze (mandatory) plus 4 custom (optional).
+
+To add a third-party provider:
 
 <Steps>
   <Step title="Set up the new provider">
     Create the zone at your new provider first. See the [DNS providers](/guides/domains/dns-providers) list for step-by-step guides.
   </Step>
   <Step title="Open DNS Configuration in the dashboard">
-    Go to **My Domains** and click **Manage** on your domain. Scroll to **DNS Configuration** and click **Edit**.
+    Go to **My Domains** and click **Manage** on your domain. Scroll to **DNS Configuration → Custom nameservers** and click **Add**.
   </Step>
-  <Step title="Replace the nameservers">
-    Replace `ns1.stackryze.com` and `ns2.stackryze.com` with your new ones:
+  <Step title="Enter the provider's hostnames">
+    Add up to 4 authoritative hostnames:
 
-    - **Primary nameserver:** `ns1.example.com`
-    - **Secondary nameserver:** `ns2.example.com`
+    - **Custom 1:** `ns1.example.com`
+    - **Custom 2:** `ns2.example.com`
   </Step>
   <Step title="Save">
-    Click **Save**.
+    Click **Save**. The 2 Stackryze nameservers stay in place alongside your additions.
   </Step>
 </Steps>
+
+The Stackryze nameservers cannot be removed through the dashboard. If you need to delegate entirely to a third party, contact [support@stackryze.com](mailto:support@stackryze.com).
 
 <Note>
   DNS changes propagate in 5–10 minutes, but can take up to 48 hours globally.

@@ -4,22 +4,11 @@ sidebarTitle: "Introduction"
 description: "Free subdomains for founders, freelancers, and small teams — register, manage, and connect in minutes."
 ---
 
-Stackryze Domains gives you a real, public subdomain you can use on any project, portfolio, or side hustle. It is a free registration service run by the same team behind Stackryze DNS.
+Stackryze Domains gives you a real, public subdomain you can use on any project, portfolio, or side hustle. It is a free registration service run by the same team behind Stackryze DNS. The full service lives at [domain.stackryze.com](https://domain.stackryze.com).
 
-The full service lives at [domain.stackryze.com](https://domain.stackryze.com). This documentation covers what a Stackryze Domain is and how it works.
-
-## Namespaces
+## What it is
 
 A Stackryze Domain is a public subdomain registered under one of four namespaces:
-
-| Namespace | Notes |
-| --- | --- |
-| `indevs.in` | The original namespace. Most existing names live here. |
-| `sryze.cc` | Short-form namespace, popular for projects. |
-| `ryzedns.org` | Open-community namespace. |
-| `nx.kg` | Compact namespace, intended for tooling and services. |
-
-A fully-qualified name looks like one of:
 
 ```text
 yourname.indevs.in
@@ -28,76 +17,46 @@ yourname.ryzedns.org
 yourname.nx.kg
 ```
 
-You pick the namespace at registration time and it stays fixed for the life of the name. The same quota, lifecycle, and feature set apply to every namespace — pick whichever fits your project.
+You pick the namespace at registration time and it stays fixed for the life of the name. The same lifecycle, quota, and feature set apply to every namespace — pick whichever fits your project.
 
 ## What you get
 
 Every Stackryze Domain includes, out of the box:
 
-| Capability | Detail |
+- A public subdomain in one of four namespaces.
+- An editable DNS zone, hosted on [Stackryze DNS](/docs/dns) by default.
+- Two Stackryze nameservers (mandatory) plus up to 4 custom nameservers — Cloudflare, Route 53, DigitalOcean, or any other provider.
+- A 1-year registration, renewable from 60 days before expiry.
+- Up to **4 names per account**, one of each namespace.
+
+For the rest of the feature set — naming rules, lifecycle details, nameserver delegation — see the [Concepts](#concepts) section below.
+
+## How it fits the Stackryze surface
+
+| Product | Role |
 | --- | --- |
-| Public subdomain | `<name>.{indevs.in, sryze.cc, ryzedns.org, nx.kg}` |
-| Editable DNS zone | Managed through [Stackryze DNS](/docs/dns) |
-| Custom nameservers | Bring your own DNS provider |
-| 1-year registration | Renewable from 60 days before expiry |
+| Stackryze Domains | The name. Register here. |
+| Stackryze DNS | The resolution. Hosted authoritative DNS, free with every domain. |
+| Stackryze API | The automation layer for both. |
 
-For the full set of features — email forwarding, wildcard records, and the rest — see the linked concept pages in the [Concepts](#concepts) section below.
+## Trust and isolation
 
-## Quota
+A Stackryze Domain behaves exactly like a paid domain on the public DNS. There is no read-only mode, no "internal-only" suffix, and no special handling. Browsers, TLS clients, and APIs treat it the same way they treat any other registered name.
 
-Each Stackryze account can hold up to **4 names**, one per namespace:
+Every registered name is also submitted to the **Public Suffix List** (PSL). The boundary is enforced by the consumers — browsers, certificate authorities, password managers — not by Stackryze. In practice that means:
 
-| Slot | Namespace |
-| --- | --- |
-| 1 | `yourname.indevs.in` |
-| 2 | `yourname.sryze.cc` |
-| 3 | `yourname.ryzedns.org` |
-| 4 | `yourname.nx.kg` |
+- Browsers scope cookies and storage to the registered label, so sibling names under `indevs.in` cannot read each other's data.
+- Certificate authorities verify control of the registered label before issuing TLS certs, the same as for `example.com`.
+- Password managers segregate credentials per registered name.
 
-The intent is one name per project, not one of each. Email [support@stackryze.com](mailto:support@stackryze.com) to request more.
-
-## It works exactly like a normal domain
-
-A Stackryze Domain resolves on the public DNS the same way a paid domain does. There's no special handling, no read-only mode, no "internal only" suffix. Anyone on the internet can resolve it, fetch records from it, send mail to a forwarding address on it, or open a TLS connection to a host on it. From a browser, an API client, a mail server, or a TLS library's perspective, it's indistinguishable from a paid domain.
-
-## Public-suffix behavior
-
-Every registered Stackryze Domain is submitted to the **Public Suffix List** (PSL), the same list browsers, certificate authorities, and password managers consult to decide where one registrable name ends and the next begins. Once a name is on the list, the boundary is enforced by the consumers — not by Stackryze.
-
-What that gives you in practice:
-
-- **Browsers scope cookies correctly.** Chrome, Firefox, Safari, and their derivatives treat `yourname.indevs.in` the same way they treat `example.com` — cookies set on the registered label don't leak to sibling names under `indevs.in`. The boundary mirrors how `co.uk` or `github.io` already work.
-- **Cross-origin isolation holds.** A page served from `app.yourname.indevs.in` cannot read cookies or storage set by a sibling name under `indevs.in` unless that sibling explicitly opts in. The same boundary exists between every registered Stackryze Domain.
-- **Certificate authorities are strict.** When you request a TLS cert for `yourname.indevs.in`, the CA verifies you control the registered label — exactly as they do for `yourname.example.com`. A malicious party can't register a sibling prefix and trick the CA into issuing them a cert that overlaps yours.
-- **Password managers segregate credentials.** 1Password, Bitwarden, Chrome's password store, and others treat each registered Stackryze Domain as its own origin for credential scoping.
-
-You don't need to do anything to benefit from this — it follows from your name being on the Public Suffix List, and PSL-aware tools already respect the boundary by default. The boundary is enforced by the consumers (browsers, CAs, password managers), not by Stackryze.
-
-## Who it's for
-
-Stackryze Domains is built for people who need a real, public DNS name but don't want to pay a registrar or maintain a DNS subscription:
-
-- **Founders** standing up a landing page or product page on the weekend.
-- **Freelancers** hosting a portfolio under a stable name across projects.
-- **Small teams** that want a shared namespace for staging, status pages, or internal tools.
-- **The curious** who want to learn DNS hands-on without a paid commitment.
-
-## What it isn't
+## Boundaries
 
 A Stackryze Domain is not:
 
 - A top-level domain you own. The `indevs.in`, `sryze.cc`, `ryzedns.org`, and `nx.kg` zones belong to the Stackryze registry; you rent your slot under one of them.
-- A replacement for a paid registrar if you need a custom TLD (`example.com`, `example.io`, etc.). Use [Stackryze DNS](/docs/dns) for that, and [point your own domain](/guides/point-domain-to-stackryze) at it.
-- Transferable to another registrar. The name lives under its chosen namespace and stays there for its lifetime.
+- A replacement for a paid registrar if you need a custom TLD (`example.com`, `example.io`, etc.). Use [Stackryze DNS](/docs/dns) and [point your own domain](/guides/point-domain-to-stackryze) at it.
+- Transferable to another registrar. The name lives under its chosen namespace for its lifetime.
 - Movable between namespaces. Once registered, the namespace is fixed. To switch, delete the name and re-register under a different namespace.
-
-## How it fits in the Stackryze surface
-
-| Product | Role |
-| --- | --- |
-| Stackryze Domains | The name. You register it here. |
-| Stackryze DNS | The resolution. Hosted authoritative DNS, free with every domain. |
-| Stackryze API | The automation layer for both products. |
 
 ## Concepts
 
@@ -106,12 +65,6 @@ Dive into the concept that matches what you're working on.
 <Columns cols={2}>
   <Card title="Subdomain naming rules" icon="tag" href="/docs/domains/subdomain-naming">
     What characters and lengths are valid.
-  </Card>
-  <Card title="Email forwarding" icon="envelope" href="/docs/domains/email-forwarding">
-    Catch-all email at any address under your subdomain.
-  </Card>
-  <Card title="Wildcard records" icon="asterisk" href="/docs/domains/wildcard-records">
-    Catch-all DNS for sub-subdomains.
   </Card>
   <Card title="Nameserver delegation" icon="shuffle" href="/docs/domains/nameserver-delegation">
     Use Stackryze nameservers or bring your own.

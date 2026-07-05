@@ -66,7 +66,7 @@ Long TTLs reduce load on the authoritative but slow down changes. Short TTLs let
 
 ## Wildcards fill gaps
 
-A wildcard record (`*.example.com.`) matches any name in the zone that doesn't have a more specific record. It's a way to say "for anything I haven't explicitly named, here's the answer." See [Wildcard records](/docs/domains/wildcard-records) for the full picture.
+A wildcard record (`*.example.com.`) matches any name in the zone that doesn't have a more specific record. It's a way to say "for anything I haven't explicitly named, here's the answer."
 
 ## Why zones aren't the same as domains
 
@@ -86,9 +86,6 @@ In Stackryze DNS, the typical model is: one zone per registered domain, with rec
   </Card>
   <Card title="Nameservers" icon="globe" href="/docs/dns/nameservers">
     Where your zone is served from.
-  </Card>
-  <Card title="Wildcard records" icon="asterisk" href="/docs/domains/wildcard-records">
-    Catch-all DNS at any depth.
   </Card>
   <Card title="Configure DNS records" icon="list" href="/guides/configure-dns-records">
     Add records step by step.

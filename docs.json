@@ -50,8 +50,6 @@
             "pages": [
               "docs/domains/index",
               "docs/domains/subdomain-naming",
-              "docs/domains/email-forwarding",
-              "docs/domains/wildcard-records",
               "docs/domains/nameserver-delegation",
               "docs/domains/domain-lifecycle",
               "docs/domains/security-and-abuse"

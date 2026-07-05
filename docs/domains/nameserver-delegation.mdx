@@ -13,33 +13,47 @@ For a Stackryze Domain, the registry holds the parent zone (`indevs.in`, `sryze.
 
 ## Default delegation
 
-If you don't change anything during registration, your domain is delegated to Stackryze:
+Every Stackryze Domain is delegated to two **mandatory** Stackryze nameservers:
 
 ```dns
 yourname.indevs.in.  IN  NS  ns1.stackryze.com.
 yourname.indevs.in.  IN  NS  ns2.stackryze.com.
 ```
 
-The same delegation applies under every namespace.
+The same delegation applies under every namespace. These two are not optional — they're the registry's nameservers and they stay in the zone for the life of the name.
+
+You can also add up to **4 extra (custom) nameservers** for redundancy or to point at a third-party provider alongside Stackryze's. The full delegation supports up to **6 NS records** in total — 2 Stackryze (mandatory) plus 4 custom (optional):
+
+```dns
+yourname.indevs.in.  IN  NS  ns1.stackryze.com.
+yourname.indevs.in.  IN  NS  ns2.stackryze.com.
+yourname.indevs.in.  IN  NS  ns1.cloudflare.com.   ; optional extra
+yourname.indevs.in.  IN  NS  ns2.cloudflare.com.   ; optional extra
+```
 
 You then manage records inside the [Stackryze DNS dashboard](https://dns.stackryze.com). This is the path of least resistance — one dashboard, one place to add records, free DNSSEC, modern record types, and an API.
 
-## Bringing your own DNS (BYOD)
+## Adding custom nameservers
 
-You can substitute any provider's nameservers during registration or any time afterward. To do so, give Stackryze two or more authoritative hostnames:
+To point at a third-party provider without losing Stackryze, add its nameservers as extras from the **Nameservers** panel of your domain in the dashboard:
 
-| Primary | `ns1.cloudflare.com` |
-| --- | --- |
-| Secondary | `ns2.cloudflare.com` |
+1. Open the domain.
+2. Scroll to **Custom nameservers**.
+3. Add one or more authoritative hostnames. Up to 4 extras can be configured, for a maximum of 6 NS records in total (2 Stackryze + 4 custom).
 
 The provider must already have a zone configured for your subdomain with the nameservers you specified. Stackryze verifies the delegation after a short propagation window and confirms the cutover.
 
-A few constraints apply to every BYOD setup:
+A few constraints apply:
 
-- **At least two nameservers.** A single nameserver is a single point of failure.
+- **Maximum 6 NS records total** — 2 Stackryze (mandatory) plus up to 4 custom.
+- **The two Stackryze nameservers cannot be removed** — they anchor the delegation to the registry.
 - **Publicly reachable.** Stackryze doesn't accept RFC 1918 addresses or hidden primaries.
 - **Authoritative for your subdomain.** The provider must serve the zone you delegated, not just forward to it.
 - **Glue records, if needed.** If your nameservers are themselves under one of the four Stackryze namespaces, glue records must be in place. The dashboard handles this automatically.
+
+## Replacing Stackryze entirely (advanced)
+
+In some cases — for example, when a third-party provider requires exclusive control of the zone — you may want to delegate only to the third party. Reach out to [support@stackryze.com](mailto:support@stackryze.com) to discuss a fully custom delegation. The two Stackryze nameservers remain in the zone by default, but a support-side handoff can move them out for accounts that need it.
 
 ## What changes when you BYOD
 
@@ -49,12 +63,11 @@ Things that stay the same:
 
 - The registration and expiry date.
 - The ability to sign in and renew from the dashboard.
-- Email forwarding — Stackryze still runs the MX for forwarding even if your `A` and `CNAME` records are elsewhere.
 - The ability to bring nameservers back to Stackryze at any time.
 
 Things that move:
 
-- `A`, `AAAA`, `CNAME`, `TXT`, `MX` (real, not forwarding) records.
+- `A`, `AAAA`, `CNAME`, `TXT`, `MX` records.
 - DNSSEC signing (if you enable it on your side).
 - Nameserver redundancy strategy.
 
@@ -92,8 +105,5 @@ Your existing zone in Stackryze DNS is preserved — records you had before the 
   </Card>
   <Card title="Managing domains" icon="gear" href="/guides/domains/managing-domains">
     The walkthrough for changing nameservers.
-  </Card>
-  <Card title="Email forwarding" icon="envelope" href="/docs/domains/email-forwarding">
-    How it survives a BYOD cutover.
   </Card>
 </Columns>

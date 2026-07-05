@@ -48,8 +48,6 @@ docs/                           # one folder per product — conceptual referenc
     index.mdx                   #     landing page (anchor for the Domains tab)
     overview.mdx                #     what a Stackryze Domain is
     subdomain-naming.mdx        #     naming rules
-    email-forwarding.mdx        #     catch-all email
-    wildcard-records.mdx        #     catch-all DNS
     nameserver-delegation.mdx   #     delegation model + BYOD
     domain-lifecycle.mdx        #     register, renew, expire, restore
     security-and-abuse.mdx      #     account security, abuse handling
