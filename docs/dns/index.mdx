@@ -1,57 +1,69 @@
 ---
-title: "DNS"
+title: "Stackryze DNS"
 description: "Modern DNS hosting for everyone — fast, free, and security-first."
 ---
 
-Stackryze DNS is a free DNS hosting service, designed with security in mind. Running on open-source software, it's free for everyone to use.
+Stackryze DNS is a free authoritative DNS hosting service, designed with security in mind. Running on open-source software, it's free for everyone to use.
 
 <Note>
   The full service lives at [dns.stackryze.com](https://dns.stackryze.com). Status & live metrics are at [status.stackryze.com](https://status.stackryze.com).
 </Note>
 
-## The four pillars
+## Concepts
 
-### 1. Modern records
+Start with the overview, then dive into the concept that matches what you're working on.
 
-Native support for the record types the modern web actually uses:
+<Columns cols={2}>
+  <Card title="Overview" icon="circle-info" href="/docs/dns/overview">
+    What Stackryze DNS is and who it's for.
+  </Card>
+  <Card title="Zones and records" icon="layer-group" href="/docs/dns/zones-and-records">
+    The mental model behind DNS data.
+  </Card>
+  <Card title="Supported records" icon="list" href="/docs/dns/supported-records">
+    Every record type, including modern ones.
+  </Card>
+  <Card title="Nameservers" icon="globe" href="/docs/dns/nameservers">
+    Where your zones are served from.
+  </Card>
+  <Card title="DNSSEC" icon="shield" href="/docs/dns/dnssec">
+    Cryptographic validation for your zone.
+  </Card>
+  <Card title="Dynamic DNS" icon="bolt" href="/docs/dns/dynamic-dns">
+    Push IP updates from anywhere.
+  </Card>
+  <Card title="API" icon="code" href="/docs/dns/api">
+    Automate every zone and record.
+  </Card>
+</Columns>
 
-- **`SVCB`** — service bindings, doh, ech, ipv4hints, ipv6hints
-- **`HTTPS`** — alias for SVCB with mandatory `alpn` and `port`
-- **`TLSA`** — DANE TLS association for SMTP, HTTPS, and beyond
+## Task-oriented guides
 
-Plus the classics: `A`, `AAAA`, `CNAME`, `MX`, `NS`, `TXT`, `SRV`, `CAA`, `PTR`, `DNAME`.
+Once you understand the concepts, the guides walk you through the actual steps.
 
-### 2. Simple interface
-
-The easiest way to manage DNS. Clean, fast, intuitive — no upsells, no modal soup, no dark patterns.
-
-### 3. API-first *(under development)*
-
-Full automation using standards-compliant JSON/REST. The same API powers the dashboard, so anything you can click, you can script.
-
-### 4. Open source
-
-100% free and non-profit. Transparent and community-driven. The full DNS engine is MIT-licensed at [github.com/stackryze/DNS](https://github.com/stackryze/DNS).
-
-## Global infrastructure
-
-Strategically located authoritative nameservers ensure low latency and high availability worldwide.
-
-| Hostname | Location |
-| --- | --- |
-| `ns1.stackryze.com` | New York City, USA |
-| `ns2.stackryze.com` | Hyderabad, India |
-| `ns3.stackryze.com` | Nuremberg, Germany |
-| `ns4.stackryze.com` | São Paulo, Brazil |
-
-## Live metrics
-
-Pulled in real time from the [status page](https://status.stackryze.com).
-
-<Frame>
-  <img src="https://dns.stackryze.com/world_map.png" alt="Stackryze global nameserver map" />
-</Frame>
-
-## Closing line
-
-> No complex enterprise pricing. No hidden fees. Just pure, high-performance DNS.
+<Columns cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    From zero to a working zone in five minutes.
+  </Card>
+  <Card title="Add a custom domain" icon="globe" href="/guides/add-a-custom-domain">
+    Wire up a domain you already own.
+  </Card>
+  <Card title="Configure DNS records" icon="list" href="/guides/configure-dns-records">
+    Add records step by step.
+  </Card>
+  <Card title="Enable DNSSEC" icon="shield-check" href="/guides/enable-dnssec">
+    Turn on cryptographic validation.
+  </Card>
+  <Card title="Dynamic DNS guide" icon="bolt" href="/guides/dynamic-dns">
+    Set up a DDNS client.
+  </Card>
+  <Card title="API quickstart" icon="code" href="/guides/api-quickstart">
+    First API call in five minutes.
+  </Card>
+  <Card title="Webhooks" icon="webhook" href="/guides/webhooks">
+    Subscribe to zone and record events.
+  </Card>
+  <Card title="Billing" icon="credit-card" href="/guides/billing-introduction">
+    How Stackryze is funded.
+  </Card>
+</Columns>

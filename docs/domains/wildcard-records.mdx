@@ -1,0 +1,93 @@
+---
+title: "Wildcard records"
+description: "Catch-all DNS for every sub-subdomain under your Stackryze Domain."
+---
+
+Every Stackryze Domain supports wildcard DNS records. A wildcard record matches any sub-subdomain that doesn't have its own record, which lets you run multi-tenant apps or per-customer subdomains without managing a record for every one.
+
+## What a wildcard is
+
+A wildcard record uses `*` as the leftmost label:
+
+```dns
+*.yourname.indevs.in.  300  IN  CNAME  yourname.indevs.in.
+```
+
+With this record in place, anything under `*.yourname.indevs.in` resolves — `app.yourname.indevs.in`, `tenant-42.yourname.indevs.in`, `anything-you-can-think-of.yourname.indevs.in` — to the same target.
+
+## When wildcards pay off
+
+Wildcards are useful when you don't know the names ahead of time:
+
+- **Multi-tenant apps** — every customer gets `<tenant>.yourname.indevs.in` for free, no per-tenant DNS edits.
+- **Preview environments** — every pull request gets `<pr-number>.yourname.indevs.in` without touching the zone.
+- **User subdomains** — `<username>.yourname.indevs.in` for a social product, dynamically resolved.
+- **Catch-all landing pages** — show a default page for any typo, no 404.
+
+## When they don't
+
+Wildcards are a bad fit when:
+
+- You want different records for different subdomains and they're known at registration time.
+- You're sending mail from arbitrary subdomains (each sender needs its own SPF chain — see [Email forwarding](/docs/domains/email-forwarding)).
+- You're using DNSSEC and have wildcard-specific signing concerns to think through.
+
+## How wildcard resolution works
+
+DNS resolution is "longest match wins." Given the zone:
+
+```dns
+yourname.indevs.in.       IN  A     192.0.2.1
+*.yourname.indevs.in.     IN  CNAME yourname.indevs.in.
+api.yourname.indevs.in.   IN  A     192.0.2.10
+```
+
+| Query | Returns | Why |
+| --- | --- | --- |
+| `yourname.indevs.in` | `192.0.2.1` | Direct match on apex |
+| `app.yourname.indevs.in` | `192.0.2.1` (via CNAME) | Wildcard match |
+| `api.yourname.indevs.in` | `192.0.2.10` | Direct match, wildcard ignored |
+
+The wildcard never shadows a more specific record. It only fills in gaps.
+
+## Wildcards in Stackryze DNS
+
+In the [Stackryze DNS dashboard](https://dns.stackryze.com), add a record with the name `*` and the type you want (`A`, `AAAA`, `CNAME`, etc.):
+
+| Name | Type | Value |
+| --- | --- | --- |
+| `*` | `CNAME` | `yourname.indevs.in.` |
+
+The trailing dot matters. Don't skip it.
+
+If you bring your own DNS provider (see [Nameserver delegation](/docs/domains/nameserver-delegation)), the same `*` syntax works in their UI.
+
+## Wildcards and TLS
+
+A wildcard `A` or `AAAA` record by itself does **not** provision a wildcard TLS certificate. To serve HTTPS on every subdomain, you have two paths:
+
+1. **Use a CDN that does it for you** — Cloudflare's free tier issues wildcard certs automatically when you proxy through them.
+2. **Use ACME-DNS-01 challenges** — tools like Caddy, `acme.sh`, and `certbot` can issue wildcard certs by creating a `_acme-challenge` TXT record for each issuance.
+
+Wildcard certificates are valid for one level of subdomain only. A cert for `*.yourname.indevs.in` covers `app.yourname.indevs.in` but not `eu.app.yourname.indevs.in`. For deeper coverage, stack records and certs.
+
+## Wildcards and email forwarding
+
+Wildcards are DNS, not mail. The email forwarding system matches on the full recipient address (`<local>@<domain>`), so a wildcard DNS record doesn't accidentally create `*@yourname.indevs.in`. You still set up forwarders explicitly per local part.
+
+## Where to go next
+
+<Columns cols={2}>
+  <Card title="Nameserver delegation" icon="shuffle" href="/docs/domains/nameserver-delegation">
+    Use Stackryze nameservers or your own.
+  </Card>
+  <Card title="Zones and records" icon="layer-group" href="/docs/dns/zones-and-records">
+    The mental model behind records.
+  </Card>
+  <Card title="Configure DNS records" icon="list" href="/guides/configure-dns-records">
+    How to add records step by step.
+  </Card>
+  <Card title="DNSSEC" icon="shield" href="/docs/dns/dnssec">
+    Cryptographic validation for zones.
+  </Card>
+</Columns>

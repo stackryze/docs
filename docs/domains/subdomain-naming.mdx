@@ -1,0 +1,104 @@
+---
+title: "Subdomain naming rules"
+description: "What characters, lengths, and shapes a Stackryze subdomain name can take."
+---
+
+Every Stackryze Domain follows the same naming rules. The rules are enforced at registration and during any custom-nameserver update, so it's worth understanding them once.
+
+## The shape
+
+A Stackryze Domain is a single label under `indevs.in`:
+
+```text
+<your-label>.indevs.in
+```
+
+`<your-label>` is the part you choose. The `indevs.in` suffix is fixed — it identifies the registry and never changes.
+
+## Length
+
+| Bound | Value |
+| --- | --- |
+| Minimum | 3 characters |
+| Maximum | 63 characters |
+| Recommended | 8–24 characters |
+
+A 3-character name like `abc.indevs.in` is valid but rare. Names in the 8–24 range are easier to read, share, and remember.
+
+## Allowed characters
+
+A label may contain only:
+
+- Lowercase ASCII letters (`a`–`z`)
+- Digits (`0`–`9`)
+- Hyphens (`-`)
+
+It may **not** contain:
+
+- Uppercase letters
+- Spaces
+- Underscores or any other punctuation
+- Internationalized characters (`münchen`, `日本語`, emojis)
+
+The system lowercases anything you type, so `MyProject.indevs.in` and `myproject.indevs.in` resolve to the same name.
+
+## Position rules for hyphens
+
+- A hyphen **cannot** appear as the first character.
+- A hyphen **cannot** appear as the last character.
+- Consecutive hyphens are allowed in the middle but are discouraged for readability.
+
+| Label | Valid | Why |
+| --- | --- | --- |
+| `myproject` | ✅ | Lowercase, alphanumeric |
+| `john-portfolio` | ✅ | Hyphen in the middle |
+| `api2024` | ✅ | Letters and digits |
+| `-myproject` | ❌ | Starts with hyphen |
+| `myproject-` | ❌ | Ends with hyphen |
+| `My_Project` | ❌ | Uppercase, underscore |
+| `my project` | ❌ | Space |
+| `ab` | ❌ | Too short |
+
+## Case insensitivity
+
+DNS is case-insensitive. The registry treats `MyProject.indevs.in` and `myproject.indevs.in` as the same name. To avoid ambiguity, always write and share your domain in lowercase.
+
+## Uniqueness and reuse
+
+A name can be owned by one Stackryze account at a time. When a name is released — through deletion, expiry past the grace period, or a registry pull — it enters a **cooling-off period** before it can be registered again. See [Domain lifecycle](/docs/domains/domain-lifecycle) for the timeline.
+
+## Reserved names
+
+A small set of labels are reserved for Stackryze services and cannot be registered:
+
+- `www`, `mail`, `admin`, `api`, `dashboard`
+- `ns1`, `ns2`, `ns3`, `ns4`
+- Anything matching `stackryze`, `indevs`, or a known abuse pattern
+
+The registration form rejects these with a clear message before you spend time filling in the CAPTCHA.
+
+## Choosing a good name
+
+A few heuristics that hold up over time:
+
+- **Pronounceable** beats clever. `tarun.dev` is easier to share than `t8rn-d3v`.
+- **Stable** beats topical. Names tied to a single project get awkward when the project pivots.
+- **Short** beats long, once it's still readable.
+- **Lowercase everywhere** to avoid the casing ambiguity trap.
+
+## Where to go next
+
+<Columns cols={2}>
+  <Card title="Overview" icon="circle-info" href="/docs/domains/overview">
+    What a Stackryze Domain is.
+  </Card>
+  <Card title="Domain lifecycle" icon="clock" href="/docs/domains/domain-lifecycle">
+    What happens to a name over time.
+  </Card>
+  <Card title="Getting started" icon="rocket" href="/guides/domains/getting-started">
+    Register your first domain.
+  </Card>
+  <Card title="Naming errors" icon="circle-exclamation" href="/guides/domains/troubleshooting">
+    Common rejection messages and fixes.
+  </Card>
+</Columns>

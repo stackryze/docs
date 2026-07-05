@@ -1,0 +1,120 @@
+---
+title: "Supported records"
+description: "Every record type Stackryze DNS serves, including the modern ones most providers skip."
+---
+
+Stackryze DNS serves every classic DNS record type and a strong set of modern ones — the records the modern web actually uses, not just the 1990s subset.
+
+## Classic records
+
+| Type | Purpose | Example |
+| --- | --- | --- |
+| `A` | Map a name to an IPv4 address | `192.0.2.1` |
+| `AAAA` | Map a name to an IPv6 address | `2001:db8::1` |
+| `CNAME` | Alias one name to another | `app.example.com. → example.com.` |
+| `DNAME` | Redirect a whole subtree | `old.example.com. → new.example.com.` |
+| `MX` | Mail exchange | `10 mail.example.com.` |
+| `NS` | Delegation (managed by Stackryze for its own zones) | `ns1.stackryze.com.` |
+| `TXT` | Free-form text — SPF, DKIM, DMARC, verification | `"v=spf1 -all"` |
+| `SRV` | Service locator (XMPP, SIP, Matrix, Minecraft) | `_minecraft._tcp.example.com.` |
+| `CAA` | Restrict which CAs can issue certs | `0 issue "letsencrypt.org"` |
+| `PTR` | Reverse DNS | handled via the API only |
+| `SOA` | Start of authority (managed by Stackryze) | — |
+
+## Modern records
+
+These are the records the modern web is built on and most providers still don't support. Stackryze DNS serves them natively.
+
+### `SVCB` and `HTTPS`
+
+Service bindings — a single record that says "to reach this service, here's the host, the port, the ALPN, and the IP hints."
+
+```dns
+_app.example.com.  300  IN  SVCB  1 app.example.com. alpn="h3,h2" port=443 ipv4hint=192.0.2.1 ipv6hint=2001:db8::1
+www.example.com.   300  IN  HTTPS 1 . alpn="h3,h2" port=443 ipv4hint=192.0.2.1
+```
+
+`HTTPS` is a mandatory-`alpn` alias of `SVCB` for the common case of serving HTTPS.
+
+Common SvcParams:
+
+| Param | Purpose |
+| --- | --- |
+| `alpn` | Protocols to negotiate (`h2`, `h3`) |
+| `port` | Port to reach the service on |
+| `ipv4hint` | IPv4 hints to skip resolver lookups |
+| `ipv6hint` | IPv6 hints |
+| `dohpath` | DNS-over-HTTPS path for the resolver |
+| `ech` | Encrypted Client Hello config |
+
+### `TLSA`
+
+DANE — associate a TLS certificate or public key with a name. Used to lock down SMTP, HTTPS, and other TLS endpoints against rogue CAs.
+
+```dns
+_443._tcp.example.com.  3600  IN  TLSA  3 1 1 (
+    5c1502d3377fe1e0a4f8e2cd9c8b3e5d4e8e3b6d8c4a6b1c5d3a7c8b9d0e1f2a
+    3b4c5d6e7f80 )
+```
+
+Three fields:
+
+| Field | Value | Meaning |
+| --- | --- | --- |
+| Certificate usage | `0`–`3` | `3` (DANE-EE) is the most common — pin the end-entity cert |
+| Selector | `0` or `1` | Match full cert (`0`) or public key (`1`) |
+| Matching type | `0`–`2` | Exact match (`1`), SHA-256 (`1`), SHA-512 (`2`) |
+
+### `OPENPGPKEY` and `SMIMEA`
+
+Associate an OpenPGP or S/MIME key with an email address for end-to-end crypto verification:
+
+```dns
+<local-part>._openpgpkey.example.com.  IN  OPENPGPKEY  <binary key blob>
+```
+
+### `CAA`, `CERT`, `DS`, `DNSKEY`, `RRSIG`, `NSEC`, `NSEC3`
+
+The DNSSEC chain records, plus `CAA` and `CERT`. All served correctly. NSEC3 with opt-out is supported.
+
+### `URI`
+
+Publish a target URI for a name, used by some SSHFP and call-home protocols:
+
+```dns
+_ftp._tcp.example.com.  IN  URI  10 1 "ftp://ftp.example.com/public"
+```
+
+### `NAPTR`
+
+Naming Authority Pointer — used by ENUM, SIP, and XMPP federation:
+
+```dns
+sip.example.com.  IN  NAPTR  100 50 "s" "SIP+D2U" "" _sip._udp.example.com.
+```
+
+## What's *not* supported
+
+A few record types deliberately aren't served by Stackryze DNS:
+
+- **Wildcard DNSSEC** at multiple levels without explicit signing.
+- **`TYPE65534`** and other private/experimental types.
+
+If you need an exotic record type not listed here, open an issue on [github.com/stackryze/DNS](https://github.com/stackryze/DNS).
+
+## Where to go next
+
+<Columns cols={2}>
+  <Card title="Zones and records" icon="layer-group" href="/docs/dns/zones-and-records">
+    The mental model behind records.
+  </Card>
+  <Card title="DNSSEC" icon="shield" href="/docs/dns/dnssec">
+    Cryptographic validation for your zone.
+  </Card>
+  <Card title="Configure DNS records" icon="list" href="/guides/configure-dns-records">
+    Step-by-step record creation.
+  </Card>
+  <Card title="API reference" icon="code" href="/docs/dns/api">
+    Manage records programmatically.
+  </Card>
+</Columns>

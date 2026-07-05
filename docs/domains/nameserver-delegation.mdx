@@ -1,0 +1,97 @@
+---
+title: "Nameserver delegation"
+description: "How a Stackryze Domain gets pointed at authoritative nameservers, and what changes when you bring your own."
+---
+
+Every Stackryze Domain is delegated to authoritative nameservers the moment you register it. By default those are Stackryze nameservers. You can swap them for any provider you control — that's the "BYOD" (Bring Your Own DNS) model.
+
+## What delegation means
+
+A delegation is a set of `NS` records that says "for queries about this zone, ask these nameservers." Whoever controls those nameservers controls the DNS for the domain.
+
+For a Stackryze Domain, the registry holds the parent `indevs.in` zone. When you register, the registry writes `NS` records under your subdomain pointing at the nameservers you specified. From that point on, every resolver on the internet queries those nameservers for everything under your subdomain.
+
+## Default delegation
+
+If you don't change anything during registration, your domain is delegated to Stackryze:
+
+```dns
+yourname.indevs.in.  IN  NS  ns1.stackryze.com.
+yourname.indevs.in.  IN  NS  ns2.stackryze.com.
+```
+
+You then manage records inside the [Stackryze DNS dashboard](https://dns.stackryze.com). This is the path of least resistance — one dashboard, one place to add records, free DNSSEC, modern record types, and an API.
+
+## Bringing your own DNS (BYOD)
+
+You can substitute any provider's nameservers during registration or any time afterward. To do so, give Stackryze two or more authoritative hostnames:
+
+| Primary | `ns1.cloudflare.com` |
+| --- | --- |
+| Secondary | `ns2.cloudflare.com` |
+
+The provider must already have a zone configured for your subdomain with the nameservers you specified. Stackryze verifies the delegation after a short propagation window and confirms the cutover.
+
+A few constraints apply to every BYOD setup:
+
+- **At least two nameservers.** A single nameserver is a single point of failure.
+- **Publicly reachable.** Stackryze doesn't accept RFC 1918 addresses or hidden primaries.
+- **Authoritative for your subdomain.** The provider must serve the zone you delegated, not just forward to it.
+- **Glue records, if needed.** If your nameservers are themselves under `indevs.in`, glue records must be in place. The dashboard handles this automatically.
+
+## What changes when you BYOD
+
+The DNS records for your domain live at the new provider, not in Stackryze. Stackryze still owns the registration and the renewal clock, but the *resolution* is now your responsibility.
+
+Things that stay the same:
+
+- The registration and expiry date.
+- The ability to sign in and renew from the dashboard.
+- Email forwarding — Stackryze still runs the MX for forwarding even if your `A` and `CNAME` records are elsewhere.
+- The ability to bring nameservers back to Stackryze at any time.
+
+Things that move:
+
+- `A`, `AAAA`, `CNAME`, `TXT`, `MX` (real, not forwarding) records.
+- DNSSEC signing (if you enable it on your side).
+- Nameserver redundancy strategy.
+
+## Propagation timing
+
+Delegation changes propagate through the DNS hierarchy:
+
+| Layer | Typical |
+| --- | --- |
+| Stackryze registry → parent zone | seconds |
+| Public resolvers picking up the change | 5–10 minutes |
+| Long-tail resolvers (ISP caches) | up to 48 hours |
+
+The registry update is fast. The full internet catching up is not. Plan changes for low-traffic windows when you can, but accept that you cannot control the long tail.
+
+## Switching back to Stackryze nameservers
+
+At any point, return the nameservers to:
+
+```text
+ns1.stackryze.com
+ns2.stackryze.com
+```
+
+Your existing zone in Stackryze DNS is preserved — records you had before the BYOD experiment come back. Records you added at the third-party provider are not migrated; copy them by hand if you need them.
+
+## Where to go next
+
+<Columns cols={2}>
+  <Card title="DNS providers" icon="server" href="/guides/domains/dns-providers">
+    Setup guides for Cloudflare, Route 53, DigitalOcean, and more.
+  </Card>
+  <Card title="Stackryze nameservers" icon="globe" href="/docs/dns/nameservers">
+    The default delegation's infrastructure.
+  </Card>
+  <Card title="Managing domains" icon="gear" href="/guides/domains/managing-domains">
+    The walkthrough for changing nameservers.
+  </Card>
+  <Card title="Email forwarding" icon="envelope" href="/docs/domains/email-forwarding">
+    How it survives a BYOD cutover.
+  </Card>
+</Columns>

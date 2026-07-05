@@ -1,0 +1,98 @@
+---
+title: "Nameservers"
+description: "The four authoritative nameservers that serve every Stackryze DNS zone."
+---
+
+Stackryze DNS zones are served by four globally distributed authoritative nameservers. This page explains where they live, how they're configured, and how to verify they're answering for your zone.
+
+## The four nameservers
+
+| Hostname | Location | Network |
+| --- | --- | --- |
+| `ns1.stackryze.com` | New York City, USA | Anycast |
+| `ns2.stackryze.com` | Hyderabad, India | Anycast |
+| `ns3.stackryze.com` | Nuremberg, Germany | Anycast |
+| `ns4.stackryze.com` | São Paulo, Brazil | Anycast |
+
+The four sites are not failover pairs — they all answer authoritatively at all times. Anycast announces the same IP prefix from each location, so a resolver in Singapore reaches Nuremberg in milliseconds while a resolver in São Paulo reaches São Paulo directly.
+
+## Why four
+
+Four sites give you:
+
+- **Geographic spread.** Every continent has a local ingress point.
+- **Redundancy across any two failures.** Lose any two sites, the other two keep the zone live.
+- **Capacity headroom.** A single zone going viral doesn't degrade service for other zones.
+
+The engine runs the same open-source authoritative server (PowerDNS) at every site, backed by a replicated database. Updates from the API or dashboard are written once and propagated to every site within seconds.
+
+## How queries reach the right site
+
+When a recursive resolver (your ISP's, or 8.8.8.8, or 1.1.1.1) needs to answer a query for `app.example.com`, it follows the delegation chain:
+
+1. Look up `example.com` `NS` records at the `.com` nameservers.
+2. Find `example.com`'s nameservers — for example, `ns1.stackryze.com`.
+3. Resolve `ns1.stackryze.com` itself, which returns any of the four anycast IPs.
+4. The IP selected depends on BGP routing — closest path wins.
+5. Send the original `app.example.com` query to that IP.
+6. Receive the answer from whichever physical site is closest on the network.
+
+Steps 3–6 take milliseconds. The first two are the "real" DNS lookup latency, and they depend on the upstream resolvers, not on Stackryze.
+
+## Verifying delegation
+
+To confirm a zone is delegated to Stackryze:
+
+```bash
+dig NS example.com @1.1.1.1 +short
+```
+
+You should see the four `ns*.stackryze.com` hostnames. If you see anything else, the zone is still delegated elsewhere.
+
+To confirm a specific nameserver is answering:
+
+```bash
+dig A app.example.com @ns1.stackryze.com +short
+```
+
+If you get back an IP, the nameserver is live and authoritative for the zone.
+
+## Latency expectations
+
+Approximate resolver-to-nameserver RTTs by region (95th percentile):
+
+| Region | Expected RTT |
+| --- | --- |
+| North America east coast | < 20 ms (NYC) |
+| North America west coast | < 80 ms (NYC via backbone) |
+| Europe | < 30 ms (Nuremberg) |
+| Middle East / South Asia | < 30 ms (Hyderabad) |
+| East Asia / Oceania | < 80 ms (Nuremberg via backbone) |
+| South America | < 30 ms (São Paulo) |
+
+If you see RTTs above these numbers for a long time, something is wrong with your upstream resolver or with the path to the nearest site.
+
+## Health and status
+
+Live health metrics for every nameserver are at [status.stackryze.com](https://status.stackryze.com). The status page shows query rates, response times, and any incidents in flight.
+
+## When to bring your own nameservers
+
+If you need nameservers in a region Stackryze doesn't yet cover, or you need a custom setup (split-horizon DNS, geo-routing, etc.), you can BYOD — see [Nameserver delegation](/docs/domains/nameserver-delegation) for the model and [DNS providers](/guides/domains/dns-providers) for setup guides.
+
+## Where to go next
+
+<Columns cols={2}>
+  <Card title="Overview" icon="circle-info" href="/docs/dns/overview">
+    What Stackryze DNS is.
+  </Card>
+  <Card title="DNSSEC" icon="shield" href="/docs/dns/dnssec">
+    Cryptographic validation.
+  </Card>
+  <Card title="Zones and records" icon="layer-group" href="/docs/dns/zones-and-records">
+    The zone/record mental model.
+  </Card>
+  <Card title="API" icon="code" href="/docs/dns/api">
+    Automate zone changes.
+  </Card>
+</Columns>

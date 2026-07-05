@@ -1,0 +1,96 @@
+---
+title: "Zones and records"
+description: "The mental model that makes DNS make sense — zones, records, delegation, and the lifetime of a query."
+---
+
+DNS is simple once you have the right mental model. This page explains what zones and records actually are, how they relate, and what happens when a query is answered.
+
+## A zone is a slice of the namespace
+
+A **zone** is a contiguous portion of the DNS namespace that one entity is responsible for serving authoritatively. For example, `example.com` is a zone if `example.com` and everything under it (`app.example.com`, `mail.example.com`, ...) is served by one set of nameservers.
+
+The boundary is set by **delegation**. The parent zone (`.com` in this case) holds `NS` records pointing at the nameservers that serve `example.com`. From that point down, `example.com` is its own zone.
+
+## Records are facts about names
+
+Inside a zone, **records** are facts about names. Each record says "for this name, this is true." A zone file (or its database equivalent) is just a list of those facts.
+
+```dns
+example.com.       3600  IN  A      192.0.2.1
+app.example.com.   300   IN  CNAME  example.com.
+mail.example.com.  3600  IN  A      192.0.2.10
+@                  3600  IN  MX     10 mail.example.com.
+```
+
+| Name | Type | Value | What it means |
+| --- | --- | --- | --- |
+| `example.com.` | `A` | `192.0.2.1` | The apex resolves to 192.0.2.1 |
+| `app.example.com.` | `CNAME` | `example.com.` | `app` is an alias for the apex |
+| `mail.example.com.` | `A` | `192.0.2.10` | The mail server is at 192.0.2.10 |
+| `@` | `MX` | `10 mail.example.com.` | Mail for the zone goes to `mail.example.com.` |
+
+The trailing dots matter: `example.com.` is the fully-qualified name, and `@` is shorthand for "the apex of this zone."
+
+## The lifetime of a query
+
+When a resolver needs the IP for `app.example.com`, here's what happens:
+
+1. **Query the root.** The resolver asks a root server (`.`) where to find `.com`.
+2. **Query `.com`.** The `.com` nameservers respond with the `NS` records for `example.com`.
+3. **Query the authoritative.** The resolver picks one of those nameservers (or anycast IP) and asks for `app.example.com`.
+4. **Follow CNAMEs.** The authoritative responds with a `CNAME` to `example.com`. The resolver follows it.
+5. **Final answer.** The authoritative for `example.com` returns the `A` record `192.0.2.1`.
+6. **Cache.** The resolver caches the answer for the TTL on the record (here, 300 seconds).
+
+Steps 1–4 are called *delegation chasing*. They're the slow part of DNS. Step 5 is fast — once you're at the right authoritative, the answer is local.
+
+## Delegation vs. zone
+
+Delegation is the act of one zone pointing at another. `example.com` is delegated from `.com`; `mail.example.com` is *not* delegated (it's the same zone as `example.com`).
+
+A common point of confusion: every `NS` record creates a delegation. Sub-delegations (`app.example.com NS ns1.other.com`) are possible but rare and usually a mistake — they hand control of the subtree to a different set of nameservers.
+
+In Stackryze DNS, you don't typically create sub-delegations. Every name you add lives inside your one zone, served by Stackryze's four nameservers.
+
+## TTL controls caching
+
+Every record has a **TTL** (Time To Live) — the number of seconds a resolver is allowed to cache the answer before re-querying. Stackryze DNS defaults to 300 seconds (5 minutes) for most records.
+
+| TTL | When to use |
+| --- | --- |
+| 60–300 | Frequently changing records, low-traffic overhead of re-queries |
+| 3600 | Default for most records |
+| 86400 (1 day) | Stable records, large deployments that care about query volume |
+
+Long TTLs reduce load on the authoritative but slow down changes. Short TTLs let you change records fast but cost more queries. Use long TTLs for `A` records pointing at static infrastructure; use short TTLs during migrations or for dynamic records.
+
+## Wildcards fill gaps
+
+A wildcard record (`*.example.com.`) matches any name in the zone that doesn't have a more specific record. It's a way to say "for anything I haven't explicitly named, here's the answer." See [Wildcard records](/docs/domains/wildcard-records) for the full picture.
+
+## Why zones aren't the same as domains
+
+The two get conflated because in practice you usually have one zone per registered domain. But you can have:
+
+- **One zone, multiple domains** — common in `CNAME`-based setups.
+- **Multiple zones, one domain** — rare; happens with sub-delegations.
+- **Empty zones** — placeholder zones that exist only for the delegation.
+
+In Stackryze DNS, the typical model is: one zone per registered domain, with records living under it. Sub-delegations are not exposed in the dashboard because they cause more confusion than they solve.
+
+## Where to go next
+
+<Columns cols={2}>
+  <Card title="Supported records" icon="list" href="/docs/dns/supported-records">
+    Every record type Stackryze serves.
+  </Card>
+  <Card title="Nameservers" icon="globe" href="/docs/dns/nameservers">
+    Where your zone is served from.
+  </Card>
+  <Card title="Wildcard records" icon="asterisk" href="/docs/domains/wildcard-records">
+    Catch-all DNS at any depth.
+  </Card>
+  <Card title="Configure DNS records" icon="list" href="/guides/configure-dns-records">
+    Add records step by step.
+  </Card>
+</Columns>

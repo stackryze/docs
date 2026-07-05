@@ -1,0 +1,72 @@
+---
+title: "Overview"
+description: "What Stackryze Domains is, who it's for, and what you get."
+---
+
+Stackryze Domains gives you a real, public subdomain you can use on any project, portfolio, or side hustle. It is a free, open-source domain registration service run by the same team behind Stackryze DNS.
+
+## What a Stackryze Domain is
+
+A Stackryze Domain is a public subdomain under the `indevs.in` namespace. The fully-qualified form looks like:
+
+```text
+yourname.indevs.in
+```
+
+Each name is registered for one year, renewable from inside your account. The name resolves on the public DNS the moment registration completes — there is no propagation delay for the delegation itself, only for changes you make afterward.
+
+## What you get
+
+Every Stackryze Domain includes, out of the box:
+
+| Capability | Detail |
+| --- | --- |
+| Public subdomain | `<name>.indevs.in` |
+| Editable DNS zone | Managed through [Stackryze DNS](/docs/dns/overview) |
+| Email forwarding | `<anything>@<name>.indevs.in` → any inbox |
+| Wildcard records | `*.<name>.indevs.in` works |
+| Custom nameservers | Bring your own DNS provider |
+| 1-year registration | Renewable from 60 days before expiry |
+| Account-bound quota | 5 domains per account, by default |
+
+## Who it's for
+
+Stackryze Domains is built for people who need a real, public DNS name but don't want to pay a registrar or maintain a DNS subscription:
+
+- **Founders** standing up a landing page or product page on the weekend.
+- **Freelancers** hosting a portfolio under a stable name across projects.
+- **Small teams** that want a shared namespace for staging, status pages, or internal tools.
+- **The curious** who want to learn DNS hands-on without a paid commitment.
+
+## What it isn't
+
+A Stackryze Domain is not:
+
+- A top-level domain you own. The `indevs.in` zone belongs to the Stackryze registry; you rent your slot under it.
+- A replacement for a paid registrar if you need a custom TLD (`example.com`, `example.io`, etc.). Use [Stackryze DNS](/docs/dns/overview) for that, and [point your own domain](/guides/point-domain-to-stackryze) at it.
+- Transferable to another registrar. The name lives under `indevs.in` and stays there for its lifetime.
+
+## How it fits in the Stackryze surface
+
+| Product | Role |
+| --- | --- |
+| Stackryze Domains | The name. You register it here. |
+| Stackryze DNS | The resolution. Hosted authoritative DNS, free with every domain. |
+| Stackryze API | The automation layer for both products. |
+
+## Where to go next
+
+<Columns cols={2}>
+  <Card title="Subdomain naming rules" icon="tag" href="/docs/domains/subdomain-naming">
+    What characters and lengths are valid.
+  </Card>
+  <Card title="Nameserver delegation" icon="shuffle" href="/docs/domains/nameserver-delegation">
+    Use Stackryze nameservers or bring your own.
+  </Card>
+  <Card title="Domain lifecycle" icon="clock" href="/docs/domains/domain-lifecycle">
+    Register, renew, expire, restore.
+  </Card>
+  <Card title="Getting started" icon="rocket" href="/guides/domains/getting-started">
+    The task-oriented walkthrough.
+  </Card>
+</Columns>

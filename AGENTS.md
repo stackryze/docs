@@ -43,12 +43,29 @@ docs.json                       # navigation, theme, colors, logos
 index.mdx                       # docs landing
 quickstart.mdx                  # 5-minute DNS setup
 account-verification.mdx        # verification flow
-docs/                           # one folder per product — overview & reference content
+docs/                           # one folder per product — conceptual reference content
   domains/                      #   Stackryze Domains (indevs.in subdomains)
-    index.mdx                   #     product overview (anchor for the Domains tab)
+    index.mdx                   #     landing page (anchor for the Domains tab)
+    overview.mdx                #     what a Stackryze Domain is
+    subdomain-naming.mdx        #     naming rules
+    email-forwarding.mdx        #     catch-all email
+    wildcard-records.mdx        #     catch-all DNS
+    nameserver-delegation.mdx   #     delegation model + BYOD
+    domain-lifecycle.mdx        #     register, renew, expire, restore
+    security-and-abuse.mdx      #     account security, abuse handling
     media/                      #     screenshots (Cloudflare, Route 53, DigitalOcean, dashboard)
-  dns/index.mdx                 #   Stackryze DNS records & zones (anchor for the StackNS tab)
-  hosting/index.mdx             #   Stackryze Hosting (planned; anchor for the Hosting tab)
+  dns/                          #   Stackryze DNS records & zones (anchor for the StackNS tab)
+    index.mdx                   #     landing page
+    overview.mdx                #     what Stackryze DNS is
+    zones-and-records.mdx       #     zone/record mental model
+    supported-records.mdx       #     every record type, including modern ones
+    nameservers.mdx             #     the four authoritative sites
+    dnssec.mdx                  #     cryptographic validation
+    dynamic-dns.mdx             #     push updates from anywhere
+    api.mdx                     #     REST API reference
+  hosting/                      #   Stackryze Hosting (planned; anchor for the Hosting tab)
+    index.mdx                   #     landing page
+    overview.mdx                #     what Hosting will be
 guides/                         # all task-oriented and how-to content
   add-a-custom-domain.mdx
   point-domain-to-stackryze.mdx

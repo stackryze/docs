@@ -1,0 +1,116 @@
+---
+title: "Domain lifecycle"
+description: "What happens to a Stackryze Domain from registration through expiry, grace, deletion, and re-release."
+---
+
+Every Stackryze Domain moves through the same fixed lifecycle. Knowing the timeline means you can plan renewals, avoid surprise releases, and recover from accidental deletions with confidence.
+
+## States
+
+A Stackryze Domain is in exactly one of these states at a time:
+
+| State | Meaning |
+| --- | --- |
+| **Active** | Working normally. |
+| **Expiring Soon** | Less than 60 days until expiry. |
+| **Expired (grace)** | Past expiry, still resolvable, DNS intact. |
+| **Pending Deletion** | Soft-deleted; DNS removed; cooling-off timer running. |
+| **Deleted (cooling-off)** | Name is locked for re-registration. |
+| **Released** | Name is available for a new registration. |
+
+## The full timeline
+
+Day counts are from the original expiry date of a one-year registration:
+
+| Day | What happens |
+| --- | --- |
+| **−60** | Renewal window opens. Status flips to "Expiring Soon". First email reminder sent. |
+| **−10** | Second email reminder sent. |
+| **0** | Domain expires. Status moves to "Expired (grace)". DNS continues to resolve. |
+| **+1 to +15** | Grace period. Domain still works, all records intact. You can still renew. |
+| **+15** | Soft deletion. DNS records removed. Name enters cooling-off. |
+| **+15 to +22** | Cooling-off period. Nobody — including you — can register the name. |
+| **+22** | Name is released. Anyone can register it again. |
+
+The grace period gives you two weeks of buffer after expiry to renew. After the grace period, the DNS is removed and the name enters a one-week cooling-off before it becomes registrable again.
+
+## Renewal
+
+Renewal is the only operation that extends a domain's life. It's free for Stackryze Domains and available from 60 days before expiry. After you renew, the expiry clock is reset by one year from the current expiry date (not from today).
+
+You can renew:
+
+- **From the dashboard** — My Domains → Renew → confirm.
+- **From the renewal email reminders** — both contain a deep link.
+- **Up to one renewal per day** is allowed; multiple renewals stack by adding years.
+
+After day 0 but before day 15, renewal is still possible from the same dashboard. Once day 15 hits, the domain is deleted and there's no path back.
+
+## Grace period behavior
+
+During the 15-day grace period:
+
+- **Resolution continues.** Your site, API, and any service backed by the domain keeps working.
+- **Records remain editable.** You can still update records in the Stackryze DNS dashboard or at your BYOD provider.
+- **Renewal still works.** Click **Renew** in the dashboard; the expiry extends by one year from the original expiry date.
+
+The grace period is your last chance. After day 15, the DNS is removed and the name enters cooling-off.
+
+## Deletion
+
+You can delete a domain manually from the **Danger Zone** in the dashboard. Deletion:
+
+- Removes all DNS records immediately.
+- Starts the cooling-off timer at day 0.
+- Cannot be undone by support.
+
+Cooling-off is enforced even for the original owner. If you delete by accident, the fastest recovery is to wait out the cooling-off and re-register — *if* no one else got there first.
+
+## Cooling-off period
+
+The cooling-off period protects against foot-shoot scenarios and prevents rapid churn on the same name:
+
+- 7 days for deletions you initiate.
+- 7 days for auto-deletions after the grace period expires.
+
+During cooling-off:
+
+- The name cannot be registered by anyone, including you.
+- Anyone hitting the registration form gets a "this name is in cooling-off" message with the days remaining.
+
+The cooling-off always runs to completion. There is no override.
+
+## Release and re-registration
+
+Once cooling-off ends, the name is released back to the pool. Registration is first-come, first-served. There's no priority for the previous owner.
+
+If you want to keep a name, **renew before expiry** or **renew during the grace period**. After release, the name is gone.
+
+## Common questions
+
+**Can I shorten the grace period?** No.
+
+**Can I shorten the cooling-off?** No.
+
+**Can support override the cooling-off?** No.
+
+**Does the grace period reset if I renew?** No — the grace period is a one-shot window after expiry. Renewing during grace keeps the original expiry date and doesn't re-arm the grace timer.
+
+**What happens to email forwarding during grace?** It keeps working. After grace ends, forwarding stops.
+
+## Where to go next
+
+<Columns cols={2}>
+  <Card title="Overview" icon="circle-info" href="/docs/domains/overview">
+    What a Stackryze Domain is.
+  </Card>
+  <Card title="Security and abuse" icon="shield" href="/docs/domains/security-and-abuse">
+    Account security, abuse handling.
+  </Card>
+  <Card title="Managing domains" icon="gear" href="/guides/domains/managing-domains">
+    The task-oriented walkthrough for renewals.
+  </Card>
+  <Card title="Troubleshooting" icon="wrench" href="/guides/domains/troubleshooting">
+    Common errors and fixes.
+  </Card>
+</Columns>

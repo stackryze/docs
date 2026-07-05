@@ -48,19 +48,34 @@
           {
             "group": "Domains",
             "pages": [
-              "docs/domains/index"
+              "docs/domains/index",
+              "docs/domains/overview",
+              "docs/domains/subdomain-naming",
+              "docs/domains/email-forwarding",
+              "docs/domains/wildcard-records",
+              "docs/domains/nameserver-delegation",
+              "docs/domains/domain-lifecycle",
+              "docs/domains/security-and-abuse"
             ]
           },
           {
             "group": "StackNS",
             "pages": [
-              "docs/dns/index"
+              "docs/dns/index",
+              "docs/dns/overview",
+              "docs/dns/zones-and-records",
+              "docs/dns/supported-records",
+              "docs/dns/nameservers",
+              "docs/dns/dnssec",
+              "docs/dns/dynamic-dns",
+              "docs/dns/api"
             ]
           },
           {
             "group": "Hosting",
             "pages": [
-              "docs/hosting/index"
+              "docs/hosting/index",
+              "docs/hosting/overview"
             ]
           }
         ]

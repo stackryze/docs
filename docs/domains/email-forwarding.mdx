@@ -1,0 +1,78 @@
+---
+title: "Email forwarding"
+description: "How forwarding from your Stackryze Domain to any inbox works, and what it does and doesn't do."
+---
+
+Every Stackryze Domain comes with email forwarding at `<anything>@<name>.indevs.in`. It's the simplest way to have a stable, project-specific email address without running a mail server.
+
+## What forwarding is
+
+A forwarded address receives mail at `<anything>@<name>.indevs.in` and delivers it to a destination inbox you control. The destination is a normal address on Gmail, Outlook, Fastmail, iCloud, ProtonMail, or any other provider.
+
+In DNS terms, the address doesn't receive mail directly. Stackryze runs a forwarding MTA that accepts the message on your behalf, rewrites the envelope, and re-sends it to your real inbox.
+
+## What it gives you
+
+- A stable email address tied to your domain, not your ISP or current provider.
+- The freedom to change destination inbox without telling anyone your new address.
+- The ability to create unique per-project addresses (`hello@`, `support@`, `press@`, `noreply@`) that all land in the same place.
+- Zero mail-server administration.
+
+## What it doesn't do
+
+Forwarding is not full email hosting:
+
+- **No mailbox.** You can't log in to a "you@yourname.indevs.in" inbox. Mail is delivered to a third-party mailbox.
+- **No sending from your domain.** You can't send mail *as* `you@yourname.indevs.in` from a forwarded address. For that, you need a real mail provider (Fastmail, ProtonMail, Google Workspace, etc.) with SMTP credentials.
+- **No calendar, contacts, or storage.** It's an address, not a mail suite.
+- **No IMAP/POP.** You access your mail at the destination, not at `indevs.in`.
+
+## How it works under the hood
+
+When you create a forwarded address, Stackryze adds the records that real mail servers need:
+
+- An `MX` record pointing at the Stackryze forwarding MTA.
+- An `SPF` (TXT) record authorizing the MTA to send mail on behalf of the domain.
+- Optionally a `DMARC` (TXT) record so receivers can validate the chain.
+
+These records are managed for you — you don't need to touch the DNS zone to enable forwarding.
+
+## Sending mail from your domain (separate problem)
+
+If you want to **send** mail *as* `you@yourname.indevs.in`, you need SMTP credentials from a real mail provider. The forwarding MTA only handles inbound mail.
+
+Common pairings:
+
+| Forwarding (receive) | Sending |
+| --- | --- |
+| Stackryze Domains | Fastmail / ProtonMail / Google Workspace |
+
+When you switch the destination of a forward, the destination changes but the address doesn't — people can keep sending to `you@yourname.indevs.in` and you'll still get it.
+
+## Limits and quotas
+
+- **Forwarding addresses per domain:** 50 by default. Need more? Email [support@stackryze.com](mailto:support@stackryze.com).
+- **Forwarding rate limits** apply on burst sends to fight spam; if a sender hits the limit, they're rate-limited the same way any MTA would rate-limit them.
+- **Attachment size:** standard SMTP limits apply (typically 25 MB).
+- **Greylisting:** on first contact, the MTA may temporarily reject mail and retry. This is normal SMTP behavior and most legitimate senders handle it automatically.
+
+## Abuse handling
+
+Forwarding is provided to humans, not to bulk senders. If a forwarded address starts receiving spam at volume, Stackryze applies the same rate limits and abuse controls any provider would. Repeated abuse can result in the forward being disabled; see [Security and abuse](/docs/domains/security-and-abuse).
+
+## Where to go next
+
+<Columns cols={2}>
+  <Card title="Overview" icon="circle-info" href="/docs/domains/overview">
+    What a Stackryze Domain is.
+  </Card>
+  <Card title="Wildcard records" icon="asterisk" href="/docs/domains/wildcard-records">
+    Catch-all DNS for sub-subdomains.
+  </Card>
+  <Card title="Managing domains" icon="gear" href="/guides/domains/managing-domains">
+    How to set up and change forwarding.
+  </Card>
+  <Card title="FAQ" icon="circle-question" href="/guides/domains/faq">
+    Common questions about email.
+  </Card>
+</Columns>

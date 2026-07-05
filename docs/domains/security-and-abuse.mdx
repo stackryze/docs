@@ -1,0 +1,124 @@
+---
+title: "Security and abuse"
+description: "How Stackryze Domains keeps accounts safe, handles abuse reports, and reacts to threats."
+---
+
+Stackryze Domains is a public service that anyone can register on. That openness comes with responsibility: account security on one side, abuse handling on the other. This page explains both.
+
+## Account security
+
+Your Stackryze account is the only thing standing between your domain and someone who wants to take it. A few practices are mandatory; the rest are strongly recommended.
+
+### Authentication
+
+| Layer | Required? |
+| --- | --- |
+| Email + password (min 8 chars) | Yes |
+| Email verification on signup | Yes |
+| Account lockout after 5 failed attempts (30-minute cooldown) | Yes |
+| Two-factor authentication on the linked GitHub account (if used) | Recommended |
+
+There is no in-app 2FA on the Stackryze Domains dashboard itself — the account is gated by your auth provider (email password, GitHub OAuth). Strengthen *that* account and you strengthen this one.
+
+### What you control
+
+Your account has visibility into:
+
+- Every domain it owns and their current status.
+- Nameservers configured for each domain.
+- Email forwarding rules.
+- Activity history: registrations, nameserver updates, renewals, deletions, logins.
+
+If anything on these screens doesn't match what you did, treat it as a security incident.
+
+### What you should enable
+
+- **Two-factor authentication** on the email account you registered with.
+- **Two-factor authentication** on the GitHub account, if you link one.
+- **A unique password** for the Stackryze Domains account. Don't reuse it.
+- **A second contact channel** so renewal reminders reach you even if one inbox is compromised.
+
+### Account lockout
+
+After five failed login attempts within the lockout window, the account is locked for 30 minutes. This is automatic and not configurable. The lockout applies to all login methods for that account.
+
+If you're locked out:
+
+1. Wait 30 minutes.
+2. Use the password reset flow if you don't remember the password.
+3. Email [support@stackryze.com](mailto:support@stackryze.com) from the address on file if neither works.
+
+## Activity monitoring
+
+The **History** section in the dashboard shows every state-changing action on your account. Look for:
+
+- Nameserver changes you didn't make.
+- Renewals on dates you don't recognize.
+- Login events from IPs or regions you don't recognize.
+
+Any of these are reasons to email [security@stackryze.com](mailto:security@stackryze.com) immediately.
+
+## Abuse handling
+
+Abuse is anything that uses Stackryze Domains to harm others: spam, phishing, malware hosting, scanning, credential stuffing, and so on. The abuse pipeline is deliberately fast.
+
+### How to report abuse
+
+| Channel | Use for |
+| --- | --- |
+| [reportabuse@stackryze.com](mailto:reportabuse@stackryze.com) | Any abuse from a `*.indevs.in` subdomain |
+| [security@stackryze.com](mailto:security@stackryze.com) | Security issues with the Stackryze Domains service itself |
+| [support@stackryze.com](mailto:support@stackryze.com) | General questions about a domain or account |
+
+A useful report includes:
+
+- The exact subdomain being abused (`phish.example.indevs.in`).
+- The abuse type (phishing kit, malware C2, etc.).
+- A reproducible URL or sample email.
+- Timestamps in UTC.
+
+The more concrete the report, the faster the response.
+
+### How we handle a report
+
+Reports are triaged within one business day. The standard response timeline:
+
+1. **Confirm** the report is well-formed and the abuse is real.
+2. **Suspend** the offending nameserver or record (the smallest change that resolves the abuse).
+3. **Notify** the domain owner with the report details and the action taken.
+4. **Restore** access once the owner addresses the underlying issue, or **escalate** to deletion if the abuse is repeated or severe.
+
+Suspended nameservers are not deleted outright — the owner is given the chance to remediate, except in cases of egregious, repeated abuse.
+
+### What we won't do
+
+- Disclose owner identity in response to a casual request. (We will, however, cooperate with lawful process.)
+- Take action on a report without evidence of abuse.
+- Pre-emptively block entire services or providers because one user abused them.
+
+## Account bans
+
+Accounts that violate the [Terms of Service](https://domain.stackryze.com/terms) or [Acceptable Use Policy](https://domain.stackryze.com/aup) can be banned. A banned account:
+
+- Is signed out on all devices immediately.
+- Has all owned domains suspended.
+- Cannot register new domains.
+
+Bans are not reversible through the dashboard. To appeal, email [support@stackryze.com](mailto:support@stackryze.com) from the address on file with your GitHub username and a clear explanation.
+
+## Where to go next
+
+<Columns cols={2}>
+  <Card title="Overview" icon="circle-info" href="/docs/domains/overview">
+    What a Stackryze Domain is.
+  </Card>
+  <Card title="Domain lifecycle" icon="clock" href="/docs/domains/domain-lifecycle">
+    Register, renew, expire, restore.
+  </Card>
+  <Card title="FAQ" icon="circle-question" href="/guides/domains/faq">
+    Common questions about accounts and bans.
+  </Card>
+  <Card title="Troubleshooting" icon="wrench" href="/guides/domains/troubleshooting">
+    Fixes for login and registration errors.
+  </Card>
+</Columns>

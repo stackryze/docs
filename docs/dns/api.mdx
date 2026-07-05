@@ -1,0 +1,197 @@
+---
+title: "API"
+description: "The REST API that powers the Stackryze DNS dashboard, available for your own automation."
+---
+
+Every action in the Stackryze DNS dashboard is also a REST endpoint. The API is JSON over HTTPS, authenticated with bearer tokens, and built for automation.
+
+## What it covers
+
+The API exposes:
+
+- **Zones** — create, list, get, delete.
+- **Records** — create, update, delete in bulk (atomic per zone).
+- **DNSSEC** — enable, disable, retrieve keys, force rollover.
+- **Nameservers** — read-only (the four are fixed).
+- **Dynamic DNS** — push an IP update from a client.
+- **Webhooks** — register endpoints for zone and record events.
+- **Tokens** — create, list, rotate, revoke.
+
+## Base URL
+
+```
+https://dns.stackryze.com/api/v1
+```
+
+All endpoints are versioned with `/v1`. The API is stable; breaking changes get a new version.
+
+## Authentication
+
+Every request needs a bearer token:
+
+```bash
+curl https://dns.stackryze.com/api/v1/zones \
+  -H "Authorization: Bearer $TOKEN"
+```
+
+### Token types
+
+| Type | Scope | Use |
+| --- | --- | --- |
+| Personal access token | All actions on your account | CLI scripts, manual automation |
+| Scoped zone token | Limited to one zone, one or more scopes | CI/CD, dynamic DNS clients |
+| Webhook signing key | Read-only, scoped to event types | Receivers that verify webhook signatures |
+
+Generate tokens in **Settings → API tokens**. Each token is shown once and stored hashed on the server.
+
+### Scopes
+
+Tokens carry fine-grained scopes. Common ones:
+
+| Scope | Allows |
+| --- | --- |
+| `zones:read` | List and get zones |
+| `zones:write` | Create and delete zones |
+| `records:read` | List records in a zone |
+| `records:write` | Create, update, delete records |
+| `dnssec:write` | Enable, disable, rollover DNSSEC |
+| `dynamic:update` | Push Dynamic DNS updates |
+| `webhooks:read` | List webhook endpoints |
+| `webhooks:write` | Create, update, delete webhook endpoints |
+
+A typical dynamic-DNS client token needs only `dynamic:update`. A typical CI/CD token for record management needs `records:read` and `records:write`.
+
+## Endpoints
+
+### Zones
+
+```
+GET    /api/v1/zones              # list zones
+POST   /api/v1/zones              # create zone
+GET    /api/v1/zones/{zone}       # get zone details
+DELETE /api/v1/zones/{zone}       # delete zone
+```
+
+Create a zone:
+
+```bash
+curl -X POST https://dns.stackryze.com/api/v1/zones \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "example.com"}'
+```
+
+### Records
+
+```
+GET    /api/v1/zones/{zone}/records              # list all records
+PATCH  /api/v1/zones/{zone}/records              # bulk update (atomic)
+```
+
+The `PATCH` is interesting: it's a single atomic operation that takes a list of record changes and applies them all or none. This is what makes the API safe to use for record migrations — you don't end up in a half-updated state.
+
+```bash
+curl -X PATCH https://dns.stackryze.com/api/v1/zones/example.com/records \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "changes": [
+      { "type": "A", "name": "@",        "value": "192.0.2.1",  "ttl": 3600 },
+      { "type": "A", "name": "www",      "value": "192.0.2.1",  "ttl": 3600 },
+      { "type": "MX", "name": "@",       "value": "10 mail.example.com.", "ttl": 3600 },
+      { "type": "TXT", "name": "@",      "value": "\"v=spf1 -all\"", "ttl": 3600 },
+      { "type": "A", "name": "staging",  "value": "203.0.113.5", "ttl": 60 }
+    ]
+  }'
+```
+
+### DNSSEC
+
+```
+GET    /api/v1/zones/{zone}/dnssec           # get DNSSEC state
+POST   /api/v1/zones/{zone}/dnssec/enable    # enable DNSSEC
+POST   /api/v1/zones/{zone}/dnssec/disable   # disable DNSSEC
+POST   /api/v1/zones/{zone}/dnssec/rollover  # force key rollover
+```
+
+### Dynamic DNS
+
+```
+POST   /api/v1/dynamic/{zone}/{record}       # push IP update
+```
+
+See [Dynamic DNS](/docs/dns/dynamic-dns) for the full request/response.
+
+### Webhooks
+
+```
+GET    /api/v1/webhooks                      # list webhooks
+POST   /api/v1/webhooks                      # create webhook
+DELETE /api/v1/webhooks/{id}                 # delete webhook
+```
+
+## Rate limits
+
+| Action | Limit |
+| --- | --- |
+| Reads | 600 / minute |
+| Writes | 120 / minute |
+| Zone creates | 10 / hour |
+| Dynamic DNS updates | 60 / record / hour |
+
+Exceeded limits return `429 Too Many Requests` with `Retry-After` and `X-RateLimit-Reset` headers.
+
+## Errors
+
+Every error response is JSON with a stable shape:
+
+```json
+{
+  "error": {
+    "code": "zone_not_found",
+    "message": "No zone matches example.com",
+    "request_id": "req_abc123"
+  }
+}
+```
+
+Common error codes:
+
+| Code | Meaning |
+| --- | --- |
+| `unauthorized` | Missing or invalid token |
+| `forbidden` | Token doesn't have the required scope |
+| `not_found` | Resource doesn't exist |
+| `validation_error` | Request body failed validation |
+| `rate_limited` | Hit a rate limit |
+| `conflict` | Concurrent modification — retry |
+
+The `request_id` is useful when contacting support — it lets us trace the request server-side.
+
+## Client libraries
+
+Official clients are published for:
+
+- **JavaScript / TypeScript** — `npm install @stackryze/dns`
+- **Python** — `pip install stackryze-dns`
+- **Go** — `go get github.com/stackryze/dns-go`
+- **CLI** — `brew install stackryze-cli`
+
+Community clients exist for most other languages; search [github.com/stackryze](https://github.com/stackryze) for the list.
+
+## Where to go next
+
+<Columns cols={2}>
+  <Card title="API quickstart" icon="rocket" href="/guides/api-quickstart">
+    Hands-on walkthrough.
+  </Card>
+  <Card title="Webhooks" icon="webhook" href="/guides/webhooks">
+    Subscribe to zone and record events.
+  </Card>
+  <Card title="Dynamic DNS" icon="bolt" href="/docs/dns/dynamic-dns">
+    The DDNS endpoint, with examples.
+  </Card>
+  <Card title="DNSSEC" icon="shield" href="/docs/dns/dnssec">
+    Sign zones programmatically.
+  </Card>
+</Columns>

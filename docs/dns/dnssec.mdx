@@ -1,0 +1,146 @@
+---
+title: "DNSSEC"
+description: "Cryptographic validation for your zone — what it is, why it matters, and how to turn it on."
+---
+
+DNSSEC is the cryptographic layer of DNS. It lets a resolver prove that an answer it received was signed by the zone's owner and was not tampered with in transit. This page explains the model, what DNSSEC gets you (and what it doesn't), and how to enable it on a Stackryze DNS zone.
+
+## What DNSSEC is
+
+DNSSEC adds a chain of digital signatures to DNS. The signatures are verified by resolvers, parent zones, and ultimately the root zone. If the chain is intact, the answer is authentic.
+
+The chain runs from the root (`.`) downward:
+
+```text
+. (root)
+ └── com (signed)
+      └── example.com (signed)
+           └── app.example.com (signed)
+```
+
+Each level signs the level below it. A resolver walks the chain from the root and verifies every signature before trusting the answer.
+
+## What DNSSEC gets you
+
+- **Authentication.** The answer came from the zone's owner, not a man-in-the-middle.
+- **Integrity.** The answer wasn't tampered with on the way.
+- **Proof of non-existence.** A signed statement that a name doesn't exist (NSEC/NSEC3), instead of just an empty response.
+
+## What DNSSEC doesn't get you
+
+- **Confidentiality.** DNSSEC-signed answers are not encrypted. DNS-over-HTTPS or DNS-over-TLS handles that.
+- **End-to-end trust.** If the resolver you're using doesn't validate DNSSEC, the chain is moot.
+- **Protection against compromised authoritative.** If an attacker controls your zone or your registrar account, they can sign anything they want.
+
+DNSSEC is a meaningful layer against network-level tampering, but it's not a silver bullet.
+
+## How signing works
+
+When you enable DNSSEC on a Stackryze DNS zone:
+
+1. The engine generates a **Key Signing Key (KSK)** and a **Zone Signing Key (ZSK)**.
+2. The zone is signed — every record gets an `RRSIG` covering it.
+3. The KSK is published as a `DNSKEY` record at the apex.
+4. A **Delegation Signer (DS)** record is computed from the KSK and submitted to the parent zone (`com`, in our example).
+5. The parent publishes the `DS` record, completing the chain.
+
+The signing and key generation are automated. You don't need to manage the keys yourself. Stackryze performs a key rollover every 90 days for ZSK and every 365 days for KSK, so even a key compromise has a built-in expiry.
+
+## Enabling DNSSEC
+
+In the [Stackryze DNS dashboard](https://dns.stackryze.com):
+
+1. Open the zone you want to sign.
+2. Go to **Settings → DNSSEC**.
+3. Click **Enable DNSSEC**.
+4. Copy the `DS` record shown on the confirmation screen.
+5. Submit that `DS` record at your registrar for the parent zone.
+
+The last step is critical. Without the `DS` record at the parent, no resolver can validate your zone — your signatures exist but no one trusts them.
+
+For Stackryze Domains, the `DS` record is added to the registry automatically — you don't need to do anything beyond step 3.
+
+## Verifying DNSSEC
+
+To check that the chain is intact:
+
+```bash
+dig +dnssec example.com @1.1.1.1
+```
+
+A correctly signed zone returns the records plus their `RRSIG` signatures. To check that the parent has the right `DS`:
+
+```bash
+dig DS example.com @1.1.1.1
+```
+
+To check end-to-end validation from the root:
+
+```bash
+delv @1.1.1.1 example.com +rtrace +multiline
+```
+
+If `delv` returns the answer with no errors and the `; fully validated` flag at the end, the chain is intact.
+
+## Common issues
+
+### DS record not published at parent
+
+Symptom: `dig DS example.com` returns nothing.
+
+Fix: Submit the `DS` record at your registrar. For Stackryze Domains, contact [support@stackryze.com](mailto:support@stackryze.com) if it isn't published within an hour of enabling DNSSEC.
+
+### Key rollover in progress
+
+Symptom: brief validation failures during a 90-day or 365-day rollover window.
+
+Fix: Nothing. Stackryze coordinates the rollover so old and new keys overlap.
+
+### Algorithmic mismatch
+
+Symptom: resolvers that only support older algorithms reject the chain.
+
+Fix: Stackryze defaults to `ED25519` (algorithm 15) where supported, falling back to `ECDSA-P256` (algorithm 13). If you have a very old resolver that rejects both, you can force a specific algorithm in **Settings → DNSSEC → Algorithm**, but the default works for >99% of validators in the wild.
+
+### Clock skew
+
+Symptom: signatures look expired even though they shouldn't be.
+
+Fix: Most validators have a small clock skew tolerance. If you run your own validator, make sure its clock is synchronized.
+
+## What NSEC3 means
+
+NSEC3 is the signed-non-existence scheme that replaced NSEC. Instead of listing the next name in the zone (which leaks the full zone to anyone who can ask), NSEC3 hashes names and lists them in hash order. A query for a non-existent name returns a signed "no name exists between these two hashes" statement.
+
+Stackryze DNS uses NSEC3 with opt-out disabled — every empty gap in your zone is signed.
+
+## When to skip DNSSEC
+
+DNSSEC is opt-in for good reason. Skip it if:
+
+- You're a hobby project with no threat model that includes network-level tampering.
+- You're using DNS as a low-stakes service-discovery mechanism.
+- You can't get the `DS` record published at the parent (rare, but possible if your registrar doesn't support it).
+
+Enable it if:
+
+- You're running anything that accepts credentials — logins, payments, admin panels.
+- You're a journalist, activist, or anyone with a heightened threat model.
+- Your domain name is part of your brand and worth protecting from cache poisoning.
+
+## Where to go next
+
+<Columns cols={2}>
+  <Card title="Supported records" icon="list" href="/docs/dns/supported-records">
+    The records that make DNSSEC possible.
+  </Card>
+  <Card title="Nameservers" icon="globe" href="/docs/dns/nameservers">
+    Where signed zones are served.
+  </Card>
+  <Card title="Enable DNSSEC" icon="shield-check" href="/guides/enable-dnssec">
+    Step-by-step walkthrough.
+  </Card>
+  <Card title="API" icon="code" href="/docs/dns/api">
+    Automate DNSSEC management.
+  </Card>
+</Columns>
