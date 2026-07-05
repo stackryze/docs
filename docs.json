@@ -32,13 +32,14 @@
     "strict": false
   },
   "navigation": {
-    "tabs": [
+    "products": [
       {
-        "tab": "Docs",
+        "product": "Docs",
+        "description": "Getting started, account setup, and cross-product references.",
         "icon": "book",
         "groups": [
           {
-            "group": "Getting Started",
+            "group": "Getting started",
             "pages": [
               "index",
               "quickstart",
@@ -46,7 +47,7 @@
             ]
           },
           {
-            "group": "Features",
+            "group": "Reference",
             "pages": [
               "features/products",
               "features/api",
@@ -54,11 +55,39 @@
               "features/billing",
               "features/pricing"
             ]
+          },
+          {
+            "group": "Guides",
+            "pages": [
+              "guides/add-a-custom-domain",
+              "guides/point-domain-to-stackryze",
+              "guides/transfer-domain",
+              "guides/configure-dns-records",
+              "guides/enable-dnssec",
+              "guides/dynamic-dns",
+              "guides/api-quickstart",
+              "guides/webhooks",
+              "guides/billing-introduction"
+            ]
+          },
+          {
+            "group": "Changelog",
+            "pages": [
+              "changelog/introduction",
+              "changelog/v1.105.0",
+              "changelog/v1.101.0",
+              "changelog/v1.99.0",
+              "changelog/v1.97.6",
+              "changelog/v1.94.0",
+              "changelog/v1.93.0",
+              "changelog/v1.87.0"
+            ]
           }
         ]
       },
       {
-        "tab": "Domains",
+        "product": "Domains",
+        "description": "Free subdomains for founders, freelancers, and small teams.",
         "icon": "tags",
         "groups": [
           {
@@ -98,7 +127,8 @@
         ]
       },
       {
-        "tab": "StackNS",
+        "product": "StackNS",
+        "description": "Authoritative DNS hosting — fast, secure, free.",
         "icon": "globe",
         "groups": [
           {
@@ -110,78 +140,14 @@
         ]
       },
       {
-        "tab": "Hosting",
+        "product": "Hosting",
+        "description": "Affordable, transparent hosting with the same Stackryze guarantees.",
         "icon": "server",
         "groups": [
           {
             "group": "Stackryze Hosting",
             "pages": [
               "products/hosting/index"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "Guides",
-        "icon": "compass",
-        "groups": [
-          {
-            "group": "Integration Guides",
-            "pages": [
-              "guides/add-a-custom-domain",
-              "guides/point-domain-to-stackryze",
-              "guides/transfer-domain",
-              "guides/configure-dns-records",
-              "guides/enable-dnssec",
-              "guides/dynamic-dns",
-              "guides/api-quickstart",
-              "guides/webhooks"
-            ]
-          },
-          {
-            "group": "Billing Deconstructions",
-            "tag": "NEW",
-            "pages": [
-              "guides/billing-introduction"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "Changelog",
-        "icon": "calendar-days",
-        "groups": [
-          {
-            "group": "Changelog",
-            "pages": [
-              "changelog/introduction"
-            ]
-          },
-          {
-            "group": "June 2026",
-            "pages": [
-              "changelog/v1.105.0",
-              "changelog/v1.101.0"
-            ]
-          },
-          {
-            "group": "May 2026",
-            "pages": [
-              "changelog/v1.99.0",
-              "changelog/v1.97.6"
-            ]
-          },
-          {
-            "group": "April 2026",
-            "pages": [
-              "changelog/v1.94.0"
-            ]
-          },
-          {
-            "group": "March 2026",
-            "pages": [
-              "changelog/v1.93.0",
-              "changelog/v1.87.0"
             ]
           }
         ]

@@ -89,6 +89,19 @@ changelog/
   v1-*.mdx                      # one file per release
 ```
 
+## Navigation
+
+The site uses Mintlify's `products` pattern in `docs.json`. The product switcher at the top of the page exposes every product as a child of the docs deployment:
+
+| Product | Purpose |
+| --- | --- |
+| **Docs** | Getting started, reference, guides, changelog. |
+| **Domains** | Stackryze Domains docs (indevs.in subdomains). |
+| **StackNS** | Stackryze DNS docs. |
+| **Hosting** | Stackryze Hosting docs (planned). |
+
+When adding pages, register them under the matching product's groups. Cross-product pages (`features/*`, `guides/*`, `changelog/*`) live in the **Docs** product.
+
 ## Voice anchors
 
 When in doubt, look at these pages — they were written with the desired voice and structure:
