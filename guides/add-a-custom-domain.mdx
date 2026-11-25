@@ -1,57 +1,51 @@
 ---
-title: "Add a Custom Domain Integration Guide"
-description: "Wire up a domain you already own to a Stackryze-hosted service."
+title: "Add a custom domain"
+description: "Connect a domain you own at an external registrar to Stackryze DNS."
 icon: "globe"
 ---
 
-This guide walks you through adding a custom domain — one you bought at any registrar — to a Stackryze product (DNS, Domains, or the API).
+This guide walks you through adding a custom domain from any external registrar (Namecheap, Porkbun, Cloudflare Registrar, GoDaddy, etc.) to [dns.stackryze.com](https://dns.stackryze.com).
 
 ## Prerequisites
 
-To add a custom domain, you'll need:
+- A Stackryze account via [auth.stackryze.com](https://auth.stackryze.com)
+- Access to change nameservers at your domain registrar
 
-- A Stackryze account (free — see [quickstart](/quickstart))
-- A domain you own
-- Access to your registrar's DNS settings
+<Note>
+  If you want to host a Stackryze subdomain (`.indevs.in`, `.sryze.cc`, `.ryzedns.org`, `.nx.kg`, `.ryzn.pro`), follow the ownership handshake in [Nameserver delegation](/docs/domains/nameserver-delegation#using-stackryze-dns-dnsstackryzecom) after adding the zone.
+</Note>
 
-## Domain Setup
+## Steps
 
 <Steps>
-  <Step title="Sign in to Stackryze">
-    Open [dns.stackryze.com](https://dns.stackryze.com) and sign in.
+  <Step title="Sign in to Stackryze DNS">
+    Open [dns.stackryze.com](https://dns.stackryze.com) and sign in with Stackryze SSO.
   </Step>
-  <Step title="Create your domain">
-    Click **Domains → Add Domain**, then enter the apex (for example `example.com`). Stackryze creates an empty zone and provisions four globally-distributed nameservers.
+  <Step title="Create the zone">
+    Click **Add Zone** and enter your domain name (for example `example.com`). Stackryze provisions the zone on PowerDNS in `pending_verification` status.
   </Step>
-  <Step title="Get your nameservers">
-    Stackryze assigns four nameservers. Copy them — you'll need them in the next step.
+  <Step title="Point registrar nameservers to Stackryze">
+    In your registrar's DNS or Nameservers settings, set custom nameservers to the three Stackryze authoritative hosts:
 
     ```text
     ns1.stackryze.com
     ns2.stackryze.com
     ns3.stackryze.com
-    ns4.stackryze.com
     ```
-  </Step>
-  <Step title="Delegate at your registrar">
-    At your registrar (Namecheap, Cloudflare Registrar, GoDaddy, Porkbun, etc.) set the nameservers to the four above. Save.
 
-    <Tip>
-      Propagation typically completes within 30 minutes but can take up to 24 hours.
-    </Tip>
+    Save your registrar changes. Propagation usually starts within minutes, though long-tail resolver caches can take up to 48 hours.
   </Step>
-  <Step title="Verify delegation">
-    Run:
-
+  <Step title="Verify delegation in Stackryze DNS">
+    Click **Verify** on your zone in [dns.stackryze.com](https://dns.stackryze.com). Stackryze runs an uncached `NS` lookup and activates the zone (`active`) as soon as at least one Stackryze nameserver appears in the live NS response.
+  </Step>
+  <Step title="Test with dig">
     ```bash
-    dig NS example.com @1.1.1.1 +short
+    dig NS example.com @8.8.8.8 +short
     ```
-
-    You should see the four Stackryze nameservers.
   </Step>
 </Steps>
 
 ## Next steps
 
-- Add records: see [Configure DNS records](/guides/configure-dns-records)
-- Turn on DNSSEC: see [Enable DNSSEC](/guides/enable-dnssec)
+- Add DNS records: [Configure DNS records](/guides/configure-dns-records)
+- Turn on DNSSEC: [Enable DNSSEC](/guides/enable-dnssec)

@@ -1,56 +1,43 @@
 ---
 title: "Dynamic DNS"
-description: "Keep a hostname pointed at a changing IP — for homes, VPSes, and game servers."
+description: "Keep an A or AAAA record synced to a changing IP using the Stackryze DNS REST API."
 icon: "bolt"
 ---
 
-Dynamic DNS (DDNS) keeps a hostname pointed at an IP address that changes. It's perfect for home servers, game servers, surveillance cameras, and anything behind residential internet.
+Stackryze DNS supports automated DNS updates through the [REST API](/docs/dns/api) using scoped `sk_dns_...` Bearer tokens with `write` permission.
 
-## How it works
-
-1. Your device periodically tells Stackryze its current public IP
-2. Stackryze updates the matching `A` / `AAAA` record
-3. The world keeps resolving your hostname to the live IP
-
-## Set up dynamic DNS
+## Set up automated IP updates
 
 <Steps>
-  <Step title="Create a DDNS token">
-    Open Settings → API → **Create token** with the `ddns:write` scope.
+  <Step title="Create a write-scoped API token">
+    In [dns.stackryze.com](https://dns.stackryze.com), create an API token with **`write`** scope and store it safely (`sk_dns_...` is shown once).
   </Step>
-  <Step title="Add the records to your zone">
-    In the zone where you want DDNS, create an `A` record with the placeholder value `0.0.0.0`. Stackryze will treat it as a DDNS target.
-  </Step>
-  <Step title="Send updates">
-    The DDNS endpoint is simple:
+  <Step title="Run an update script on your host">
+    Use a periodic cron job or systemd timer to replace the target `A` record whenever your public IP changes:
 
     ```bash
-    curl https://ddns.stackryze.com/update \
-      -d "host=home.example.com" \
-      -d "token=$STACKRYZE_DDNS_TOKEN"
-    ```
+    #!/usr/bin/env bash
+    set -euo pipefail
 
-    Stackryze auto-detects your public IP from the request source if you don't supply one.
+    API_BASE="https://api-dns.stackryze.com/api"
+    TOKEN="$STACKRYZE_DNS_TOKEN"
+    ZONE_ID="your-zone-id"
+    HOST="home"
+    IP="$(curl -fsS https://api.ipify.org)"
+
+    curl -fsS -X DELETE "${API_BASE}/zones/${ZONE_ID}/records" \
+      -H "Authorization: Bearer ${TOKEN}" \
+      -H "Content-Type: application/json" \
+      -d "{\"type\":\"A\",\"name\":\"${HOST}\"}" || true
+
+    curl -fsS -X POST "${API_BASE}/zones/${ZONE_ID}/records" \
+      -H "Authorization: Bearer ${TOKEN}" \
+      -H "Content-Type: application/json" \
+      -d "{\"type\":\"A\",\"name\":\"${HOST}\",\"content\":\"${IP}\",\"ttl\":3600}"
+    ```
   </Step>
 </Steps>
 
-## Compatibility
-
-The Stackryze DDNS endpoint speaks the de-facto `nic/update` protocol, so the same clients that work with dyndns.org, no-ip.com, and afraid.org work with Stackryze:
-
-| Client | URL |
-| --- | --- |
-| **ddclient** | `protocol=dyndns2 server=ddns.stackryze.com` |
-| **inadyn** | `--provider dyndns2@ddns.stackryze.com` |
-| **ddns-go** | Custom provider, URL: `https://ddns.stackryze.com/update` |
-
-## IPv6
-
-Stackryze DDNS supports IPv6 out of the box. Send the `ipv6` parameter:
-
-```bash
-curl https://ddns.stackryze.com/update \
-  -d "host=home.example.com" \
-  -d "ipv6=2001:db8::1" \
-  -d "token=$STACKRYZE_DDNS_TOKEN"
-```
+<Note>
+  Stackryze DNS enforces a minimum record TTL of `3600` seconds (1 hour) and a mutation rate limit of `20` requests per minute. Schedule updates every 15–60 minutes or only trigger API calls when your IP actually changes.
+</Note>

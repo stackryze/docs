@@ -1,187 +1,72 @@
 ---
 title: "FAQ"
-description: "Quick answers to the most common Stackryze Domains questions."
+description: "Frequently asked questions about Stackryze Domains extensions, GitHub verification, nameservers, and renewals."
 icon: "circle-question"
 ---
 
-Quick answers to common questions. For detailed guides, follow the links below.
+Quick answers to the most common questions about [domain.stackryze.com](https://domain.stackryze.com).
 
-<Note>
-  Stackryze Domains is currently in beta and updated daily. If you spot an issue, let us know via the support channels at the bottom of this page.
-</Note>
+## Extensions and quotas
 
-## Namespaces
+### What extensions are available?
 
-### What namespaces are available?
+Stackryze Domains offers five public extensions:
 
-Stackryze Domains registers names under four namespaces:
-
-| Namespace | Notes |
+| Extension | Default limit per account |
 | --- | --- |
-| `indevs.in` | The original namespace. Most existing names live here. |
-| `sryze.cc` | Short-form namespace, popular for projects. |
-| `ryzedns.org` | Open-community namespace. |
-| `nx.kg` | Compact namespace, intended for tooling and services. |
+| `.indevs.in` | 1 |
+| `.sryze.cc` | 1 |
+| `.ryzedns.org` | 1 |
+| `.nx.kg` | 1 |
+| `.ryzn.pro` | 1 |
 
-Pick the namespace you want when you register. The same quota, lifecycle, and feature set apply to every namespace.
+You can request quota increases by contacting [support@stackryze.com](mailto:support@stackryze.com) or joining our [Discord](https://discord.gg/wr7s97cfM7).
 
-### Can I move a name between namespaces?
+### Is Stackryze Domains free?
 
-No. Once registered, the namespace is fixed. To switch, delete the name (subject to the cooling-off period) and re-register under a different namespace.
+Yes. Registration and annual renewals are completely free.
 
-## General
+### Can I rename a subdomain or move it to another extension?
 
-### How long is my domain valid?
+No. Both the label and extension are fixed after registration.
 
-One year from registration. You can renew 60 days before expiry.
+## Verification and accounts
 
-See [Managing domains → Renewing domains](/guides/domains/managing-domains#renewing-domains).
+### Why do I need GitHub verification?
 
-### Is there a cost?
+GitHub Star KYC confirms each account belongs to a real developer account at least **30 days old** before claiming subdomains on any of the five extensions. Only one Stackryze account can link a given GitHub ID.
 
-No. Stackryze Domains is 100% free, with no hidden fees.
+### How do I change my email or password?
 
-### How many domains can I register?
-
-Up to **4 names** per account, with one of each namespace (`indevs.in`, `sryze.cc`, `ryzedns.org`, `nx.kg`). Need more? Email [support@stackryze.com](mailto:support@stackryze.com).
-
-See [Managing domains → Domain limits and quotas](/guides/domains/managing-domains#domain-limits-and-quotas).
-
-## Registration
-
-### Can I change my subdomain name after registration?
-
-No. Subdomain names are fixed at registration. To rename, delete the domain and register a new one.
-
-### What if I make a mistake during registration?
-
-Delete the domain within 15 days and register again. The name becomes available after the 7-day cooling-off period.
-
-See the [Getting started guide](/guides/domains/getting-started).
-
-### Why was my domain registration rejected?
-
-Common reasons: name too short or long, invalid characters, already taken, or in a cooling-off period.
-
-See [Troubleshooting → Domain registration issues](/guides/domains/troubleshooting#domain-registration-issues).
+Passwords, Passkeys, and 2FA live on **Stackryze SSO** at [auth.stackryze.com](https://auth.stackryze.com). If your account signed up with a GitHub `@users.noreply.github.com` email, you can update it directly in **Settings** (or during onboarding).
 
 ## DNS and nameservers
 
-### What are nameservers?
+### Can I use Cloudflare, Route 53, or my own DNS server?
 
-Nameservers tell the internet where to find DNS for your domain. The defaults are `ns1.stackryze.com` and `ns2.stackryze.com`.
+Yes. Open **My Domains → Manage → DNS Configuration**, click **Edit Nameservers**, and enter between 2 and 6 authoritative nameservers. See our [DNS providers](/guides/domains/dns-providers) guides.
 
-See [DNS providers](/guides/domains/dns-providers).
+### How do I manage DNS records directly on `dns.stackryze.com`?
 
-### Can I use my own DNS provider?
+Add your subdomain zone on [dns.stackryze.com](https://dns.stackryze.com), copy the `sryze-verify-...` code into **DNS Ownership Verification** on your domain's page in [domain.stackryze.com](https://domain.stackryze.com), and click **Verify Ownership**.
 
-Yes — Cloudflare, Route 53, Google Cloud DNS, DigitalOcean, and more. We document the setup for each.
+### Why isn't my domain resolving yet?
 
-Start with [Cloudflare setup](/guides/domains/dns-providers/cloudflare).
+Remember that registering on `domain.stackryze.com` only writes the parent `NS` delegation (`TTL 3600`). You must also create your `A`, `AAAA`, or `CNAME` records inside your DNS provider (or on `dns.stackryze.com` after ownership verification), and allow up to 48 hours for global DNS cache propagation.
 
-### How long does DNS propagation take?
+## Renewals and lifecycle
 
-Typically 5–10 minutes, but up to 48 hours globally.
+### When can I renew my domain?
 
-See [Troubleshooting → DNS and nameserver issues](/guides/domains/troubleshooting#dns-and-nameserver-issues).
+The free renewal window opens **60 days before expiry** and remains open through the **15-day post-expiry grace period**. We send email reminders at 60 days and 10 days before expiry.
 
-## Domain management
+### What happens if I miss the 15-day grace period?
 
-### How do I renew my domain?
-
-Open **My Domains**, click **Renew**, confirm. It's free.
-
-See [Managing domains → Renewing domains](/guides/domains/managing-domains#renewing-domains).
-
-### What happens if my domain expires?
-
-| Timeline | What happens |
-| --- | --- |
-| Days 1–15 | Grace period — domain still works. |
-| Day 15 | Deleted, DNS removed. |
-| Days 15–22 | Cooling-off period. |
-| Day 22+ | Available for registration again. |
-
-See [Managing domains → What if you don't renew?](/guides/domains/managing-domains#what-if-you-dont-renew).
-
-### How do I delete a domain?
-
-Open the domain page → **Danger Zone** → **Delete Domain**. DNS is removed immediately.
-
-See [Managing domains → Deleting domains](/guides/domains/managing-domains#deleting-domains).
-
-### Can I restore a deleted domain?
-
-No. Once deleted, a domain enters a 7-day cooling-off period. After that, anyone can register it again as a new domain.
-
-See [Managing domains → Deleting domains](/guides/domains/managing-domains#deleting-domains).
-
-## Account and security
-
-### Why do I need a GitHub account?
-
-GitHub OAuth provides secure, accountable authentication. It prevents spam and lets us tie activity to a real identity.
-
-### Can I use a brand-new GitHub account?
-
-GitHub accounts must be at least seven days old.
-
-See [Troubleshooting → Login issues](/guides/domains/troubleshooting#login-issues).
-
-### How do I change my email address?
-
-Your account email is linked to GitHub. Update it in your [GitHub email settings](https://github.com/settings/emails).
-
-## Troubleshooting
-
-### My domain isn't resolving
-
-Check nameservers, confirm DNS records exist at your provider, and wait up to 48 hours for propagation.
-
-See [Troubleshooting → DNS and nameserver issues](/guides/domains/troubleshooting#dns-and-nameserver-issues).
-
-### I can't renew my domain
-
-Renewal opens 60 days before expiry. Check your expiry date.
-
-See [Troubleshooting → Domain management issues](/guides/domains/troubleshooting#domain-management-issues).
-
-### I accidentally deleted my domain
-
-Deletion is permanent. Wait for the 7-day cooling-off period, then re-register the name.
-
-See [Troubleshooting → Domain management issues](/guides/domains/troubleshooting#domain-management-issues).
-
-## Support
+Domains expired for more than 15 days are automatically soft-deleted: PowerDNS delegation is removed, your quota count is freed, and the name enters a **7-day cooling-off period** before permanent purge and public release.
 
 ### How do I contact support?
 
-- **Discord** — [Join the community](https://discord.gg/wr7s97cfM7) (fastest).
-- **General** — [support@stackryze.com](mailto:support@stackryze.com).
-- **Security** — [security@stackryze.com](mailto:security@stackryze.com).
-- **Abuse** — [reportabuse@stackryze.com](mailto:reportabuse@stackryze.com).
-
-<Warning>
-  We only contact you from official `@stackryze.com` addresses. Anything else is not from us.
-</Warning>
-
-### How long does support take to respond?
-
-Typically 24–48 hours on business days. Discord is faster for live help.
-
-## More help
-
-<Columns cols={2}>
-  <Card title="Getting started" icon="rocket" href="/guides/domains/getting-started">
-    Register your first domain.
-  </Card>
-  <Card title="Managing domains" icon="gear" href="/guides/domains/managing-domains">
-    Renewals, updates, deletions.
-  </Card>
-  <Card title="DNS providers" icon="server" href="/guides/domains/dns-providers">
-    Setup guides for popular providers.
-  </Card>
-  <Card title="Troubleshooting" icon="wrench" href="/guides/domains/troubleshooting">
-    Common issues and fixes.
-  </Card>
-</Columns>
+- **Discord:** [discord.gg/wr7s97cfM7](https://discord.gg/wr7s97cfM7)
+- **General support:** [support@stackryze.com](mailto:support@stackryze.com)
+- **Abuse reports:** [reportabuse@stackryze.com](mailto:reportabuse@stackryze.com)
+- **Security:** [security@stackryze.com](mailto:security@stackryze.com)

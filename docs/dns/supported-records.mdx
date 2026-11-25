@@ -1,121 +1,46 @@
 ---
 title: "Supported records"
-description: "Every record type Stackryze DNS serves, including the modern ones most providers skip."
+description: "Every DNS record type supported in Stackryze DNS, validation rules, conflict checks, and TTL constraints."
 icon: "list"
 ---
 
-Stackryze DNS serves every classic DNS record type and a strong set of modern ones — the records the modern web actually uses, not just the 1990s subset.
+Stackryze DNS validates every record before patching PowerDNS to prevent conflicting `CNAME` chains, duplicate entries, and invalid target syntax.
 
-## Classic records
+## User-managed record types
 
-| Type | Purpose | Example |
+You can create, batch-import, schedule, or set temporary expiry on the following seven record types:
+
+| Type | Format & validation rules | Example content |
 | --- | --- | --- |
-| `A` | Map a name to an IPv4 address | `192.0.2.1` |
-| `AAAA` | Map a name to an IPv6 address | `2001:db8::1` |
-| `CNAME` | Alias one name to another | `app.example.com. → example.com.` |
-| `DNAME` | Redirect a whole subtree | `old.example.com. → new.example.com.` |
-| `MX` | Mail exchange | `10 mail.example.com.` |
-| `NS` | Delegation (managed by Stackryze for its own zones) | `ns1.stackryze.com.` |
-| `TXT` | Free-form text — SPF, DKIM, DMARC, verification | `"v=spf1 -all"` |
-| `SRV` | Service locator (XMPP, SIP, Matrix, Minecraft) | `_minecraft._tcp.example.com.` |
-| `CAA` | Restrict which CAs can issue certs | `0 issue "letsencrypt.org"` |
-| `PTR` | Reverse DNS | handled via the API only |
-| `SOA` | Start of authority (managed by Stackryze) | — |
+| `A` | Valid IPv4 address (`0–255` per octet) | `192.0.2.1` |
+| `AAAA` | Valid full or abbreviated IPv6 address | `2001:db8::1` |
+| `CNAME` | Valid DNS hostname (cannot be an IPv4 address); automatically trailing-dot normalized in PowerDNS | `target.example.com` |
+| `MX` | `<priority> <hostname>` where priority is `0–65535`; duplicate target hostnames at the same record name are rejected | `10 mail.example.com` |
+| `TXT` | Non-empty string up to `4096` characters | `"v=spf1 include:_spf.example.com ~all"` |
+| `SRV` | `<priority> <weight> <port> <target>` (4 space-separated fields) | `0 5 5060 sip.example.com` |
+| `CAA` | `<flags> <tag> <value>` (at least 3 space-separated fields) | `0 issue "letsencrypt.org"` |
 
-## Modern records
+<Note>
+  `SOA` and `NS` records are protected and cannot be created, edited, or deleted manually through user DNS record endpoints.
+</Note>
 
-These are the records the modern web is built on and most providers still don't support. Stackryze DNS serves them natively.
+## Record name and conflict rules
 
-### `SVCB` and `HTTPS`
+- **Apex notation:** Use `@` to target the zone apex (`example.com.`).
+- **Labels:** Record names allow `A–Z`, `a–z`, `0–9`, `-`, and `_` (up to 253 characters total).
+- **CNAME exclusivity:** A `CNAME` record cannot coexist with any other record type (`A`, `AAAA`, `MX`, `TXT`, etc.) at the exact same record name.
+- **Duplicate protection:** Exact duplicate `(name, type, content)` records are rejected.
+- **Multi-value records:** Adding a new value for `A`, `AAAA`, `MX`, `TXT`, `SRV`, or `CAA` preserves existing values on that RRset; `CNAME` replaces any existing `CNAME` at that name.
 
-Service bindings — a single record that says "to reach this service, here's the host, the port, the ALPN, and the IP hints."
+## TTL bounds
 
-```dns
-_app.example.com.  300  IN  SVCB  1 app.example.com. alpn="h3,h2" port=443 ipv4hint=192.0.2.1 ipv6hint=2001:db8::1
-www.example.com.   300  IN  HTTPS 1 . alpn="h3,h2" port=443 ipv4hint=192.0.2.1
-```
+All records created or scheduled in Stackryze DNS enforce:
 
-`HTTPS` is a mandatory-`alpn` alias of `SVCB` for the common case of serving HTTPS.
+- **Minimum TTL:** `3600` seconds (1 hour)
+- **Maximum TTL:** `604800` seconds (1 week)
 
-Common SvcParams:
+Requests with TTL values below `3600` or above `604800` return `400 Bad Request`.
 
-| Param | Purpose |
-| --- | --- |
-| `alpn` | Protocols to negotiate (`h2`, `h3`) |
-| `port` | Port to reach the service on |
-| `ipv4hint` | IPv4 hints to skip resolver lookups |
-| `ipv6hint` | IPv6 hints |
-| `dohpath` | DNS-over-HTTPS path for the resolver |
-| `ech` | Encrypted Client Hello config |
+## Built-in DNS Checker types
 
-### `TLSA`
-
-DANE — associate a TLS certificate or public key with a name. Used to lock down SMTP, HTTPS, and other TLS endpoints against rogue CAs.
-
-```dns
-_443._tcp.example.com.  3600  IN  TLSA  3 1 1 (
-    5c1502d3377fe1e0a4f8e2cd9c8b3e5d4e8e3b6d8c4a6b1c5d3a7c8b9d0e1f2a
-    3b4c5d6e7f80 )
-```
-
-Three fields:
-
-| Field | Value | Meaning |
-| --- | --- | --- |
-| Certificate usage | `0`–`3` | `3` (DANE-EE) is the most common — pin the end-entity cert |
-| Selector | `0` or `1` | Match full cert (`0`) or public key (`1`) |
-| Matching type | `0`–`2` | Exact match (`1`), SHA-256 (`1`), SHA-512 (`2`) |
-
-### `OPENPGPKEY` and `SMIMEA`
-
-Associate an OpenPGP or S/MIME key with an email address for end-to-end crypto verification:
-
-```dns
-<local-part>._openpgpkey.example.com.  IN  OPENPGPKEY  <binary key blob>
-```
-
-### `CAA`, `CERT`, `DS`, `DNSKEY`, `RRSIG`, `NSEC`, `NSEC3`
-
-The DNSSEC chain records, plus `CAA` and `CERT`. All served correctly. NSEC3 with opt-out is supported.
-
-### `URI`
-
-Publish a target URI for a name, used by some SSHFP and call-home protocols:
-
-```dns
-_ftp._tcp.example.com.  IN  URI  10 1 "ftp://ftp.example.com/public"
-```
-
-### `NAPTR`
-
-Naming Authority Pointer — used by ENUM, SIP, and XMPP federation:
-
-```dns
-sip.example.com.  IN  NAPTR  100 50 "s" "SIP+D2U" "" _sip._udp.example.com.
-```
-
-## What's *not* supported
-
-A few record types deliberately aren't served by Stackryze DNS:
-
-- **Wildcard DNSSEC** at multiple levels without explicit signing.
-- **`TYPE65534`** and other private/experimental types.
-
-If you need an exotic record type not listed here, open an issue on [github.com/stackryze/DNS](https://github.com/stackryze/DNS).
-
-## Where to go next
-
-<Columns cols={2}>
-  <Card title="Zones and records" icon="layer-group" href="/docs/dns/zones-and-records">
-    The mental model behind records.
-  </Card>
-  <Card title="DNSSEC" icon="shield" href="/docs/dns/dnssec">
-    Cryptographic validation for your zone.
-  </Card>
-  <Card title="Configure DNS records" icon="list" href="/guides/configure-dns-records">
-    Step-by-step record creation.
-  </Card>
-  <Card title="API reference" icon="code" href="/docs/dns/api">
-    Manage records programmatically.
-  </Card>
-</Columns>
+In addition to hosted zone management, the **DNS Checker** diagnostic tool (`GET /api/dns-checker/check/:domain/:recordType`) supports querying external domains across multiple resolvers for `A`, `AAAA`, `CNAME`, `MX`, `TXT`, `NS`, `SOA`, `PTR`, `SRV`, `CAA`, and `NAPTR`.

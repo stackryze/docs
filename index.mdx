@@ -1,39 +1,48 @@
 ---
 title: "Introduction"
-description: "Welcome to Stackryze — affordable software for the modern web."
+description: "Documentation for Stackryze Domains and Stackryze DNS — free public subdomains and authoritative DNS infrastructure."
 icon: "book-open"
 ---
 
-Stackryze is a software company on a mission to ship infrastructure people can actually trust — starting with domains and DNS, free for everyone while we build the next wave of products.
+Stackryze ships open, developer-focused domain and DNS infrastructure backed by PowerDNS, centralized single sign-on, and modern web APIs.
 
-Whether you're a founder, freelancer, small team, or just curious, this is the place to get reliable infrastructure without enterprise pricing or vendor lock-in.
+Whether you are a founder, freelancer, small team, or just curious, you can register free public subdomains on **Stackryze Domains** and manage authoritative DNS zones on **Stackryze DNS**.
 
 <Note>
-  Looking for the products themselves? Stackryze **DNS** is live at [dns.stackryze.com](https://dns.stackryze.com) and Stackryze **Domains** is live at [domain.stackryze.com](https://domain.stackryze.com).
+  Stackryze **Domains** is live at [domain.stackryze.com](https://domain.stackryze.com) and Stackryze **DNS** is live at [dns.stackryze.com](https://dns.stackryze.com). All accounts sign in through Stackryze SSO at [auth.stackryze.com](https://auth.stackryze.com).
 </Note>
+
+## Architecture overview
+
+The Stackryze network splits naming and resolution into two cooperating services:
+
+| Product | URL | Role |
+| --- | --- | --- |
+| **Stackryze Domains** | [domain.stackryze.com](https://domain.stackryze.com) | Free public subdomains across five extensions (`.indevs.in`, `.sryze.cc`, `.ryzedns.org`, `.nx.kg`, `.ryzn.pro`), annual renewals, WHOIS, and NS delegation. |
+| **Stackryze DNS** | [dns.stackryze.com](https://dns.stackryze.com) | Managed authoritative PowerDNS hosting for custom domains or verified Stackryze subdomains, with REST API tokens, DNSSEC, scheduled changes, and webhooks. |
 
 ## What's inside
 
 <Columns cols={2}>
   <Card title="Quickstart" icon="rocket" href="/quickstart">
-    Get from zero to a working DNS zone in under five minutes.
+    Go from a Stackryze account to a live DNS zone in under five minutes.
   </Card>
-  <Card title="Domains" icon="tags" href="/docs/domains">
-    Free subdomains for founders, freelancers, and small teams.
+  <Card title="Account verification" icon="badge-check" href="/account-verification">
+    How Stackryze SSO, GitHub KYC, and zone ownership verification work.
   </Card>
-  <Card title="Integration Guides" icon="compass" href="/guides/add-a-custom-domain">
-    Step-by-step recipes for the most common setup paths.
+  <Card title="Stackryze Domains" icon="tags" href="/docs/domains">
+    Free public subdomains, naming rules, custom nameservers, and lifecycle.
   </Card>
-  <Card title="Changelog" icon="clock-rotate-left" href="/changelog/introduction">
-    Every release, every fix, every minor improvement.
+  <Card title="Stackryze DNS" icon="globe" href="/docs/dns">
+    Zones, supported records, DNSSEC, temporary records, webhooks, and the REST API.
   </Card>
 </Columns>
 
-## Why Stackryze?
+## Official communication channels
 
-- **Trustworthy** — software that does what it says, every time.
-- **Affordable** — fair and upfront pricing, never a surprise.
-- **Independent** — no investors to please, no lock-in to push.
-- **Open by default** — free tiers, public roadmaps, transparent decisions.
+Stackryze only sends official mail and support replies from `@stackryze.com`:
 
-> A domain you can trust. A DNS zone you can debug. No surprises.
+- `support@stackryze.com` — account help, quota increases, and general support
+- `reportabuse@stackryze.com` — phishing, malware, and Acceptable Use Policy reports
+- `security@stackryze.com` — vulnerability reports and security incidents
+- `no-reply@stackryze.com` — automated verification, renewal, and lifecycle notices

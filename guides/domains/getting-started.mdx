@@ -1,130 +1,57 @@
 ---
 title: "Getting started"
-description: "Create your account, register your first Stackryze Domain, and verify it is active."
+description: "Sign in with Stackryze SSO, complete GitHub verification, and register your first Stackryze Domain."
 icon: "rocket"
 ---
 
-This guide walks you through creating your account and registering your first Stackryze Domain.
+This guide walks you through signing in, completing GitHub verification, and claiming a free public subdomain on [domain.stackryze.com](https://domain.stackryze.com).
 
 <Note>
-  Stackryze Domains supports four namespaces — `indevs.in`, `sryze.cc`, `ryzedns.org`, and `nx.kg`. The examples below use `yourname.indevs.in`; substitute whichever namespace you registered under.
+  Stackryze Domains supports five extensions: `indevs.in`, `sryze.cc`, `ryzedns.org`, `nx.kg`, and `ryzn.pro`. You get **1 free slot per extension** (5 domains total) by default.
 </Note>
 
-<Note>
-  Stackryze Domains is currently in beta and updated daily. If you find an issue, report it via the support channels at the bottom of this page.
-</Note>
+## Step 1 — Sign in with Stackryze SSO
 
-## Step 1 — Visit the registration site
+1. Open [domain.stackryze.com](https://domain.stackryze.com) and click **Get Started**.
+2. Click **Continue with Stackryze SSO** to sign in or create an account via [auth.stackryze.com](https://auth.stackryze.com).
+3. If your sign-in email ends in `@users.noreply.github.com`, you will be prompted to set and verify a deliverable personal email address so you can receive expiry warnings and account notices.
 
-1. Go to [domain.stackryze.com](https://domain.stackryze.com/).
-2. Click **Get Started** in the top right.
+## Step 2 — Complete GitHub verification
 
-<img src="/docs/domains/media/stackryze/img_1.png" alt="Stackryze Domains landing page with Get Started button" />
+GitHub Star KYC is required once per account before registering subdomains on any extension:
 
-## Step 2 — Create an account
+1. Open [github.com/stackryze/FreeDomains](https://github.com/stackryze/FreeDomains) and click **Star**.
+2. In the dashboard, open **Register Domain** (or **My Domains**), click **Verify with GitHub**, and authorize the check.
 
-### Option A: Email and password (recommended)
+Requirements checked automatically:
 
-1. Click **Get Started** or **Register**.
-2. Enter your **Name**, **Email**, and a secure **Password**.
-3. Complete the Cloudflare Turnstile check.
-4. Click **Create Account**.
-5. We email you a six-digit verification code. Enter it to confirm.
+- Your GitHub account is at least **30 days old**
+- That GitHub account ID is not already linked to a different Stackryze account
+- Your GitHub account has starred `stackryze/FreeDomains`
 
-<Tip>
-  Didn't receive the code? Click **Resend** on the verification page to get a new one.
-</Tip>
+## Step 3 — Choose and register your domain
 
-### Option B: GitHub
+<Steps>
+  <Step title="Pick a name and extension">
+    Open **Register Domain** from the sidebar, type your desired subdomain label, and select an extension (`.indevs.in`, `.sryze.cc`, `.ryzedns.org`, `.nx.kg`, or `.ryzn.pro`).
 
-<Warning>
-  New GitHub registrations are paused. To use GitHub login, first create an account with email and password (using the same email as your GitHub account), then link GitHub from the login screen.
-</Warning>
+    Naming rules:
+    - **Length:** 3–63 characters
+    - **Allowed characters:** lowercase `a–z`, `0–9`, and `-` (no leading/trailing hyphens, underscores, Punycode `xn--`, or reserved words)
+  </Step>
+  <Step title="Confirm availability">
+    The availability checker runs automatically via `GET /subdomains/check/:name`. Wait for the green checkmark indicating the label is free and not in a 7-day cooling-off period.
+  </Step>
+  <Step title="Accept terms and complete Turnstile">
+    Check the [Terms of Service](https://domain.stackryze.com/terms) and [Privacy Policy](https://domain.stackryze.com/privacy) box and pass the Cloudflare Turnstile verification check.
+  </Step>
+  <Step title="Click Register Domain">
+    Stackryze writes `NS` records for your subdomain in PowerDNS immediately (defaulting to `ns1.stackryze.com`, `ns2.stackryze.com`, `ns3.stackryze.com`), marks your domain `Active`, and sets expiration to **1 year** from today.
+  </Step>
+</Steps>
 
-If you already have an account:
+## Next steps
 
-1. Click **Login**.
-2. Select the **GitHub** tab.
-3. Authenticate with GitHub.
-
-### Account protection
-
-- **Email verification** is required for every new account.
-- After five failed login attempts, the account is locked for 30 minutes.
-- Passwords must be at least eight characters.
-
-## Step 3 — Open the Register Domain screen
-
-After logging in, click **Register Domain** in the sidebar.
-
-<img src="/docs/domains/media/stackryze/img_3.png" alt="Stackryze Domains dashboard with Register Domain in the sidebar" />
-
-## Step 4 — Complete the registration form
-
-<img src="/docs/domains/media/stackryze/img_4.png" alt="Stackryze Domains registration form" />
-
-### 1. Enter your subdomain name
-
-Type your desired subdomain in the input field.
-
-**Rules:**
-
-- **Length:** 3–63 characters.
-- **Characters:** lowercase letters, numbers, and hyphens only.
-- **Format:** cannot start or end with a hyphen.
-
-**Examples:**
-
-- ✅ `myproject` → `myproject.indevs.in`
-- ✅ `john-portfolio` → `john-portfolio.indevs.in`
-- ❌ `ab` (too short)
-- ❌ `-myproject` (starts with a hyphen)
-
-### 2. Check availability
-
-The system checks availability as you type:
-
-- 🟢 Green checkmark — available.
-- 🔴 Red X — taken or invalid.
-
-### 3. Accept the terms
-
-Check the box to accept the [Terms of Service](https://domain.stackryze.com/terms) and [Privacy Policy](https://domain.stackryze.com/privacy).
-
-### 4. Complete the CAPTCHA
-
-Complete the hCaptcha to prove you're human.
-
-### 5. Click Register Domain
-
-Click **Register Domain** to complete registration.
-
-**What happens next:**
-
-- ✅ Your domain is registered immediately.
-- ✅ Default nameservers (`ns1.stackryze.com`, `ns2.stackryze.com`) are assigned.
-- ✅ Domain is valid for one year.
-- ✅ You see a success message.
-
-## Step 5 — You're done
-
-Your domain is now active. From here:
-
-- View it at **My Domains**.
-- Set up DNS records with your preferred provider — start with the [Cloudflare guide](/guides/domains/dns-providers/cloudflare).
-- Learn how to [manage your domain](/guides/domains/managing-domains).
-
-## Domain limits
-
-You can register up to five domains by default. Subdomain names must be 3–63 characters long.
-
-<Card title="Managing domains" icon="gear" href="/guides/domains/managing-domains">
-  See the full quotas and how to request a limit increase.
-</Card>
-
-## Need help?
-
-- [Troubleshooting](/guides/domains/troubleshooting) — common errors and fixes.
-- [Discord Community](https://discord.gg/wr7s97cfM7) — fastest support.
-- [Email Support](mailto:support@stackryze.com).
-- [GitHub Issues](https://github.com/stackryze/domains-docs/issues) — bug reports.
+- View and configure nameservers under **My Domains → Manage**: [Managing domains](/guides/domains/managing-domains)
+- Point your subdomain to Cloudflare, Route 53, DigitalOcean, or your own DNS server: [DNS provider guides](/guides/domains/dns-providers)
+- Or manage DNS records on Stackryze DNS (`dns.stackryze.com`): [Nameserver delegation](/docs/domains/nameserver-delegation#using-stackryze-dns-dnsstackryzecom)

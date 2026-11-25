@@ -1,108 +1,81 @@
 ---
 title: "Subdomain naming rules"
-description: "What characters, lengths, and shapes a Stackryze subdomain name can take."
+description: "Character rules, length limits, Punycode blocks, profanity checks, and reserved names across all five extensions."
 icon: "tag"
 ---
 
-Every Stackryze Domain follows the same naming rules. The rules are enforced at registration and during any custom-nameserver update, so it's worth understanding them once.
+Every registration and availability check (`GET /subdomains/check/:name`) enforces the same naming validation across all five extensions.
 
-## The shape
+## Format
 
-A Stackryze Domain is a single label under one of the four Stackryze namespaces:
+A Stackryze Domain consists of one subdomain label under one of the five supported root zones:
 
 ```text
-<your-label>.indevs.in
-<your-label>.sryze.cc
-<your-label>.ryzedns.org
-<your-label>.nx.kg
+<label>.indevs.in
+<label>.sryze.cc
+<label>.ryzedns.org
+<label>.nx.kg
+<label>.ryzn.pro
 ```
 
-`<your-label>` is the part you choose. The namespace suffix is fixed at registration and never changes — the same naming rules apply to all four namespaces.
+Your chosen label and extension are fixed once registered.
 
-## Length
+## Length bounds
 
 | Bound | Value |
 | --- | --- |
 | Minimum | 3 characters |
 | Maximum | 63 characters |
-| Recommended | 8–24 characters |
 
-A 3-character name like `abc.indevs.in` is valid but rare. Names in the 8–24 range are easier to read, share, and remember. The same length bounds apply under every namespace.
+## Allowed characters and Punycode policy
 
-## Allowed characters
-
-A label may contain only:
+Labels may contain only:
 
 - Lowercase ASCII letters (`a`–`z`)
 - Digits (`0`–`9`)
 - Hyphens (`-`)
 
-It may **not** contain:
+The validator rejects:
 
-- Uppercase letters
-- Spaces
-- Underscores or any other punctuation
-- Internationalized characters (`münchen`, `日本語`, emojis)
+- Uppercase characters (inputs are normalized to lowercase in the UI; uppercase is rejected at the API check if invalid)
+- Spaces, underscores (`_`), dots (`.`), or punctuation
+- Non-ASCII / Internationalized Domain Names (IDNs)
+- **Punycode prefixes** starting with `xn--`
 
-The system lowercases anything you type, so `MyProject.indevs.in` and `myproject.indevs.in` resolve to the same name. Case insensitivity applies across all four namespaces.
+Hyphens cannot appear at the start (`-myproject`) or end (`myproject-`) of a label.
 
-## Position rules for hyphens
-
-- A hyphen **cannot** appear as the first character.
-- A hyphen **cannot** appear as the last character.
-- Consecutive hyphens are allowed in the middle but are discouraged for readability.
-
-| Label | Valid | Why |
+| Label | Valid | Reason |
 | --- | --- | --- |
-| `myproject` | ✅ | Lowercase, alphanumeric |
-| `john-portfolio` | ✅ | Hyphen in the middle |
-| `api2024` | ✅ | Letters and digits |
-| `-myproject` | ❌ | Starts with hyphen |
-| `myproject-` | ❌ | Ends with hyphen |
-| `My_Project` | ❌ | Uppercase, underscore |
-| `my project` | ❌ | Space |
-| `ab` | ❌ | Too short |
+| `myproject` | Yes | Lowercase ASCII |
+| `john-portfolio` | Yes | Internal hyphen allowed |
+| `api2026` | Yes | Lowercase letters and digits |
+| `xn--example` | No | Punycode prefixes are blocked |
+| `-myproject` | No | Starts with a hyphen |
+| `myproject-` | No | Ends with a hyphen |
+| `my_app` | No | Underscores are not allowed |
+| `ab` | No | Fewer than 3 characters |
 
-## Case insensitivity
+## Reserved names and profanity filtering
 
-DNS is case-insensitive. The registry treats `MyProject.indevs.in` and `myproject.indevs.in` as the same name. To avoid ambiguity, always write and share your domain in lowercase, regardless of which namespace it lives under.
+Stackryze filters all candidate names through:
 
-## Uniqueness and reuse
+1. **Reserved system labels** (via `reserved-subdomains` — such as `www`, `mail`, `admin`, `api`, `dashboard`, `ns1`–`ns4`).
+2. **Public safety, government, and major brand lists** — protected terms (such as emergency services, government departments, and well-known brand trademarks) cannot be registered to prevent impersonation.
+3. **Automated profanity checks** — whole-word and substring profanity checks block abusive labels.
 
-A name can be owned by one Stackryze account at a time. When a name is released — through deletion, expiry past the grace period, or a registry pull — it enters a **cooling-off period** before it can be registered again. See [Domain lifecycle](/docs/domains/domain-lifecycle) for the timeline.
+## Uniqueness and 7-day cooling-off
 
-## Reserved names
-
-A small set of labels are reserved for Stackryze services and cannot be registered:
-
-- `www`, `mail`, `admin`, `api`, `dashboard`
-- `ns1`, `ns2`, `ns3`, `ns4`
-- Anything matching `stackryze`, `indevs`, or a known abuse pattern
-
-The registration form rejects these with a clear message before you spend time filling in the CAPTCHA.
-
-## Choosing a good name
-
-A few heuristics that hold up over time:
-
-- **Pronounceable** beats clever. `tarun.dev` is easier to share than `t8rn-d3v`.
-- **Stable** beats topical. Names tied to a single project get awkward when the project pivots.
-- **Short** beats long, once it's still readable.
-- **Lowercase everywhere** to avoid the casing ambiguity trap.
+- Only one active account can hold a given `<label>.<extension>` combination at a time.
+- If another user has a **pending manual verification reservation** for that label, availability checks return it as unavailable.
+- Once a domain is **soft-deleted** (after admin approval of a deletion request or after exceeding the 15-day post-expiry grace period), the name enters a **7-day cooling-off period** before anyone can register it again.
 
 ## Where to go next
 
 <Columns cols={2}>
-  <Card title="Stackryze Domains" icon="circle-info" href="/docs/domains">
-    What a Stackryze Domain is.
+  <Card title="Nameserver delegation" icon="shuffle" href="/docs/domains/nameserver-delegation">
+    Configure custom nameservers or Stackryze DNS.
   </Card>
   <Card title="Domain lifecycle" icon="clock" href="/docs/domains/domain-lifecycle">
-    What happens to a name over time.
-  </Card>
-  <Card title="Getting started" icon="rocket" href="/guides/domains/getting-started">
-    Register your first domain.
-  </Card>
-  <Card title="Naming errors" icon="circle-exclamation" href="/guides/domains/troubleshooting">
-    Common rejection messages and fixes.
+    Understand grace periods and cooling-off rules.
   </Card>
 </Columns>

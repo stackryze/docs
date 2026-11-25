@@ -1,56 +1,40 @@
 ---
 sidebarTitle: "Introduction"
 title: "Changelog"
-description: "Track every Stackryze release, feature, improvement, and platform update."
+description: "Track platform updates across Stackryze Domains and Stackryze DNS."
 icon: "calendar-days"
 keywords: ["Stackryze", "changelog", "release notes", "product updates"]
 ---
 
-Welcome to the Stackryze changelog. Pick a product tab below to see its release history.
+Release updates across **Stackryze Domains** (`domain.stackryze.com`) and **Stackryze DNS** (`dns.stackryze.com`).
 
-## All releases
+## Platform milestones
 
 <Tabs>
   <Tab title="Domains" icon="tags">
-    ### 2026
+    ### Highlights
 
-    | Version | Date | Highlights |
-    | --- | --- | --- |
-    | [v1.0.0](/changelog/domains/v1.0.0) | July 4, 2026 | First stable release — public registration, 7-day cooling-off, audit log, scoped API tokens, 5-domain quota. |
-    | [v0.7.0](/changelog/domains/v0.7.0) | June 10, 2026 | Open beta — captcha-free registration, multi-domain dashboard, renewal grace period. |
-    | [v0.6.0](/changelog/domains/v0.6.0) | May 20, 2026 | Custom nameservers in the dashboard, first API endpoints for registration and renewal. |
-    | [v0.5.0](/changelog/domains/v0.5.0) | April 15, 2026 | Closed beta — `indevs.in` registration, default Stackryze nameservers, My Domains dashboard. |
-  </Tab>
-  <Tab title="Hosting" icon="server">
-    ### 2026
-
-    | Version | Date | Highlights |
-    | --- | --- | --- |
-    | [v0.3.0](/changelog/hosting/v0.3.0) | July 1, 2026 | Closed beta — free tier, preview environments per PR, env vars with secret scanning, public roadmap. |
-    | [v0.2.0](/changelog/hosting/v0.2.0) | June 15, 2026 | Private beta — custom domains via Stackryze DNS, automatic HTTPS via ACME DNS-01, Git-based deploys. |
-    | [v0.1.0](/changelog/hosting/v0.1.0) | May 30, 2026 | Internal alpha — container deploy on `stackryze.run` subdomains, automatic health-check rollback. |
+    - **Five public extensions** — `.indevs.in`, `.sryze.cc`, `.ryzedns.org`, `.nx.kg`, and `.ryzn.pro` live with 1 slot per extension by default.
+    - **Centralized Stackryze SSO** — unified OpenID Connect authentication via `auth.stackryze.com` with back-channel logout and session validation.
+    - **Automated GitHub Star KYC** — streamlined verification across all five extensions requiring a 30-day GitHub account and repository star.
+    - **DNS ownership verification handshake** — seamless pairing between `domain.stackryze.com` and `dns.stackryze.com` via one-time `sryze-verify-...` codes.
+    - **WHOIS Privacy & Lifecycle automation** — public WHOIS with registrant email redaction toggle, 60-day renewal window, 15-day grace period, and 7-day cooling-off cleanup.
   </Tab>
   <Tab title="StackNS" icon="globe">
-    ### 2026
+    ### Highlights
 
-    | Version | Date | Highlights |
-    | --- | --- | --- |
-    | [v1.115.0](/changelog/stackns/v1.115.0) | July 4, 2026 | Atomic bulk record operations, scoped read-only tokens, dynamic DNS rate limits via `X-Forwarded-For`, audit log CSV export. |
-    | [v1.110.0](/changelog/stackns/v1.110.0) | June 29, 2026 | Native `HTTPS` and `SVCB` records, ED25519 DNSSEC default, Cloudflare zone import, 30-second TTL minimum. |
-    | [v1.105.0](/changelog/stackns/v1.105.0) | June 22, 2026 | Bring Your Own Processor (BYOP), official Rust SDK release, Korean wallets and Przelewy24 payment methods, `brand_id` on every webhook payload, decimal-aware currency handling, higher entitlement limits, branded recovery emails, analytics v2.1, and dashboard polish. |
-    | [v1.101.0](/changelog/stackns/v1.101.0) | June 2, 2026 | Automatic subscription payment retries, business-level proration defaults with per-product-collection overrides, business name collection for B2B invoices. |
-    | [v1.99.0](/changelog/stackns/v1.99.0) | May 25, 2026 | Stacked discount codes (up to 20), seven new customer notification emails, Sunbit BNPL, checkout payment page overhaul, product form rework with live preview, Business Settings redesign. |
-    | [v1.97.6](/changelog/stackns/v1.97.6) | May 7, 2026 | Entitlements launch with five new fulfillment integrations, subscription cancellation reasons, configurable INR e-mandate floor, adaptive currency fees inclusive setting, Stackryze Desktop app for macOS/Windows/Linux, stablecoin payments, import existing license keys, `require_phone_number` for checkout. |
-    | [v1.94.0](/changelog/stackns/v1.94.0) | April 8, 2026 | Abandoned Cart Recovery, Subscription Dunning, discount metadata, recovery webhooks, Pix payments for Brazil, WeChat Pay for Chinese customers. |
-    | [v1.93.0](/changelog/stackns/v1.93.0) | March 28, 2026 | Checkout redesign with improved loading states, net revenue analytics, business-level payment method disabling, payout breakdown, Visa RDR configuration, DoNotBill proration mode, scheduled plan changes, delete customer payment method API. |
-    | [v1.87.0](/changelog/stackns/v1.87.0) | March 9, 2026 | Webhook signature verification v2 (HMAC-SHA256 with replay protection), zone import from BIND format, per-record comments, audit log export to JSONL, dashboard dark mode polish, and 14 minor bug fixes. |
+    - **Three global authoritative servers** — `ns1.stackryze.com` (New York), `ns2.stackryze.com` (Frankfurt), and `ns3.stackryze.com` (Hyderabad) powered by PowerDNS Master/Slave replication.
+    - **API Tokens & Webhooks** — scoped `sk_dns_...` Bearer tokens (`read` / `write`) and HMAC-signed webhooks (`X-Stackryze-Signature`).
+    - **Control-plane automation** — batch record mutations (up to 200 per call), zone cloning, record annotations, temporary auto-expiring records (1 min–7 days), and scheduled changes.
+    - **ECDSA P-256 DNSSEC & Edge Telemetry** — one-click `ECDSAP256SHA256` CSK signing, revertible audit log entries, BIND zone export, and `/api/edge/metrics` ingestion.
+  </Tab>
+  <Tab title="Hosting" icon="server">
+    ### Planned
+
+    - **Stackryze Hosting** is planned (`AGENTS.md` / `docs/hosting`) and not yet generally available.
   </Tab>
 </Tabs>
 
-## Subscribe
+## Updates and community
 
-Each release is announced on:
-
-- The [Stackryze Discord](https://discord.gg/stackryze) `#announcements` channel.
-- The [Stackryze blog](https://stackryze.com/blog).
-- RSS — coming soon.
+Announcements are shared on the [Stackryze Discord](https://discord.gg/wr7s97cfM7) and [status.stackryze.com](https://status.stackryze.com).

@@ -1,130 +1,62 @@
 ---
 title: "FAQ"
-description: "Common questions about Stackryze DNS — pricing, limits, DNSSEC, and the API."
+description: "Common questions about Stackryze DNS — quotas, nameservers, records, DNSSEC, and the REST API."
 icon: "circle-question"
 ---
 
-Quick answers to the questions we get most. For deeper reference material, follow the links into the [StackNS documentation](/docs/dns).
+Quick answers to the most common questions about [dns.stackryze.com](https://dns.stackryze.com).
 
-<Note>
-  Stackryze DNS is free for everyone. Verification raises zone limits and unlocks advanced features.
-</Note>
+## Quotas and pricing
 
-## Pricing and limits
+### Is Stackryze DNS free?
 
-### Is Stackryze DNS really free?
+Yes. Stackryze DNS is free to use after signing in through Stackryze SSO (`auth.stackryze.com`).
 
-Yes. The base service is free for any account. Unverified accounts get three zones; verified accounts get unlimited.
+### What are the default quotas?
 
-### What does verification unlock?
-
-Verified accounts get unlimited zones, scoped API tokens, DNSSEC, webhooks, and the audit log. See [Account verification](/account-verification).
-
-### Are there rate limits?
-
-Yes — per-token, per-IP, per-zone. The dynamic-DNS endpoint has a relaxed limit, configurable via `X-Forwarded-For`. See the [API reference](/docs/dns/api) for the exact numbers.
+- **Zones per account:** `3` zones by default (increasable by admin upon request to [support@stackryze.com](mailto:support@stackryze.com)).
+- **Records per zone:** `200` records by default (hard system cap: `1,000` records).
+- **API tokens:** up to `10` tokens per account.
+- **Webhooks:** up to `10` `https://` webhooks per account.
 
 ## Zones and records
 
-### How many records can one zone hold?
+### Which record types are supported?
 
-Up to 10,000 records per zone. Most zones are well under 100. The limit exists to keep anycast lookups fast.
+`A`, `AAAA`, `CNAME`, `MX`, `TXT`, `SRV`, and `CAA`. `NS` and `SOA` records are managed automatically by Stackryze PowerDNS.
 
-### What record types do you support?
+### What are the minimum and maximum TTL values?
 
-Every classic record plus the modern ones: `SVCB`, `HTTPS`, `TLSA`, `OPENPGPKEY`, `CAA`, and others. See [Supported records](/docs/dns/supported-records) for the full list.
+All records require a TTL between **`3600` seconds (1 hour)** and **`604800` seconds (1 week)**.
 
-### Can I import a BIND zone file?
+### Can I export my zone?
 
-Yes. The dashboard accepts zone files in BIND format. The CLI also supports `stackryze zones import --file example.com.zone`.
+Yes. Use the **Export BIND** option in the dashboard or call `GET /api/zones/:id/export` to download a standard BIND zone file.
 
-### What is the minimum TTL?
+## Nameservers and verification
 
-30 seconds. Lower values are clamped.
+### Which nameservers should I use?
 
-## Nameservers and delegation
-
-### Where are your nameservers?
-
-Four anycast sites in NYC, Hyderabad, Nuremberg, and São Paulo. See [Nameservers](/docs/dns/nameservers).
-
-### Can I bring my own nameservers?
-
-Yes — set custom NS records on your zone. Stackryze still serves as a backup, and DNSSEC continues to work.
-
-### Why do my NS records show all four of your nameservers?
-
-That's the default. You can replace any of them with your own; the four we publish are a fallback.
-
-## DNSSEC
-
-### Do you support DNSSEC?
-
-Yes, opt-in per zone. Default algorithm is ED25519; ECDSA P-256 and RSA are available.
-
-### Will enabling DNSSEC break anything?
-
-No — the change is additive. Until you publish the `DS` record at your registrar, validating resolvers won't trust the chain, but standard resolvers are unaffected.
-
-### How do I roll the KSK?
-
-Open the zone, go to **Settings → DNSSEC → Rollover**. The new key is published alongside the old one for the rollover period.
-
-## Dynamic DNS
-
-### How do I push an IP update?
-
-```bash
-curl -X POST https://dns.stackryze.com/api/v1/dynamic/update \
-  -H "Authorization: Bearer $TOKEN" \
-  -d '{"zone":"example.com","name":"home","type":"A","value":"192.0.2.1"}'
+```text
+ns1.stackryze.com
+ns2.stackryze.com
+ns3.stackryze.com
 ```
 
-See [Dynamic DNS](/docs/dns/dynamic-dns) and the [Dynamic DNS guide](/guides/dynamic-dns).
+### Why is my Stackryze subdomain stuck in `pending_ownership`?
 
-### Can I use the same token for DDNS and zone management?
+Platform subdomains (`.indevs.in`, `.sryze.cc`, `.ryzedns.org`, `.nx.kg`, `.ryzn.pro`) require pasting the one-time `sryze-verify-...` code into [domain.stackryze.com](https://domain.stackryze.com) → **My Domains → DNS Ownership Verification**, then clicking **Verify Ownership** on Stackryze DNS.
 
-You can, but it's better practice to issue a scoped token limited to `dynamic:update` for DDNS clients.
+## DNSSEC & API
 
-## API
+### How does DNSSEC work?
+
+Enabling DNSSEC creates an active **`ECDSAP256SHA256` (Algorithm 13)** CSK and returns `DS` records to add at your domain registrar.
 
 ### Where is the API base URL?
 
+```text
+https://api-dns.stackryze.com/api
 ```
-https://dns.stackryze.com/api/v1
-```
 
-### How do I authenticate?
-
-Bearer tokens. Generate one in **Settings → API tokens**. See the [API reference](/docs/dns/api).
-
-### Are breaking changes versioned?
-
-Yes. The `/v1` namespace is stable. Breaking changes ship under a new version (`/v2`) and the old version continues to work.
-
-### Can I scope a token to one zone?
-
-Yes. Scoped zone tokens are the recommended pattern for CI/CD and DDNS clients.
-
-## Troubleshooting
-
-### My record changes aren't showing up.
-
-Check TTL and propagation. Stackryze pushes changes globally within seconds, but downstream resolvers cache up to the TTL. Run `dig +trace` to see where the stale answer comes from.
-
-### I get `NXDOMAIN` for a record that exists.
-
-The most common cause is a missing trailing dot. `example.com` is a relative name inside the zone, but `app.example.com.` (with the trailing dot) is fully qualified.
-
-### My zone won't load in the dashboard.
-
-If the dashboard is failing to fetch a zone, the API may be rate-limiting. Wait a minute and reload.
-
-## Where to go next
-
-- [API reference](/docs/dns/api) — full endpoint list.
-- [Supported records](/docs/dns/supported-records) — every record type.
-- [Nameservers](/docs/dns/nameservers) — where your zone lives.
-- [DNSSEC](/docs/dns/dnssec) — how to enable it.
-- [Dynamic DNS](/docs/dns/dynamic-dns) — push IP updates.
-- [Account verification](/account-verification) — unlock unlimited zones.
+Generate a `sk_dns_...` Bearer token from **Settings → API Tokens** with `read` or `read` + `write` scope. See the [API reference](/docs/dns/api).

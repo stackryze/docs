@@ -1,59 +1,26 @@
 ---
-title: "Point Domain to Stackryze"
-description: "Three ways to point an existing domain at a Stackryze-hosted service."
+title: "Point domain to Stackryze"
+description: "Ways to connect an existing domain or Stackryze subdomain to Stackryze DNS."
 icon: "share"
 ---
 
-There are three ways to point a domain you own at a Stackryze service. This page picks the right one for you.
+Choose how you want to connect your domain to Stackryze DNS depending on whether it is a custom registrar domain or a Stackryze subdomain.
 
-## Option A — Full delegation (recommended)
+## Option A — Full delegation (custom domain)
 
-Delegate the entire zone to Stackryze's nameservers. We host every record type and you manage everything from one dashboard.
+Change your registrar's nameservers to `ns1.stackryze.com`, `ns2.stackryze.com`, and `ns3.stackryze.com`.
 
-- **Best for:** most users, full feature set (DNSSEC, modern records, API).
-- **Trade-off:** you can no longer use your registrar's DNS UI.
-- **Steps:** see [Add a custom domain](/guides/add-a-custom-domain).
+- **Best for:** domains registered at external registrars where you want Stackryze DNS to serve the entire zone (`A`, `AAAA`, `CNAME`, `MX`, `TXT`, `SRV`, `CAA`, DNSSEC, API automation).
+- **Trade-off:** DNS records are managed at [dns.stackryze.com](https://dns.stackryze.com) instead of your registrar's DNS panel.
+- **Walkthrough:** see [Add a custom domain](/guides/add-a-custom-domain).
 
-## Option B — Subdomain only (CNAME)
+## Option B — Stackryze subdomain delegation
 
-Keep the apex at your registrar and point a single subdomain (`app.example.com`) at Stackryze via a `CNAME`.
+Keep registration on [domain.stackryze.com](https://domain.stackryze.com) and either:
 
-```dns
-app.example.com.  300  IN  CNAME  edge.stackryze.net.
-```
+- Point records on [dns.stackryze.com](https://dns.stackryze.com) after completing the one-time `sryze-verify-...` ownership code handshake, **or**
+- Replace `ns1–ns3.stackryze.com` in **Edit Nameservers** with any external DNS provider (see [DNS provider guides](/guides/domains/dns-providers)).
 
-- **Best for:** only one service needs Stackryze, or you want to keep your registrar's DNS UI for everything else.
-- **Trade-off:** DNSSEC signing has to happen at your registrar.
+## Option C — Subdomain CNAME delegation from another DNS host
 
-## Option C — A-record forwarding
-
-Point an `A` record at one of Stackryze's anycast IPs.
-
-```dns
-app.example.com.  300  IN  A  192.0.2.10
-```
-
-- **Best for:** static frontends, single-service domains.
-- **Trade-off:** you manage the IP rotation if we change infrastructure.
-
-<Tabs>
-  <Tab title="Full delegation" icon="server">
-    Pros: full feature set, DNSSEC, modern record types, audit log, API.
-
-    Cons: leaves your registrar's DNS UI.
-  </Tab>
-  <Tab title="CNAME subdomain" icon="shuffle">
-    Pros: surgical, keeps your registrar's DNS UI as source of truth.
-
-    Cons: no DNSSEC for the subdomain.
-  </Tab>
-  <Tab title="A-record forwarding" icon="route">
-    Pros: works anywhere, no registrar cooperation needed.
-
-    Cons: you own IP maintenance.
-  </Tab>
-</Tabs>
-
-<Tip>
-  Not sure? Start with **full delegation** — it's reversible in two clicks from your registrar, and unlocks every Stackryze feature.
-</Tip>
+If you only want a specific hostname (such as `app.example.com`) to resolve to an endpoint managed elsewhere while keeping your root domain at your current DNS host, create a `CNAME` record at your existing DNS provider instead of transferring nameservers.

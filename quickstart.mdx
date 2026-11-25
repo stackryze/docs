@@ -1,49 +1,58 @@
 ---
 title: "Quickstart"
-description: "Get from zero to a working DNS zone in under five minutes."
+description: "Set up an authoritative zone on Stackryze DNS in under five minutes."
 icon: "rocket"
 ---
 
-This quickstart takes you from a fresh Stackryze account to a fully delegated domain with live DNS records. Most people finish in under five minutes.
+This quickstart walks you from signing in at Stackryze DNS to an active zone serving DNS records on PowerDNS.
 
 ## Prerequisites
 
-Before you begin, you must have:
+Before you begin, make sure you have:
 
-- A free [Stackryze](https://dns.stackryze.com/signup) account
-- A domain you own (or one of the free subdomains Stackryze Domains provides)
-- Five minutes
+- A Stackryze account via [auth.stackryze.com](https://auth.stackryze.com)
+- Either a custom domain you own at an external registrar, or a subdomain registered on [domain.stackryze.com](https://domain.stackryze.com)
 
 ## Get started
 
 <Steps>
-  <Step title="Create your Stackryze account">
-    Sign up at [dns.stackryze.com](https://dns.stackryze.com/signup). You can use email or your existing GitHub account.
+  <Step title="Sign in to Stackryze DNS">
+    Open [dns.stackryze.com](https://dns.stackryze.com) and sign in with **Stackryze SSO**. Your default account quota supports up to **3 zones** and **200 records per zone**.
   </Step>
-  <Step title="Add your domain">
-    From the dashboard, click **Add Domain**, then enter the apex (for example `example.com`). Stackryze will create an empty zone and give you the nameservers to delegate to.
+  <Step title="Create your zone">
+    Click **Add Zone** and enter your domain name (for example `example.com`, or a subdomain such as `myproject.indevs.in`).
+
+    Stackryze provisions a `NATIVE` zone on our Master/Slave PowerDNS servers with our authoritative SOA record (`ns1.stackryze.com. hostmaster.stackryze.com.`).
   </Step>
-  <Step title="Delegate at your registrar">
-    At your domain registrar, set the nameservers to the four Stackryze nameservers we provide:
+  <Step title="Verify ownership (Stackryze subdomains only)">
+    If you added a subdomain ending in `.indevs.in`, `.sryze.cc`, `.ryzedns.org`, `.nx.kg`, or `.ryzn.pro`, the zone starts in `pending_ownership` status and shows a one-time `sryze-verify-...` code:
+
+    1. Open [domain.stackryze.com](https://domain.stackryze.com) → **My Domains** → select your subdomain.
+    2. Under **DNS Ownership Verification**, click **Add Code** and paste the `sryze-verify-...` code.
+    3. Return to [dns.stackryze.com](https://dns.stackryze.com) and click **Verify Ownership**.
+  </Step>
+  <Step title="Delegate nameservers">
+    At your registrar (or in your Stackryze Domains **Edit Nameservers** panel), point the domain to all three Stackryze nameservers:
 
     ```text
     ns1.stackryze.com
     ns2.stackryze.com
     ns3.stackryze.com
-    ns4.stackryze.com
     ```
 
-    Propagation typically completes within 30 minutes.
+    If you created the subdomain on [domain.stackryze.com](https://domain.stackryze.com), these three nameservers are assigned by default.
   </Step>
-  <Step title="Add your first records">
-    Open the zone and add the records you need — `A`, `AAAA`, `CNAME`, `MX`, `TXT`, plus modern record types like `SVCB`, `HTTPS`, and `TLSA`.
+  <Step title="Verify nameservers and add records">
+    Click **Verify** in the Stackryze DNS dashboard to run an uncached NS check against Google DNS (`8.8.8.8`) and public resolvers. Once verified, the zone status switches to `active`.
 
-    <Tip>
-      Save your records as a draft first — Stackryze validates the whole zone before publishing so syntax mistakes never go live.
-    </Tip>
+    Add `A`, `AAAA`, `CNAME`, `MX`, `TXT`, `SRV`, or `CAA` records with TTL values between `3600` seconds (1 hour) and `604800` seconds (1 week).
   </Step>
-  <Step title="Verify with a lookup">
-    Run `dig example.com @ns1.stackryze.com` (or use the built-in lookup from the dashboard) to confirm the zone is live.
+  <Step title="Confirm live resolution">
+    Query the nameserver directly to confirm answers are live:
+
+    ```bash
+    dig A example.com @ns1.stackryze.com +short
+    ```
   </Step>
 </Steps>
 
@@ -51,16 +60,15 @@ Before you begin, you must have:
 
 <Columns cols={2}>
   <Card title="Add a custom domain" icon="globe" href="/guides/add-a-custom-domain">
-    Wire up a domain you already own to a Stackryze-hosted service.
+    Point an external domain from Namecheap, Porkbun, or Cloudflare Registrar to Stackryze DNS.
   </Card>
   <Card title="Configure DNS records" icon="list" href="/guides/configure-dns-records">
-    The complete reference for every record type Stackryze supports.
+    Validation rules and formatting examples for A, AAAA, CNAME, MX, TXT, SRV, and CAA records.
   </Card>
   <Card title="Enable DNSSEC" icon="shield-check" href="/guides/enable-dnssec">
-    Turn on cryptographic validation for your zone.
+    Sign your zone with ECDSA P-256 and publish the DS record.
+  </Card>
+  <Card title="DNS API reference" icon="code" href="/docs/dns/api">
+    Automate zones, batch record changes, and temporary records with Bearer tokens.
   </Card>
 </Columns>
-
-<Tip>
-  Need help? Reach out to us at [support@stackryze.com](mailto:support@stackryze.com) — a real person will reply within one business day.
-</Tip>

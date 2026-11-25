@@ -1,60 +1,38 @@
 ---
 title: "Enable DNSSEC"
-description: "Cryptographically verify your zone in three steps."
+description: "Enable ECDSA P-256 CSK signing on your Stackryze DNS zone and publish the DS record at your registrar."
 icon: "shield-check"
 ---
 
-DNSSEC lets resolvers verify that answers really came from your zone — defeating the kind of cache poisoning that took down whole registrars in 2024. Stackryze supports it on every zone.
+Stackryze DNS supports DNSSEC signing on PowerDNS zones using **ECDSA P-256 (`ECDSAP256SHA256`, Algorithm 13)**.
 
 ## Prerequisites
 
-- A verified Stackryze account (see [Account Verification](/account-verification))
-- A domain delegated to Stackryze nameservers
+- An active, provisioned zone on [dns.stackryze.com](https://dns.stackryze.com) (platform subdomains must complete ownership verification first so the zone exists in PowerDNS).
+- Access to publish `DS` records at your domain registrar.
 
 ## Steps
 
 <Steps>
-  <Step title="Open the zone">
-    Open the zone in the dashboard and navigate to **Settings → DNSSEC**.
+  <Step title="Open DNSSEC settings for your zone">
+    Open your zone in [dns.stackryze.com](https://dns.stackryze.com) and go to its **DNSSEC** section.
   </Step>
   <Step title="Enable signing">
-    Click **Enable**. Stackryze generates an ECDSA P-256 keypair, signs the zone, and computes a `DS` record.
+    Click **Enable DNSSEC** (or send `POST /api/zones/:id/dnssec`). Stackryze creates an active CSK (`ECDSAP256SHA256`), rectifies the zone, and returns the computed `DS` record(s).
   </Step>
   <Step title="Publish the DS record at your registrar">
-    Copy the `DS` record we generate and paste it at your registrar. Example:
-
-    ```text
-    example.com.  3600  IN  DS  35221 2 1 ABC123...
-    ```
-
-    The exact UI depends on your registrar — most have a "DNSSEC" or "DS records" panel.
+    Copy the `DS` record returned by Stackryze and add it in your domain registrar's DNSSEC panel so resolvers can validate the chain from the root zone down to your `DNSKEY`.
   </Step>
-  <Step title="Verify the chain of trust">
-    Run:
-
+  <Step title="Verify DNSSEC answers">
     ```bash
-    delv example.com +root
+    dig +dnssec DNSKEY example.com @ns1.stackryze.com
+    delv @1.1.1.1 example.com +rtrace +multiline
     ```
 
-    You should see `; fully validated`.
+    `delv` prints `; fully validated` once the registrar publishes the `DS` record and TTLs expire.
   </Step>
 </Steps>
 
-## Algorithm support
-
-| Algorithm | Supported |
-| --- | --- |
-| ECDSA P-256 + SHA-256 (13) | ✅ default |
-| ECDSA P-384 + SHA-384 (14) | ✅ |
-| Ed25519 (15) | ✅ |
-| Ed448 (16) | ✅ |
-| RSA-SHA256 (8) | ⚠️ legacy only |
-| RSA-SHA1 (5) | ❌ removed |
-
-## NSEC3
-
-We sign zones with NSEC3 by default to prevent zone-walking. Disable NSEC3 from **Settings → DNSSEC → NSEC mode** if you need NSEC (rare).
-
-<Tip>
-  DNSSEC + DANE + a `CAA` record is the strongest setup possible for a public-facing zone.
-</Tip>
+<Warning>
+  Before clicking **Disable DNSSEC** (`DELETE /api/zones/:id/dnssec`), remove the `DS` record at your registrar first and wait for it to expire. Deleting cryptokeys while a parent `DS` still exists causes validating resolvers to return `SERVFAIL`.
+</Warning>

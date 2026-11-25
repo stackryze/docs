@@ -1,110 +1,75 @@
 ---
 title: "Nameserver delegation"
-description: "How a Stackryze Domain gets pointed at authoritative nameservers, and what changes when you bring your own."
+description: "How Stackryze delegates subdomains via PowerDNS NS records and how to bring your own DNS provider."
 icon: "shuffle"
 ---
 
-Every Stackryze Domain is delegated to authoritative nameservers the moment you register it. By default those are Stackryze nameservers. You can swap them for any provider you control — that's the "BYOD" (Bring Your Own DNS) model.
+Stackryze Domains operates strictly on an `NS` delegation model. When you register a subdomain, Stackryze writes `NS` records in the authoritative parent zone (`indevs.in.`, `sryze.cc.`, `ryzedns.org.`, `nx.kg.`, or `ryzn.pro.`) pointing resolvers to your chosen nameservers.
 
-## What delegation means
+You retain full control over DNS records (`A`, `AAAA`, `CNAME`, `MX`, `TXT`, `SRV`, `CAA`) at whichever authoritative DNS provider you point those nameservers to.
 
-A delegation is a set of `NS` records that says "for queries about this zone, ask these nameservers." Whoever controls those nameservers controls the DNS for the domain.
+## Default nameservers
 
-For a Stackryze Domain, the registry holds the parent zone (`indevs.in`, `sryze.cc`, `ryzedns.org`, or `nx.kg`). When you register, the registry writes `NS` records under your subdomain pointing at the nameservers you specified. From that point on, every resolver on the internet queries those nameservers for everything under your subdomain.
-
-## Default delegation
-
-Every Stackryze Domain is delegated to two **mandatory** Stackryze nameservers:
+New registrations are assigned the three Stackryze authoritative nameservers by default:
 
 ```dns
-yourname.indevs.in.  IN  NS  ns1.stackryze.com.
-yourname.indevs.in.  IN  NS  ns2.stackryze.com.
+yourname.indevs.in.  3600  IN  NS  ns1.stackryze.com.
+yourname.indevs.in.  3600  IN  NS  ns2.stackryze.com.
+yourname.indevs.in.  3600  IN  NS  ns3.stackryze.com.
 ```
 
-The same delegation applies under every namespace. These two are not optional — they're the registry's nameservers and they stay in the zone for the life of the name.
+<Note>
+  Assigning default nameservers creates parent delegation, but does not automatically populate records inside `dns.stackryze.com`. To host records on Stackryze DNS, add your subdomain zone at [dns.stackryze.com](https://dns.stackryze.com) and complete ownership verification.
+</Note>
 
-You can also add up to **4 extra (custom) nameservers** for redundancy or to point at a third-party provider alongside Stackryze's. The full delegation supports up to **6 NS records** in total — 2 Stackryze (mandatory) plus 4 custom (optional):
+## Bringing your own DNS provider (BYOD)
 
-```dns
-yourname.indevs.in.  IN  NS  ns1.stackryze.com.
-yourname.indevs.in.  IN  NS  ns2.stackryze.com.
-yourname.indevs.in.  IN  NS  ns1.cloudflare.com.   ; optional extra
-yourname.indevs.in.  IN  NS  ns2.cloudflare.com.   ; optional extra
-```
+You can replace the default Stackryze nameservers completely with any authoritative DNS provider such as Cloudflare, AWS Route 53, DigitalOcean DNS, Hetzner, or your own PowerDNS server.
 
-You then manage records inside the [Stackryze DNS dashboard](https://dns.stackryze.com). This is the path of least resistance — one dashboard, one place to add records, free DNSSEC, modern record types, and an API.
+When editing nameservers in **My Domains → Manage → DNS Configuration**:
 
-## Adding custom nameservers
+- **Minimum nameservers:** **2** (`NS1` and `NS2` are required)
+- **Maximum nameservers:** **6** (`NS1`–`NS6` supported in the dashboard)
+- **Format rules:** Each entry must be a valid public DNS hostname (up to 253 characters), with no protocols (`http://`), IP addresses, `localhost`, `example.com`, or duplicate hostnames.
 
-To point at a third-party provider without losing Stackryze, add its nameservers as extras from the **Nameservers** panel of your domain in the dashboard:
+If you replace `ns1.stackryze.com` and `ns2.stackryze.com` with external provider hostnames (for example `ava.ns.cloudflare.com` and `curt.ns.cloudflare.com`), Stackryze patches the parent zone `NS` RRset (`TTL 3600`) immediately and flags the domain as externally delegated.
 
-1. Open the domain.
-2. Scroll to **Custom nameservers**.
-3. Add one or more authoritative hostnames. Up to 4 extras can be configured, for a maximum of 6 NS records in total (2 Stackryze + 4 custom).
+## Using Stackryze DNS (`dns.stackryze.com`)
 
-The provider must already have a zone configured for your subdomain with the nameservers you specified. Stackryze verifies the delegation after a short propagation window and confirms the cutover.
+Platform subdomains require a one-time ownership handshake before [dns.stackryze.com](https://dns.stackryze.com) activates the zone:
 
-A few constraints apply:
-
-- **Maximum 6 NS records total** — 2 Stackryze (mandatory) plus up to 4 custom.
-- **The two Stackryze nameservers cannot be removed** — they anchor the delegation to the registry.
-- **Publicly reachable.** Stackryze doesn't accept RFC 1918 addresses or hidden primaries.
-- **Authoritative for your subdomain.** The provider must serve the zone you delegated, not just forward to it.
-- **Glue records, if needed.** If your nameservers are themselves under one of the four Stackryze namespaces, glue records must be in place. The dashboard handles this automatically.
-
-## Replacing Stackryze entirely (advanced)
-
-In some cases — for example, when a third-party provider requires exclusive control of the zone — you may want to delegate only to the third party. Reach out to [support@stackryze.com](mailto:support@stackryze.com) to discuss a fully custom delegation. The two Stackryze nameservers remain in the zone by default, but a support-side handoff can move them out for accounts that need it.
-
-## What changes when you BYOD
-
-The DNS records for your domain live at the new provider, not in Stackryze. Stackryze still owns the registration and the renewal clock, but the *resolution* is now your responsibility.
-
-Things that stay the same:
-
-- The registration and expiry date.
-- The ability to sign in and renew from the dashboard.
-- The ability to bring nameservers back to Stackryze at any time.
-
-Things that move:
-
-- `A`, `AAAA`, `CNAME`, `TXT`, `MX` records.
-- DNSSEC signing (if you enable it on your side).
-- Nameserver redundancy strategy.
+<Steps>
+  <Step title="Add the subdomain zone on Stackryze DNS">
+    Open [dns.stackryze.com](https://dns.stackryze.com) and create a zone for your full subdomain (for example `yourname.indevs.in`). Because it belongs to a platform root zone, Stackryze DNS assigns status `pending_ownership` and generates a one-time code starting with `sryze-verify-`.
+  </Step>
+  <Step title="Save the code on Stackryze Domains">
+    Open your domain on [domain.stackryze.com](https://domain.stackryze.com), scroll to **DNS Ownership Verification**, click **Add Code**, and paste the `sryze-verify-...` string.
+  </Step>
+  <Step title="Verify ownership">
+    Return to [dns.stackryze.com](https://dns.stackryze.com) and click **Verify Ownership**. Stackryze DNS validates the code with the Domains registry using a constant-time check, ensures your subdomain delegates to `ns1.stackryze.com`, `ns2.stackryze.com`, and `ns3.stackryze.com`, and moves your zone to `pending_verification`.
+  </Step>
+  <Step title="Complete NS verification">
+    Click **Verify** on Stackryze DNS once delegation resolves so your zone status changes to `active`.
+  </Step>
+</Steps>
 
 ## Propagation timing
 
-Delegation changes propagate through the DNS hierarchy:
+Parent zone updates in Stackryze PowerDNS happen immediately on save (`TTL 3600`), while external resolvers pick up changes over time:
 
-| Layer | Typical |
-| --- | --- |
-| Stackryze registry → parent zone | seconds |
-| Public resolvers picking up the change | 5–10 minutes |
-| Long-tail resolvers (ISP caches) | up to 48 hours |
-
-The registry update is fast. The full internet catching up is not. Plan changes for low-traffic windows when you can, but accept that you cannot control the long tail.
-
-## Switching back to Stackryze nameservers
-
-At any point, return the nameservers to:
-
-```text
-ns1.stackryze.com
-ns2.stackryze.com
+```bash
+dig NS yourname.indevs.in @ns1.stackryze.com +short
 ```
 
-Your existing zone in Stackryze DNS is preserved — records you had before the BYOD experiment come back. Records you added at the third-party provider are not migrated; copy them by hand if you need them.
+Public recursive resolvers usually observe new nameservers within minutes, though ISP caches can retain old `NS` records for up to 48 hours.
 
 ## Where to go next
 
 <Columns cols={2}>
-  <Card title="DNS providers" icon="server" href="/guides/domains/dns-providers">
-    Setup guides for Cloudflare, Route 53, DigitalOcean, and more.
-  </Card>
-  <Card title="Stackryze nameservers" icon="globe" href="/docs/dns/nameservers">
-    The default delegation's infrastructure.
+  <Card title="DNS provider guides" icon="server" href="/guides/domains/dns-providers">
+    Walkthroughs for Cloudflare, Route 53, DigitalOcean, PowerDNS, and custom servers.
   </Card>
   <Card title="Managing domains" icon="gear" href="/guides/domains/managing-domains">
-    The walkthrough for changing nameservers.
+    Step-by-step instructions to edit nameservers in the dashboard.
   </Card>
 </Columns>

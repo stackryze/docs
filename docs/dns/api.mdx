@@ -1,192 +1,257 @@
 ---
 title: "API"
-description: "The REST API that powers the Stackryze DNS dashboard, available for your own automation."
+description: "The REST API that powers Stackryze DNS — Bearer tokens (`sk_dns_...`), zones, records, batch updates, DNSSEC, temporary records, schedules, and edge telemetry."
 icon: "code"
 ---
 
-Every action in the Stackryze DNS dashboard is also a REST endpoint. The API is JSON over HTTPS, authenticated with bearer tokens, and built for automation.
-
-## What it covers
-
-The API exposes:
-
-- **Zones** — create, list, get, delete.
-- **Records** — create, update, delete in bulk (atomic per zone).
-- **DNSSEC** — enable, disable, retrieve keys, force rollover.
-- **Nameservers** — read-only (the four are fixed).
-- **Dynamic DNS** — push an IP update from a client.
-- **Webhooks** — register endpoints for zone and record events.
-- **Tokens** — create, list, rotate, revoke.
+Stackryze DNS exposes an HTTPS JSON REST API for managing zones, DNS records, DNSSEC, scheduled changes, temporary records, and Edge monitoring telemetry.
 
 ## Base URL
 
+```text
+https://api-dns.stackryze.com/api
 ```
-https://dns.stackryze.com/api/v1
-```
-
-All endpoints are versioned with `/v1`. The API is stable; breaking changes get a new version.
 
 ## Authentication
 
-Every request needs a bearer token:
+All Bearer-token requests use an API token generated from the [Stackryze DNS dashboard](https://dns.stackryze.com) (`Settings → API Tokens`).
 
 ```bash
-curl https://dns.stackryze.com/api/v1/zones \
-  -H "Authorization: Bearer $TOKEN"
+curl https://api-dns.stackryze.com/api/zones \
+  -H "Authorization: Bearer sk_dns_..."
 ```
 
-### Token types
+### Token format and scopes
 
-| Type | Scope | Use |
-| --- | --- | --- |
-| Personal access token | All actions on your account | CLI scripts, manual automation |
-| Scoped zone token | Limited to one zone, one or more scopes | CI/CD, dynamic DNS clients |
-| Webhook signing key | Read-only, scoped to event types | Receivers that verify webhook signatures |
+- **Prefix:** `sk_dns_` (the raw token is displayed once on creation; only a SHA-256 hash is stored server-side).
+- **Account limit:** Up to **10 API tokens** per user account.
+- **Scopes:**
+  - `read` — allows `GET` / `HEAD` requests on `/api/zones*` and `/api/edge*`
+  - `write` — required alongside `read` for `POST`, `PUT`, `PATCH`, and `DELETE` requests
 
-Generate tokens in **Settings → API tokens**. Each token is shown once and stored hashed on the server.
+<Note>
+  Token creation, webhooks, and audit-log endpoints (`/api/tokens`, `/api/webhooks`, `/api/audit`) require an authenticated Stackryze SSO browser session rather than a Bearer token.
+</Note>
 
-### Scopes
+## Zones
 
-Tokens carry fine-grained scopes. Common ones:
+### List zones
 
-| Scope | Allows |
-| --- | --- |
-| `zones:read` | List and get zones |
-| `zones:write` | Create and delete zones |
-| `records:read` | List records in a zone |
-| `records:write` | Create, update, delete records |
-| `dnssec:write` | Enable, disable, rollover DNSSEC |
-| `dynamic:update` | Push Dynamic DNS updates |
-| `webhooks:read` | List webhook endpoints |
-| `webhooks:write` | Create, update, delete webhook endpoints |
-
-A typical dynamic-DNS client token needs only `dynamic:update`. A typical CI/CD token for record management needs `records:read` and `records:write`.
-
-## Endpoints
-
-### Zones
-
-```
-GET    /api/v1/zones              # list zones
-POST   /api/v1/zones              # create zone
-GET    /api/v1/zones/{zone}       # get zone details
-DELETE /api/v1/zones/{zone}       # delete zone
+```text
+GET /api/zones
 ```
 
-Create a zone:
+Returns `{ zones, limits }` containing all owned zones and account quota usage (`zoneLimit`, `currentZones`, `remainingZones`).
 
-```bash
-curl -X POST https://dns.stackryze.com/api/v1/zones \
+### Create zone
+
+```text
+POST /api/zones
+```
+
+<ParamField body="name" type="string" required>
+  Apex domain or subdomain name (for example `example.com` or `myproject.indevs.in`). Trailing dots are stripped automatically. Protected platform roots (`indevs.in`, `sryze.cc`, `ryzedns.org`, `nx.kg`, `ryzn.pro`, `stackryze.com`) cannot be created.
+</ParamField>
+
+Platform subdomains start in `pending_ownership` with a generated `ownershipCode` (`sryze-verify-...`); external domains start in `pending_verification`.
+
+<CodeGroup>
+```bash cURL
+curl -X POST https://api-dns.stackryze.com/api/zones \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"name": "example.com"}'
 ```
 
-### Records
-
+```javascript JavaScript
+const res = await fetch("https://api-dns.stackryze.com/api/zones", {
+  method: "POST",
+  headers: {
+    "Authorization": `Bearer ${process.env.STACKRYZE_TOKEN}`,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({ name: "example.com" }),
+});
+const zone = await res.json();
 ```
-GET    /api/v1/zones/{zone}/records              # list all records
-PATCH  /api/v1/zones/{zone}/records              # bulk update (atomic)
+
+```python Python
+import os, requests
+
+res = requests.post(
+    "https://api-dns.stackryze.com/api/zones",
+    headers={"Authorization": f"Bearer {os.environ['STACKRYZE_TOKEN']}"},
+    json={"name": "example.com"},
+)
+zone = res.json()
+```
+</CodeGroup>
+
+### Get, verify, export, or delete a zone
+
+```text
+GET    /api/zones/:id                     # Zone object + rrsets (?rrsets=false omits rrsets)
+DELETE /api/zones/:id                     # Delete zone from PowerDNS and database
+POST   /api/zones/:id/verify              # Uncached NS verification against ns1-ns3.stackryze.com
+POST   /api/zones/:id/verify-ownership    # Verify Stackryze subdomain ownership code
+POST   /api/zones/:id/clone               # Copy non-SOA/NS records to { "targetId": "..." }
+GET    /api/zones/:id/export              # Download BIND zone file (text/plain)
 ```
 
-The `PATCH` is interesting: it's a single atomic operation that takes a list of record changes and applies them all or none. This is what makes the API safe to use for record migrations — you don't end up in a half-updated state.
+## DNS records
+
+### List or search records
+
+```text
+GET /api/zones/:id/records?q=&max=100
+```
+
+Returns the zone's RRsets from PowerDNS, optionally filtered by `q` (record name or content) and capped by `max` (default `100`).
+
+### Add a record
+
+```text
+POST /api/zones/:id/records
+```
+
+<ParamField body="type" type="string" required>
+  One of `A`, `AAAA`, `CNAME`, `MX`, `TXT`, `SRV`, or `CAA`. (`SOA` and `NS` cannot be edited manually.)
+</ParamField>
+
+<ParamField body="name" type="string" required>
+  Relative record label (for example `www`, `@`, `_acme-challenge`).
+</ParamField>
+
+<ParamField body="content" type="string" required>
+  Record value matching the type rules (for `MX`: `"10 mail.example.com"`; for `SRV`: `"0 5 5060 sip.example.com"`; for `CAA`: `"0 issue \"letsencrypt.org\""`).
+</ParamField>
+
+<ParamField body="ttl" type="number" required>
+  Time to live in seconds between `3600` (1 hour) and `604800` (1 week).
+</ParamField>
+
+<CodeGroup>
+```bash cURL
+curl -X POST "https://api-dns.stackryze.com/api/zones/${ZONE_ID}/records" \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"type":"A","name":"www","content":"192.0.2.10","ttl":3600}'
+```
+
+```javascript JavaScript
+await fetch(`https://api-dns.stackryze.com/api/zones/${zoneId}/records`, {
+  method: "POST",
+  headers: {
+    "Authorization": `Bearer ${token}`,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    type: "A",
+    name: "www",
+    content: "192.0.2.10",
+    ttl: 3600,
+  }),
+});
+```
+
+```python Python
+requests.post(
+    f"https://api-dns.stackryze.com/api/zones/{zone_id}/records",
+    headers={"Authorization": f"Bearer {token}"},
+    json={"type": "A", "name": "www", "content": "192.0.2.10", "ttl": 3600},
+)
+```
+</CodeGroup>
+
+### Delete a record
+
+```text
+DELETE /api/zones/:id/records
+```
+
+Send `{ "type": "A", "name": "www", "content": "192.0.2.10" }` in the JSON body (`content` is optional; omitting `content` deletes the matching RRset for that `name` and `type`).
+
+### Batch create & delete
+
+```text
+POST /api/zones/:id/records/batch
+```
+
+Processes up to **200 records** combined across `create` and `delete` arrays:
 
 ```bash
-curl -X PATCH https://dns.stackryze.com/api/v1/zones/example.com/records \
+curl -X POST "https://api-dns.stackryze.com/api/zones/${ZONE_ID}/records/batch" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
-    "changes": [
-      { "type": "A", "name": "@",        "value": "192.0.2.1",  "ttl": 3600 },
-      { "type": "A", "name": "www",      "value": "192.0.2.1",  "ttl": 3600 },
-      { "type": "MX", "name": "@",       "value": "10 mail.example.com.", "ttl": 3600 },
-      { "type": "TXT", "name": "@",      "value": "\"v=spf1 -all\"", "ttl": 3600 },
-      { "type": "A", "name": "staging",  "value": "203.0.113.5", "ttl": 60 }
-    ]
+    "create": [{"type": "A", "name": "@", "content": "192.0.2.10", "ttl": 3600}],
+    "delete": [{"type": "TXT", "name": "_old", "content": "\"stale\""}]
   }'
 ```
 
-### DNSSEC
+### Record annotations (comments & labels)
 
-```
-GET    /api/v1/zones/{zone}/dnssec           # get DNSSEC state
-POST   /api/v1/zones/{zone}/dnssec/enable    # enable DNSSEC
-POST   /api/v1/zones/{zone}/dnssec/disable   # disable DNSSEC
-POST   /api/v1/zones/{zone}/dnssec/rollover  # force key rollover
+```text
+GET /api/zones/:id/record-meta
+PUT /api/zones/:id/record-meta
 ```
 
-### Dynamic DNS
+Attach optional comments (up to 280 chars) and up to 10 labels per `recordKey` without altering PowerDNS records.
 
-```
-POST   /api/v1/dynamic/{zone}/{record}       # push IP update
+## Temporary records & scheduled changes
+
+```text
+POST   /api/zones/:id/records/temporary   # Create expiring record (expiresInMinutes: 1..10080)
+GET    /api/zones/:id/schedule            # List scheduled changes
+POST   /api/zones/:id/schedule            # Schedule future { op: "create"|"delete", record, runAt }
+DELETE /api/zones/:id/schedule/:sid       # Cancel a pending scheduled change
 ```
 
-See [Dynamic DNS](/docs/dns/dynamic-dns) for the full request/response.
+## DNSSEC
 
-### Webhooks
+```text
+GET    /api/zones/:id/dnssec    # Returns { secured, keys, ds, available }
+POST   /api/zones/:id/dnssec    # Creates active ECDSAP256SHA256 CSK, rectifies zone, returns ds
+DELETE /api/zones/:id/dnssec    # Removes all cryptokeys on the zone
+```
 
+<ResponseField name="secured" type="boolean">
+  `true` when an active cryptokey is present on the zone.
+</ResponseField>
+
+<ResponseField name="ds" type="string[]">
+  Formatted `DS` record strings to publish at your domain registrar.
+</ResponseField>
+
+## Edge monitoring metrics
+
+Ingest or read aggregated health snapshots for a zone from Edge agents:
+
+```text
+POST /api/edge/metrics     # Ingest metrics (write token; requires zoneName + agentId)
+GET  /api/edge/metrics     # Time-series points (?hours=24&zoneId=&region=)
+GET  /api/edge/overview    # Latest snapshot per zone and region
 ```
-GET    /api/v1/webhooks                      # list webhooks
-POST   /api/v1/webhooks                      # create webhook
-DELETE /api/v1/webhooks/{id}                 # delete webhook
-```
+
+## Webhooks
+
+Manage outbound `https://` webhooks in the [Stackryze DNS dashboard](https://dns.stackryze.com) (`MAX_WEBHOOKS = 10`). Supported events:
+
+- `record.created`
+- `record.deleted`
+- `zone.created`
+- `zone.deleted`
+
+Deliveries include headers `X-Stackryze-Event` and `X-Stackryze-Signature: sha256=<hmac-hex>` signed using your `whsec_...` webhook secret.
 
 ## Rate limits
 
-| Action | Limit |
+| Scope | Limit |
 | --- | --- |
-| Reads | 600 / minute |
-| Writes | 120 / minute |
-| Zone creates | 10 / hour |
-| Dynamic DNS updates | 60 / record / hour |
+| Global API | `100` requests / `15` minutes |
+| DNS mutations (create, delete, batch, clone, DNSSEC, schedule, temporary, metadata) | `20` requests / minute |
+| Authentication endpoints | `5` requests / `15` minutes |
+| Ownership verification (`POST /api/zones/:id/verify-ownership`) | `5` requests / `15` minutes |
+| Public NS propagation check (`GET /api/dns-checker/propagation/:domain`) | `5` requests / minute |
 
-Exceeded limits return `429 Too Many Requests` with `Retry-After` and `X-RateLimit-Reset` headers.
-
-## Errors
-
-Every error response is JSON with a stable shape:
-
-```json
-{
-  "error": {
-    "code": "zone_not_found",
-    "message": "No zone matches example.com",
-    "request_id": "req_abc123"
-  }
-}
-```
-
-Common error codes:
-
-| Code | Meaning |
-| --- | --- |
-| `unauthorized` | Missing or invalid token |
-| `forbidden` | Token doesn't have the required scope |
-| `not_found` | Resource doesn't exist |
-| `validation_error` | Request body failed validation |
-| `rate_limited` | Hit a rate limit |
-| `conflict` | Concurrent modification — retry |
-
-The `request_id` is useful when contacting support — it lets us trace the request server-side.
-
-## Client libraries
-
-Official clients are published for:
-
-- **JavaScript / TypeScript** — `npm install @stackryze/dns`
-- **Python** — `pip install stackryze-dns`
-- **Go** — `go get github.com/stackryze/dns-go`
-- **CLI** — `brew install stackryze-cli`
-
-Community clients exist for most other languages; search [github.com/stackryze](https://github.com/stackryze) for the list.
-
-## Where to go next
-
-<Columns cols={2}>
-  <Card title="Dynamic DNS" icon="bolt" href="/docs/dns/dynamic-dns">
-    The DDNS endpoint, with examples.
-  </Card>
-  <Card title="DNSSEC" icon="shield" href="/docs/dns/dnssec">
-    Sign zones programmatically.
-  </Card>
-</Columns>
+Exceeded limits return `429 Too Many Requests` with standard `RateLimit-*` headers.

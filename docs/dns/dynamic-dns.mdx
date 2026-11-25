@@ -1,166 +1,96 @@
 ---
-title: "Dynamic DNS"
-description: "Push updates to a record from anywhere — the use cases, the protocol, and how Stackryze supports it."
+title: "Automation & Temporary DNS"
+description: "Automate IP updates, expiring records, and scheduled DNS changes using the Stackryze DNS REST API."
 icon: "bolt"
 ---
 
-Dynamic DNS is the practice of updating a DNS record from a device or service whose IP address isn't known in advance. It's the classic solution for home servers, gaming hosts, and any service running on a connection with a changing public IP.
+Whether you are keeping a home server hostname pointed to a changing public IP, issuing short-lived verification records for CI/CD, or timing a maintenance cutover, Stackryze DNS supports full programmatic control using scoped Bearer API tokens (`sk_dns_...`).
 
-## What Dynamic DNS solves
+## Choosing the right automation tool
 
-A typical home or small-business internet connection has a public IP address that changes — sometimes daily, sometimes every few hours. If you want to host a service (a game server, a personal site, a VPN endpoint) on a machine behind that connection, you need a way to keep the DNS record in sync with the IP.
+| Use case | Feature / endpoint | Behavior |
+| --- | --- | --- |
+| Changing public IP (home lab / VPS) | `POST` + `DELETE` `/api/zones/:id/records` | Updates `A` or `AAAA` records via Bearer `write` token. |
+| Short-lived verification (`_acme-challenge`, staging) | `POST /api/zones/:id/records/temporary` | Automatically removed from PowerDNS after `1`–`10080` minutes (up to 7 days). |
+| Planned cutover / timed cleanup | `POST /api/zones/:id/schedule` | Applies a `create` or `delete` operation automatically at a future UTC timestamp. |
+| Multi-record template sync | `POST /api/zones/:id/records/batch` | Applies up to 200 creates/deletes in a single API call. |
 
-The pattern:
+## Prerequisites
 
-```text
-[your machine] → [updates IP] → [DNS provider] → [public sees the new IP]
-```
+1. Sign in at [dns.stackryze.com](https://dns.stackryze.com) and create a Bearer token (`POST /api/tokens`) with the **`write`** scope.
+2. Copy your token immediately (tokens carry the prefix `sk_dns_` and are only displayed once).
+3. Copy your Zone ID from the dashboard or `GET /api/zones`.
 
-Stackryze DNS supports this through an authenticated update endpoint — you POST the new IP, we update the record.
+<Note>
+  DNS records require a minimum TTL of `3600` seconds (1 hour) and maximum `604800` seconds (1 week). Mutations are rate-limited to **20 requests per minute**.
+</Note>
 
-## When Dynamic DNS makes sense
+## Updating a dynamic IP address
 
-- **Home servers** — a Plex library, a Minecraft server, a personal VPN.
-- **Field-deployed devices** — sensors, kiosks, anything that gets a DHCP IP on a cellular or satellite link.
-- **Temporary infrastructure** — short-lived servers behind a NAT that need a stable name.
+Because `A` records are multi-value in PowerDNS, delete the previous `A` record for the label (or pass `content` to remove a specific IP) and write the new IP:
 
-## When it doesn't
+<CodeGroup>
+```bash Dynamic IP Updater (Shell)
+#!/usr/bin/env bash
+set -euo pipefail
 
-- **Production web services.** Use a fixed IP or a CDN; don't depend on a home connection.
-- **Mail servers.** Mail servers need stable reverse DNS, fixed IPs, and SPF consistency — Dynamic DNS is the wrong tool.
-- **Anything requiring TLS.** Public CAs won't issue certs for hostnames that resolve to a residential IP.
+API_BASE="https://api-dns.stackryze.com"
+TOKEN="$STACKRYZE_DNS_TOKEN"
+ZONE_ID="your-zone-id"
+RECORD_NAME="home"
+NEW_IP="$(curl -fsS https://api.ipify.org)"
 
-## The protocol Stackryze supports
-
-Stackryze exposes a Dynamic DNS endpoint that accepts standard HTTP updates:
-
-```
-POST https://dns.stackryze.com/api/v1/dynamic/{zone}/{record}
-```
-
-The request:
-
-```bash
-curl -X POST https://dns.stackryze.com/api/v1/dynamic/example.com/home \
-  -H "Authorization: Bearer $STACKRYZE_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"value": "192.0.2.42"}'
-```
-
-The response:
-
-```json
-{
-  "zone": "example.com",
-  "record": "home",
-  "type": "A",
-  "value": "192.0.2.42",
-  "ttl": 60,
-  "updated_at": "2026-07-05T12:34:56Z"
-}
-```
-
-The endpoint supports `A` and `AAAA` records. Other record types go through the regular API.
-
-## Authentication
-
-Dynamic DNS uses a **scoped token** — a regular API token with the `dynamic:update` scope. Tokens are scoped per zone, so a token that can update `home.example.com` can't touch `db.example.com`.
-
-Generate a token in **Settings → API tokens → Create** with the `dynamic:update` scope. The token is shown once and stored hashed — you can't retrieve it later, only regenerate.
-
-## Auto-detection
-
-If you don't know your current public IP, the endpoint can detect it from the request:
-
-```bash
-curl -X POST https://dns.stackryze.com/api/v1/dynamic/example.com/home \
-  -H "Authorization: Bearer $STACKRYZE_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{}'
-```
-
-When you omit the `value`, the server uses the source IP of the request. This is the form most routers and DDNS clients use.
-
-## Rate limits
-
-Dynamic updates are rate-limited to prevent runaway loops:
-
-| Limit | Value |
-| --- | --- |
-| Updates per record per hour | 60 |
-| Updates per token per minute | 30 |
-
-A typical home connection that changes IP every few hours is well within these limits. If you hit them, the endpoint returns `429 Too Many Requests` with a `Retry-After` header.
-
-## TTL guidance
-
-Dynamic DNS records should have a **short TTL** — typically 60 seconds. The reason is that even after your dynamic endpoint updates the record, public resolvers cache the old answer for the TTL duration. A 60-second TTL means a maximum 60-second stale window after each update.
-
-For the record itself:
-
-| Field | Recommended |
-| --- | --- |
-| Name | `home.example.com.` |
-| Type | `A` (or `AAAA` for IPv6) |
-| TTL | 60 |
-| Value | Your current public IP, updated by the client |
-
-## Client setup
-
-Most home routers and Linux clients speak the DynDNS2 protocol. The Stackryze endpoint is HTTP-JSON, not DynDNS2, so you need a small wrapper:
-
-```bash
-#!/bin/bash
-# update-home.sh
-TOKEN="your-token-here"
-ZONE="example.com"
-RECORD="home"
-
-curl -fsS -X POST "https://dns.stackryze.com/api/v1/dynamic/${ZONE}/${RECORD}" \
+# Remove previous A record at this label (ignore 404 on first run)
+curl -fsS -X DELETE "${API_BASE}/api/zones/${ZONE_ID}/records" \
   -H "Authorization: Bearer ${TOKEN}" \
   -H "Content-Type: application/json" \
-  -d '{}'
+  -d "{\"type\":\"A\",\"name\":\"${RECORD_NAME}\"}" || true
+
+# Write current IP with minimum allowed TTL (3600s)
+curl -fsS -X POST "${API_BASE}/api/zones/${ZONE_ID}/records" \
+  -H "Authorization: Bearer ${TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d "{\"type\":\"A\",\"name\":\"${RECORD_NAME}\",\"content\":\"${NEW_IP}\",\"ttl\":3600}"
+```
+</CodeGroup>
+
+## Temporary (auto-expiring) records
+
+Use temporary records for one-off validation tokens or ephemeral test hosts. The control-plane scheduler checks every minute and removes expired records from PowerDNS automatically:
+
+```bash
+curl -X POST "https://api-dns.stackryze.com/api/zones/${ZONE_ID}/records/temporary" \
+  -H "Authorization: Bearer ${TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "type": "TXT",
+    "name": "_acme-challenge",
+    "content": "\"challenge-token-value\"",
+    "ttl": 3600,
+    "expiresInMinutes": 60
+  }'
 ```
 
-Run it from cron every 5 minutes:
+`expiresInMinutes` accepts any integer between `1` and `10080` (7 days).
 
-```cron
-*/5 * * * * /home/you/update-home.sh
+## Scheduled changes
+
+Schedule a future `create` or `delete` operation at any valid ISO-8601 UTC timestamp:
+
+```bash
+curl -X POST "https://api-dns.stackryze.com/api/zones/${ZONE_ID}/schedule" \
+  -H "Authorization: Bearer ${TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "op": "create",
+    "record": {
+      "name": "maintenance",
+      "type": "A",
+      "content": "203.0.113.50",
+      "ttl": 3600
+    },
+    "runAt": "2026-12-01T02:00:00Z"
+  }'
 ```
 
-The `-fsS` flags fail silently — if the network is down, the script exits non-zero but doesn't spam your inbox.
-
-## Common issues
-
-### Token rejected
-
-The token may have been rotated, or it might be missing the `dynamic:update` scope. Generate a new one in the dashboard.
-
-### Update succeeds but old IP is still cached
-
-You're seeing cached answers at the resolver level. Wait for the TTL (60 seconds) to elapse, or use `dig @1.1.1.1 home.example.com +short` to query a fresh resolver.
-
-### IPv6 not working
-
-If your connection has IPv6 but `dig AAAA home.example.com` returns nothing, the AAAA record doesn't exist. Create one explicitly or include both `A` and `AAAA` in the dynamic update.
-
-### Rate limited
-
-Slow down. Real home connections don't change IPs faster than every few hours.
-
-## Where to go next
-
-<Columns cols={2}>
-  <Card title="API reference" icon="code" href="/docs/dns/api">
-    Full REST API, including Dynamic DNS endpoints.
-  </Card>
-  <Card title="Zones and records" icon="layer-group" href="/docs/dns/zones-and-records">
-    The record model behind Dynamic DNS.
-  </Card>
-  <Card title="Quickstart" icon="rocket" href="/quickstart">
-    Set up a zone in five minutes.
-  </Card>
-  <Card title="Dynamic DNS guide" icon="bolt" href="/guides/dynamic-dns">
-    Step-by-step walkthrough.
-  </Card>
-</Columns>
+Cancel any `pending` scheduled change before execution with `DELETE /api/zones/:id/schedule/:sid`.

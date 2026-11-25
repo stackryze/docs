@@ -1,51 +1,53 @@
 ---
-title: "Account Verification"
-description: "Verify your account to unlock custom domains, DNSSEC, and API tokens."
+title: "Account & Domain Verification"
+description: "How Stackryze SSO, GitHub verification for Stackryze Domains, and zone ownership checks work."
 icon: "badge-check"
 ---
 
-Account verification is a one-time step that unlocks the full Stackryze surface — custom domains, DNSSEC signing, API tokens, webhook secrets, and higher rate limits.
+Stackryze separates authentication, anti-abuse identity verification, and DNS control across three clear checks. No payment method or card authorization is required anywhere on Stackryze.
 
-## When do I need to verify?
+## Verification layers overview
 
-You'll be asked to verify if any of the following apply to your account:
+| Check | Where it applies | Purpose |
+| --- | --- | --- |
+| **Stackryze SSO** | Both [domain.stackryze.com](https://domain.stackryze.com) and [dns.stackryze.com](https://dns.stackryze.com) | Centralized sign-in, Passkeys, and 2FA via [auth.stackryze.com](https://auth.stackryze.com) (OIDC). |
+| **GitHub Star KYC** | Stackryze Domains (`domain.stackryze.com`) | Confirms a real developer account (at least 30 days old) before claiming subdomains on any of the five extensions. |
+| **NS & Ownership Verification** | Stackryze DNS (`dns.stackryze.com`) | Confirms your domain delegates to Stackryze nameservers (`ns1–ns3.stackryze.com`) and links platform subdomains via a one-time code. |
 
-- You want to add a custom domain you don't own through Stackryze Domains
-- You want to enable DNSSEC on a delegated zone
-- You want to issue API tokens
-- Your zones have crossed the free-tier limits
+## 1. Stackryze SSO (`auth.stackryze.com`)
 
-## How to verify
+Both platforms authenticate users through our central OIDC identity provider at [auth.stackryze.com](https://auth.stackryze.com). Back-channel logout and session introspection keep your session state synchronized across services.
+
+<Note>
+  If your linked sign-in resolves to a `@users.noreply.github.com` address, Stackryze Domains prompts you to set and verify a personal email address before accessing the dashboard so you receive renewal and expiry alerts.
+</Note>
+
+## 2. GitHub KYC on Stackryze Domains
+
+To prevent automated spam and abuse across our shared domain extensions, every account must complete GitHub verification once before registering subdomains under `.indevs.in`, `.sryze.cc`, `.ryzedns.org`, `.nx.kg`, or `.ryzn.pro`.
 
 <Steps>
-  <Step title="Open Settings → Verification">
-    From the dashboard, click your avatar, then **Settings**, then the **Verification** tab.
+  <Step title="Star the repository">
+    Open [github.com/stackryze/FreeDomains](https://github.com/stackryze/FreeDomains) while signed into your GitHub account and click **Star**.
   </Step>
-  <Step title="Confirm your email">
-    We send a confirmation link to the address on file. Click it within 24 hours.
+  <Step title="Start verification in the dashboard">
+    Go to **Register Domain** or **My Domains** on [domain.stackryze.com](https://domain.stackryze.com) and click **Verify with GitHub**.
   </Step>
-  <Step title="Add a verified domain or payment method">
-    You need at least one of:
-
-    - A domain you've proven control of (via a DNS TXT record we generate)
-    - A payment method on file (we charge $0 and refund immediately)
-  </Step>
-  <Step title="Wait for review">
-    Most verifications complete automatically within 60 seconds. Manual review (rare) completes within one business day.
+  <Step title="Authorize via GitHub OAuth">
+    Stackryze checks three requirements automatically:
+    - Your GitHub account is at least **30 days old**
+    - That GitHub account ID is not already linked to another Stackryze account
+    - Your GitHub account has starred `stackryze/FreeDomains`
   </Step>
 </Steps>
 
-## What you get
+Once verified, you unlock registration quotas across all five public extensions (1 domain per extension by default).
 
-| Unlocks | Free | Verified |
-| --- | --- | --- |
-| Number of zones | 3 | Unlimited |
-| Records per zone | 100 | 1,000 |
-| API tokens | — | Yes |
-| Webhooks | — | Yes |
-| DNSSEC signing | — | Yes |
-| Custom nameservers | — | Yes |
+## 3. Zone verification on Stackryze DNS
 
-<Tip>
-  Stackryze DNS is **always free** — verification just raises limits and unlocks advanced features. No plan is ever required.
-</Tip>
+Stackryze DNS includes **3 zones per account** and **200 records per zone** by default, along with API tokens (`sk_dns_...`), webhooks, DNSSEC (`ECDSAP256SHA256`), temporary records, and scheduled changes—no extra verification fee is required.
+
+To keep zones healthy:
+
+- **External domains** (`example.com`) start in `pending_verification`. Point your registrar's NS records to `ns1.stackryze.com`, `ns2.stackryze.com`, and `ns3.stackryze.com`, then click **Verify** (`POST /api/zones/:id/verify`). Our daily verifier checks active zones and allows a **7-day grace period** if nameservers change unexpectedly.
+- **Stackryze subdomains** (`yourname.indevs.in`, `.sryze.cc`, `.ryzedns.org`, `.nx.kg`, `.ryzn.pro`) start in `pending_ownership`. Paste the generated `sryze-verify-...` code into your subdomain's **DNS Ownership Verification** panel on [domain.stackryze.com](https://domain.stackryze.com), click **Verify Ownership** on Stackryze DNS (`POST /api/zones/:id/verify-ownership`), and then complete the NS check.

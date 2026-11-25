@@ -1,98 +1,63 @@
 ---
 title: "Introduction"
 sidebarTitle: "Introduction"
-description: "Free subdomains for founders, freelancers, and small teams — register, manage, and connect in minutes."
+description: "Free public subdomains across five extensions with full custom nameserver delegation and annual renewal."
 icon: "book-open"
 ---
 
-Stackryze Domains gives you a real, public subdomain you can use on any project, portfolio, or side hustle. It is a free registration service run by the same team behind Stackryze DNS. The full service lives at [domain.stackryze.com](https://domain.stackryze.com).
+Stackryze Domains lets you claim public subdomains at no cost for open-source projects, portfolios, APIs, and self-hosted services at [domain.stackryze.com](https://domain.stackryze.com).
 
-## What it is
+## Available extensions
 
-A Stackryze Domain is a public subdomain registered under one of four namespaces:
+You can register a single-label subdomain under any of five namespaces:
 
 ```text
 yourname.indevs.in
 yourname.sryze.cc
 yourname.ryzedns.org
 yourname.nx.kg
+yourname.ryzn.pro
 ```
 
-You pick the namespace at registration time and it stays fixed for the life of the name. The same lifecycle, quota, and feature set apply to every namespace — pick whichever fits your project.
+All five extensions share the same validation rules, nameserver delegation options, WHOIS support, and 1-year lifecycle.
 
-## What you get
+## What is included
 
-Every Stackryze Domain includes, out of the box:
+- **Default quota of 5 domains** — 1 slot per extension (`.indevs.in`, `.sryze.cc`, `.ryzedns.org`, `.nx.kg`, and `.ryzn.pro`), increasable by request via [Discord](https://discord.gg/wr7s97cfM7) or [support@stackryze.com](mailto:support@stackryze.com).
+- **Full BYOD delegation** — defaults to `ns1.stackryze.com`, `ns2.stackryze.com`, and `ns3.stackryze.com`, or point to 2 or more custom nameservers (Cloudflare, Route 53, DigitalOcean, Stackryze DNS, or self-hosted PowerDNS).
+- **1-year validity with free annual renewal** — renewable starting 60 days before expiry through a 15-day post-expiry grace period.
+- **Public WHOIS with privacy protection** — live lookups at [domain.stackryze.com/whois](https://domain.stackryze.com/whois) with personal name, address, phone, and (by default) email redacted.
 
-- A public subdomain in one of four namespaces.
-- An editable DNS zone, hosted on [Stackryze DNS](/docs/dns) by default.
-- Two Stackryze nameservers (mandatory) plus up to 4 custom nameservers — Cloudflare, Route 53, DigitalOcean, or any other provider.
-- A 1-year registration, renewable from 60 days before expiry.
-- Up to **4 names per account**, one of each namespace.
+<Note>
+  GitHub verification (starring [stackryze/FreeDomains](https://github.com/stackryze/FreeDomains) with a GitHub account at least 30 days old) is required before registering a subdomain on any extension. See [Account & Domain Verification](/account-verification).
+</Note>
 
-For the rest of the feature set — naming rules, lifecycle details, nameserver delegation — see the [Concepts](#concepts) section below.
-
-## How it fits the Stackryze surface
+## How it fits with Stackryze DNS
 
 | Product | Role |
 | --- | --- |
-| Stackryze Domains | The name. Register here. |
-| Stackryze DNS | The resolution. Hosted authoritative DNS, free with every domain. |
-| Stackryze API | The automation layer for both. |
+| **Stackryze Domains** (`domain.stackryze.com`) | Parent-zone delegation registry. Creates and updates `NS` records for your subdomain and tracks expiry, renewals, and WHOIS. |
+| **Stackryze DNS** (`dns.stackryze.com`) | Optional authoritative record manager (`A`, `AAAA`, `CNAME`, `MX`, `TXT`, `SRV`, `CAA`, DNSSEC, API tokens). Or use any third-party DNS provider. |
 
-## Trust and isolation
+## Scope and boundaries
 
-A Stackryze Domain behaves exactly like a paid domain on the public DNS. There is no read-only mode, no "internal-only" suffix, and no special handling. Browsers, TLS clients, and APIs treat it the same way they treat any other registered name.
-
-Every registered name is also submitted to the **Public Suffix List** (PSL). The boundary is enforced by the consumers — browsers, certificate authorities, password managers — not by Stackryze. In practice that means:
-
-- Browsers scope cookies and storage to the registered label, so sibling names under `indevs.in` cannot read each other's data.
-- Certificate authorities verify control of the registered label before issuing TLS certs, the same as for `example.com`.
-- Password managers segregate credentials per registered name.
-
-## Boundaries
-
-A Stackryze Domain is not:
-
-- A top-level domain you own. The `indevs.in`, `sryze.cc`, `ryzedns.org`, and `nx.kg` zones belong to the Stackryze registry; you rent your slot under one of them.
-- A replacement for a paid registrar if you need a custom TLD (`example.com`, `example.io`, etc.). Use [Stackryze DNS](/docs/dns) and [point your own domain](/guides/point-domain-to-stackryze) at it.
-- Transferable to another registrar. The name lives under its chosen namespace for its lifetime.
-- Movable between namespaces. Once registered, the namespace is fixed. To switch, delete the name and re-register under a different namespace.
+- Sibling subdomains are isolated for DNS delegation, and parent zones are operated as shared public community namespaces.
+- A registered name cannot be transferred between accounts or moved between extensions through the dashboard.
+- Nameservers are updated directly in our authoritative PowerDNS parent zones (`TTL 3600`); sub-records (`A`, `CNAME`, `TXT`, etc.) must be configured on your chosen DNS provider (or on [dns.stackryze.com](https://dns.stackryze.com)).
 
 ## Concepts
 
-Dive into the concept that matches what you're working on.
-
 <Columns cols={2}>
   <Card title="Subdomain naming rules" icon="tag" href="/docs/domains/subdomain-naming">
-    What characters and lengths are valid.
+    Character rules, length bounds, Punycode blocks, and reserved names.
   </Card>
   <Card title="Nameserver delegation" icon="shuffle" href="/docs/domains/nameserver-delegation">
-    Use Stackryze nameservers or bring your own.
+    How BYOD NS delegation works and how to link a subdomain to Stackryze DNS.
   </Card>
   <Card title="Domain lifecycle" icon="clock" href="/docs/domains/domain-lifecycle">
-    Register, renew, expire, restore.
+    Registration, 60-day renewal window, 15-day grace period, deletion review, and 7-day cooling-off.
   </Card>
   <Card title="Security and abuse" icon="shield" href="/docs/domains/security-and-abuse">
-    Account security and abuse handling.
-  </Card>
-</Columns>
-
-## Task-oriented guides
-
-Once you understand the concepts, the guides walk you through the actual steps.
-
-<Columns cols={2}>
-  <Card title="Getting started" icon="rocket" href="/guides/domains/getting-started">
-    Register your first domain.
-  </Card>
-  <Card title="Managing domains" icon="gear" href="/guides/domains/managing-domains">
-    Renewals, nameservers, deletion.
-  </Card>
-  <Card title="DNS providers" icon="server" href="/guides/domains/dns-providers">
-    Bring your own DNS provider.
-  </Card>
-  <Card title="Troubleshooting" icon="wrench" href="/guides/domains/troubleshooting">
-    Common errors and fixes.
+    Stackryze SSO, GitHub KYC, WHOIS privacy, and abuse reporting.
   </Card>
 </Columns>

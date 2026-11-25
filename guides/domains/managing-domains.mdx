@@ -1,252 +1,74 @@
 ---
 title: "Managing domains"
-description: "Update nameservers, renew, and delete Stackryze Domains from your dashboard."
+description: "Edit nameservers, link Stackryze DNS ownership, renew domains, and request deletion."
 icon: "gear"
 ---
 
-Learn how to manage your registered domains, update nameservers, renew them, and delete them when you're done.
+Manage nameserver delegation, renewals, DNS ownership codes, and deletions from **My Domains** at [domain.stackryze.com](https://domain.stackryze.com).
 
-## Accessing your domains
+## Viewing domain details
 
-1. Sign in at [domain.stackryze.com](https://domain.stackryze.com/).
-2. Click **My Domains** in the sidebar.
+Open **My Domains** and click **Manage** next to any registered subdomain to see:
 
-You'll see every domain you own with its status, expiry date, and nameservers.
-
-## Domain overview
-
-Each domain shows:
-
-- **Domain name** — your subdomain (for example `yourname.indevs.in`, `yourname.sryze.cc`, `yourname.ryzedns.org`, or `yourname.nx.kg`).
-- **Status** — Active, Expiring Soon, or Expired.
-- **Registered on** — registration date.
-- **Expiry date** — when the domain expires.
-- **Registration period** — current validity (one year, fixed).
-- **DNS configuration** — current nameservers.
-
-<img src="/docs/domains/media/dashboard/img_1.png" alt="Stackryze Domains dashboard showing domain detail page" />
+- **Status** (`Active`, `Expired`, `Pending Deletion`, or `Suspended`)
+- **Registered On** and **Expires On** dates (1-year term)
+- **DNS Configuration** (`NS1`–`NS6`)
+- **DNS Ownership Verification** (`dns.stackryze.com` link status)
 
 ## Updating nameservers
 
-Every Stackryze Domain keeps the two Stackryze nameservers in the zone (`ns1.stackryze.com` and `ns2.stackryze.com`) and supports up to **4 additional custom nameservers** for redundancy or to point at a third-party provider alongside Stackryze. The maximum number of NS records per domain is **6** — 2 Stackryze (mandatory) plus 4 custom (optional).
-
-To add a third-party provider:
+Every Stackryze Domain supports between **2 and 6 nameservers**. New domains start with `ns1.stackryze.com`, `ns2.stackryze.com`, and `ns3.stackryze.com`, and you can replace or edit them at any time.
 
 <Steps>
-  <Step title="Set up the new provider">
-    Create the zone at your new provider first. See the [DNS providers](/guides/domains/dns-providers) list for step-by-step guides.
+  <Step title="Prepare your DNS provider">
+    Create the zone for your full subdomain (for example `myproject.indevs.in`) at your chosen DNS provider first and note the nameserver hostnames it assigns. See [DNS providers](/guides/domains/dns-providers).
   </Step>
-  <Step title="Open DNS Configuration in the dashboard">
-    Go to **My Domains** and click **Manage** on your domain. Scroll to **DNS Configuration → Custom nameservers** and click **Add**.
+  <Step title="Edit Nameservers">
+    Open **My Domains → Manage → DNS Configuration** and click **Edit Nameservers**.
   </Step>
-  <Step title="Enter the provider's hostnames">
-    Add up to 4 authoritative hostnames:
-
-    - **Custom 1:** `ns1.example.com`
-    - **Custom 2:** `ns2.example.com`
+  <Step title="Enter 2 to 6 nameserver hostnames">
+    Provide at least `NS1` and `NS2` (and up to `NS6`). Hostnames must be valid public DNS names without `http://`, IP addresses, or duplicates.
   </Step>
-  <Step title="Save">
-    Click **Save**. The 2 Stackryze nameservers stay in place alongside your additions.
+  <Step title="Save changes">
+    Click **Save Nameservers**. Stackryze updates the `NS` RRset in PowerDNS immediately (`TTL 3600`). Allow 5–10 minutes for major resolvers and up to 48 hours for full global cache propagation.
   </Step>
 </Steps>
 
-The Stackryze nameservers cannot be removed through the dashboard. If you need to delegate entirely to a third party, contact [support@stackryze.com](mailto:support@stackryze.com).
-
-<Note>
-  DNS changes propagate in 5–10 minutes, but can take up to 48 hours globally.
-</Note>
-
-### Verify propagation
+Verify live parent delegation with:
 
 ```bash
-dig NS yourname.indevs.in
+dig NS yourname.indevs.in @ns1.stackryze.com +short
 ```
-
-Or use [DNS Checker](https://dnschecker.org/) or [What's My DNS](https://www.whatsmydns.net/).
 
 ## Renewing domains
 
-Domains are valid for one year from registration.
+Domains are valid for **1 year** and renewals are free.
 
-### When you can renew
+- **Renewal window:** Opens **60 days before expiry** and remains open through the **15-day post-expiry grace period**.
+- **Reminder emails:** Sent at **60 days** and **10 days** prior to expiry.
+- **Grace period:** On expiry, status moves from `Active` to `Expired`, while PowerDNS delegation stays active for 15 days. Renewing during grace restores status to `Active`.
+- **Auto-soft-delete:** After more than 15 days past expiry without renewal, the daily job removes PowerDNS delegation, decrements your quota, and starts a **7-day cooling-off period** before permanent deletion.
 
-- Renewal opens 60 days before expiry.
-- Email reminders go out at 60 days and 10 days before expiry.
+To renew, open **My Domains** (or the domain's detail page) and click **Renew**.
 
-### How to renew
+## Requesting deletion
 
-1. Go to **My Domains**.
-2. Find your domain in the list.
-3. Click **Renew** (the green button on the right).
-4. Confirm.
-5. Expiry extends by one year.
+If you no longer need a domain:
 
-<img src="/docs/domains/media/dashboard/domain-list.png" alt="Domain list with Renew button highlighted" />
+1. Open **My Domains → Manage** and scroll to **Danger Zone**.
+2. Click **Delete Domain** and confirm.
 
-<Tip>
-  Renewal is 100% free — there is no charge to extend a Stackryze Domain.
-</Tip>
-
-<Note>
-  If you click **Renew** before the 60-day window, you'll see a message showing when renewal becomes available.
-</Note>
-
-<img src="/docs/domains/media/dashboard/cannot-renew.png" alt="Cannot renew message shown when outside the renewal window" />
-
-### What if you don't renew?
-
-| Timeline | What happens |
-| --- | --- |
-| Day 0 | Domain expires (status moves to Expired automatically). |
-| Days 1–15 | Grace period — domain still works, DNS remains active. |
-| Day 15 | Soft-deleted; DNS records removed. |
-| Days 15–22 | Cooling-off period (7 days) — name cannot be registered by anyone. |
-| Day 22+ | Name becomes available for registration again. |
+Submitting deletion moves the domain to **`Pending Deletion`** for administrator review. The domain keeps resolving until an administrator approves the deletion; once deleted, the name enters a **7-day cooling-off period** before anyone can register it again.
 
 <Warning>
-  You can only renew during the 15-day grace period. Once day 15 passes, the domain is deleted and cannot be renewed.
+  Domains that are `Suspended` or `Pending Deletion` cannot be modified or renewed.
 </Warning>
 
-## Deleting domains
+## Activity history and WHOIS privacy
 
-If you no longer need a domain, delete it from the **Danger Zone**.
+- **Activity History:** View account logins, registrations, nameserver updates, renewals, and deletion requests under **Activity History**.
+- **WHOIS Privacy:** Registrant email is hidden in public lookups at [domain.stackryze.com/whois](https://domain.stackryze.com/whois) by default. Toggle email visibility in **Settings → WHOIS Privacy**; name, postal address, and phone remain redacted at all times.
 
-1. Scroll to the **Danger Zone** at the bottom of the domain page.
-2. Click **Delete Domain**.
-3. Confirm.
+## Quotas and limit increases
 
-<Warning>
-  DNS records are removed immediately. Your domain stops working right away.
-</Warning>
-
-### Cooling-off period
-
-After deletion:
-
-- A 7-day cooling-off period begins immediately.
-- The name cannot be registered by you or anyone else during this time.
-- Deletion is permanent — domains cannot be restored.
-
-<Warning>
-  Once you delete a domain, it enters a 7-day cooling-off period. After 7 days, the name becomes available for anyone to register. Restoration is not possible.
-</Warning>
-
-## Domain status reference
-
-| Status | Meaning |
-| --- | --- |
-| **Active** | Working normally. |
-| **Expiring Soon** | Less than 60 days until expiry. |
-| **Expired** | Past expiry but in the 15-day grace period. |
-| **Pending Deletion** | Scheduled for deletion. |
-| **Deleted** | Removed from DNS (cooling off for 7 days). |
-| **Pending DNS** | Waiting for DNS records to be created (automatic retry). |
-
-## Activity history
-
-Every change to your domains is recorded:
-
-1. Click **History** in the sidebar.
-2. Review the full audit log: registrations, nameserver updates, renewals, deletions, and login events.
-
-## Domain limits and quotas
-
-### Default limits
-
-- **Names per account:** up to 4 — one of each namespace (`indevs.in`, `sryze.cc`, `ryzedns.org`, `nx.kg`).
-- **Domain length:** 3–63 characters
-- **Nameservers required:** at least 2
-- **Renewal window:** 60 days before expiry
-- **Grace period:** 15 days after expiry
-- **Cooling-off period:** 7 days after deletion
-
-### Need more domains?
-
-Email [support@stackryze.com](mailto:support@stackryze.com) with:
-
-- Your GitHub username.
-- The reason for the increase.
-- How many domains you need.
-
-We reply within 1–2 business days.
-
-## Public-suffix behavior
-
-Every registered Stackryze Domain is submitted to the **Public Suffix List** (PSL), the same list browsers, certificate authorities, and password managers consult to decide where one registrable name ends and the next begins. Once a name is on the list, the boundary is enforced by the consumers — not by Stackryze.
-
-What that gives you in practice:
-
-- **Browsers scope cookies correctly.** Chrome, Firefox, Safari, and their derivatives treat `yourname.indevs.in` the same way they treat `example.com` — cookies set on the registered label don't leak to sibling names under `indevs.in`.
-- **Cross-origin isolation holds.** A page on `app.yourname.indevs.in` cannot read cookies or storage set by a sibling name unless that sibling explicitly opts in. The same boundary exists between any two Stackryze Domains.
-- **Certificate authorities are strict.** When you request a TLS cert for `yourname.indevs.in`, the CA verifies you control the registered label — exactly as they do for `yourname.example.com`. A malicious party cannot register a sibling prefix and trick the CA into issuing them a cert that overlaps yours.
-- **Password managers segregate credentials.** 1Password, Bitwarden, Chrome's password store, and others treat each registered Stackryze Domain as its own origin for credential scoping.
-
-You don't have to do anything special to benefit from this — it follows from your name being on the PSL, and PSL-aware tools already respect the boundary by default.
-
-<Note>
-  Stackryze submits each registered name to the PSL; it is the PSL consumers (browsers, CAs, password managers) that enforce the boundary. Mainstream browsers, certificate authorities, and password managers all consult the PSL.
-</Note>
-
-## Common issues
-
-### Nameservers not updating
-
-1. Wait 5–10 minutes for propagation.
-2. Clear your DNS cache (`sudo dscacheutil -flushcache` on macOS, `ipconfig /flushdns` on Windows).
-3. Confirm the nameservers are correct in the dashboard.
-4. Check [DNS Checker](https://dnschecker.org/).
-
-### Domain not resolving
-
-1. Verify nameservers in the dashboard.
-2. Check DNS records in your DNS provider.
-3. Confirm the zone is configured for your subdomain.
-4. Wait up to 48 hours for global propagation.
-
-### Can't renew
-
-- Renewal opens 60 days before expiry.
-- Check the expiry date on the domain.
-- If expired, confirm it is still within the 15-day grace period.
-
-### Accidentally deleted
-
-1. Wait for the 7-day cooling-off period to complete.
-2. Re-register the domain once available.
-3. Deletions are permanent — support cannot restore.
-
-<Tip>
-  Set a calendar reminder for 60 days before expiry. We also email you at 60 and 10 days out.
-</Tip>
-
-## Best practices
-
-### Maintenance
-
-- Review your domains monthly.
-- Set calendar reminders for renewals.
-- Keep your account email current.
-- Watch activity history for unexpected changes.
-
-### DNS configuration
-
-- Pick a reliable DNS provider. [Cloudflare](/guides/domains/dns-providers/cloudflare) is a good default.
-- Configure proper DNS records (A, CNAME, MX, TXT).
-- Test your domain after every change.
-- Keep a backup of your nameservers.
-
-### Security
-
-- Enable two-factor authentication on GitHub.
-- Review activity history regularly.
-- Never share account credentials.
-- Report suspicious activity to [security@stackryze.com](mailto:security@stackryze.com).
-
-## Need help?
-
-- [Troubleshooting](/guides/domains/troubleshooting)
-- [Getting started](/guides/domains/getting-started)
-- [DNS providers](/guides/domains/dns-providers)
-- [Discord Community](https://discord.gg/wr7s97cfM7)
-- [Email Support](mailto:support@stackryze.com)
-- [GitHub Issues](https://github.com/stackryze/domains-docs/issues)
+Each verified account can hold **1 domain per extension** (`.indevs.in`, `.sryze.cc`, `.ryzedns.org`, `.nx.kg`, and `.ryzn.pro` — 5 total). Need higher limits? Contact [support@stackryze.com](mailto:support@stackryze.com) or ask in [Discord](https://discord.gg/wr7s97cfM7) with your account email, GitHub username, and project details.

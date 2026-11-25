@@ -1,35 +1,36 @@
 ---
 title: "Introduction"
 sidebarTitle: "Introduction"
-description: "Task-oriented guides for Stackryze DNS — from your first zone to advanced automation."
+description: "Task-oriented guides for setting up zones, DNS records, DNSSEC, and API automation on Stackryze DNS."
 icon: "book-open"
 ---
 
-Pick a guide that matches what you're working on. Each one walks through the actual steps, in order.
+Follow these step-by-step guides to add domains, configure records, enable DNSSEC, and automate updates on [dns.stackryze.com](https://dns.stackryze.com).
 
 ## Getting started
 
 <Columns cols={2}>
   <Card title="Add a custom domain" icon="globe" href="/guides/add-a-custom-domain">
-    Wire up a domain you already own.
+    Delegate a domain from an external registrar to `ns1–ns3.stackryze.com`.
   </Card>
   <Card title="Point domain to Stackryze" icon="share" href="/guides/point-domain-to-stackryze">
-    Three ways to point an existing domain at a Stackryze service.
+    Compare full zone delegation, Stackryze subdomain linking, and CNAME setups.
   </Card>
 </Columns>
 
-## Day-to-day operations
+## Operations & security
 
 <Columns cols={2}>
   <Card title="Configure DNS records" icon="list" href="/guides/configure-dns-records">
-    The complete reference for every record type Stackryze supports.
+    Validation rules and formatting for A, AAAA, CNAME, MX, TXT, SRV, and CAA records.
   </Card>
   <Card title="Enable DNSSEC" icon="shield-check" href="/guides/enable-dnssec">
-    Cryptographically verify your zone in three steps.
+    Sign your zone with ECDSA P-256 and publish the DS record.
   </Card>
-  <Card title="Dynamic DNS" icon="bolt" href="/guides/dynamic-dns">
-    Keep a hostname pointed at a changing IP.
+  <Card title="Dynamic IP automation" icon="bolt" href="/guides/dynamic-dns">
+    Sync a changing host IP using Bearer API tokens.
+  </Card>
+  <Card title="DNS FAQ" icon="circle-question" href="/guides/dns/faq">
+    Common questions on quotas, TTL bounds, rate limits, and troubleshooting.
   </Card>
 </Columns>
-
-
