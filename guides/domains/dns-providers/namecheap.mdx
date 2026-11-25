@@ -1,30 +1,36 @@
 ---
 title: "Namecheap FreeDNS"
-description: "Connect a Stackryze Domain to Namecheap FreeDNS."
+description: "Delegate a Stackryze Domain to Namecheap FreeDNS."
 icon: "tag"
 ---
 
-Namecheap FreeDNS offers free DNS hosting with an easy-to-use interface — ideal for Namecheap customers.
+Use Namecheap FreeDNS as the authoritative DNS host for your Stackryze subdomain.
 
-<Note>
-  This guide is in progress. For the most up-to-date instructions, join the [Discord community](https://discord.gg/wr7s97cfM7) or email [support@stackryze.com](mailto:support@stackryze.com).
-</Note>
+## Prerequisites
 
-## Quick setup
+- A registered subdomain on [domain.stackryze.com](https://domain.stackryze.com) (see [Getting started](/guides/domains/getting-started))
+- A [Namecheap](https://www.namecheap.com/domains/freedns/) account
 
-1. Create a Namecheap account.
-2. Open the FreeDNS service.
-3. Add your subdomain.
-4. Note your Namecheap nameservers.
-5. Register with Stackryze Domains using your nameservers.
+## Setup steps
 
-For detailed instructions, check back soon, join the Discord community, or contact support.
+<Steps>
+  <Step title="Add your subdomain to Namecheap FreeDNS">
+    Sign in to Namecheap, open **FreeDNS**, enter your full Stackryze subdomain (for example `yourname.indevs.in`), and click **Get DNS**.
+  </Step>
+  <Step title="Copy the FreeDNS nameservers">
+    Copy the assigned nameserver hostnames (typically `freedns1.registrar-servers.com` through `freedns5.registrar-servers.com`).
+  </Step>
+  <Step title="Delegate your subdomain in Stackryze Domains">
+    Open [domain.stackryze.com](https://domain.stackryze.com) → **My Domains** → **Manage** on your domain. Under **DNS Configuration**, click **Edit**, enter the Namecheap FreeDNS hostnames (at least `NS1` and `NS2`, up to `NS6`), and click **Save Nameservers**.
+  </Step>
+  <Step title="Verify propagation">
+    ```bash
+    dig NS yourname.indevs.in @ns1.stackryze.com +short
+    ```
+  </Step>
+</Steps>
 
 ## Resources
 
-- [Namecheap FreeDNS documentation](https://www.namecheap.com/domains/freedns/)
-
-## Need help?
-
-- [Discord community](https://discord.gg/wr7s97cfM7)
-- [Email support](mailto:support@stackryze.com)
+- [Namecheap FreeDNS](https://www.namecheap.com/domains/freedns/)
+- [Updating nameservers in Stackryze Domains](/guides/domains/managing-domains#updating-nameservers)

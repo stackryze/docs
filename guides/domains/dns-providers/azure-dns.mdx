@@ -1,29 +1,38 @@
 ---
 title: "Azure DNS"
-description: "Connect a Stackryze Domain to Azure DNS."
+description: "Delegate a Stackryze Domain to Microsoft Azure DNS."
 icon: "microsoft"
 ---
 
-Azure DNS is Microsoft's DNS hosting service, with high availability and tight Azure integration.
+Use Microsoft Azure DNS as the authoritative nameservers for your Stackryze subdomain.
 
-<Note>
-  This guide is in progress. For the most up-to-date instructions, join the [Discord community](https://discord.gg/wr7s97cfM7) or email [support@stackryze.com](mailto:support@stackryze.com).
-</Note>
+## Prerequisites
 
-## Quick setup
+- A registered subdomain on [domain.stackryze.com](https://domain.stackryze.com) (see [Getting started](/guides/domains/getting-started))
+- An active Microsoft Azure subscription
 
-1. Create a Microsoft Azure account.
-2. Create a DNS zone for your subdomain.
-3. Note your Azure DNS nameservers.
-4. Register with Stackryze Domains using your nameservers.
+## Setup steps
 
-For detailed instructions, check back soon, join the Discord community, or contact support.
+<Steps>
+  <Step title="Create a DNS zone in Azure">
+    Open the [Azure Portal](https://portal.azure.com), search for **DNS zones**, and click **Create**. Enter your full Stackryze subdomain (for example `yourname.indevs.in`) as the zone name.
+  </Step>
+  <Step title="Copy the four Azure nameservers">
+    Open the newly created DNS zone's **Overview** pane and copy the assigned `Name server 1` through `Name server 4` hostnames (for example `ns1-01.azure-dns.com` through `ns4-01.azure-dns.info`), omitting any trailing dots.
+  </Step>
+  <Step title="Delegate your subdomain in Stackryze Domains">
+    Open [domain.stackryze.com](https://domain.stackryze.com) → **My Domains** → **Manage** on your domain. Under **DNS Configuration**, click **Edit**, replace `NS1`–`NS3` and add `NS4` with your Azure nameservers, then click **Save Nameservers**.
+  </Step>
+  <Step title="Add records and verify propagation">
+    Create your `A`, `AAAA`, `CNAME`, or `TXT` record sets inside Azure DNS and verify delegation:
+
+    ```bash
+    dig NS yourname.indevs.in @ns1.stackryze.com +short
+    ```
+  </Step>
+</Steps>
 
 ## Resources
 
 - [Azure DNS documentation](https://learn.microsoft.com/azure/dns/)
-
-## Need help?
-
-- [Discord community](https://discord.gg/wr7s97cfM7)
-- [Email support](mailto:support@stackryze.com)
+- [Updating nameservers in Stackryze Domains](/guides/domains/managing-domains#updating-nameservers)

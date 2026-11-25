@@ -1,29 +1,36 @@
 ---
 title: "Hurricane Electric (HE.net)"
-description: "Connect a Stackryze Domain to Hurricane Electric DNS."
+description: "Delegate a Stackryze Domain to Hurricane Electric Free DNS."
 icon: "bolt"
 ---
 
-Hurricane Electric provides fully free DNS hosting with IPv6 support and DNSSEC.
+Use Hurricane Electric (`dns.he.net`) for free authoritative DNS hosting with IPv6 and slave zone support.
 
-<Note>
-  This guide is in progress. For the most up-to-date instructions, join the [Discord community](https://discord.gg/wr7s97cfM7) or email [support@stackryze.com](mailto:support@stackryze.com).
-</Note>
+## Prerequisites
 
-## Quick setup
+- A registered subdomain on [domain.stackryze.com](https://domain.stackryze.com) (see [Getting started](/guides/domains/getting-started))
+- A free account at [dns.he.net](https://dns.he.net)
 
-1. Create a Hurricane Electric account at [dns.he.net](https://dns.he.net).
-2. Add a new domain for your subdomain.
-3. Note your HE.net nameservers.
-4. Register with Stackryze Domains using your nameservers.
+## Setup steps
 
-For detailed instructions, check back soon, join the Discord community, or contact support.
+<Steps>
+  <Step title="Add your subdomain in HE.net">
+    Sign in at [dns.he.net](https://dns.he.net), click **Add a new domain**, and enter your full Stackryze subdomain (for example `yourname.indevs.in`).
+  </Step>
+  <Step title="Copy your assigned HE.net nameservers">
+    Open the zone and copy the assigned `ns*.he.net` nameserver hostnames (HE.net provides up to 5 servers such as `ns2.he.net` through `ns5.he.net`).
+  </Step>
+  <Step title="Delegate your subdomain in Stackryze Domains">
+    Open [domain.stackryze.com](https://domain.stackryze.com) → **My Domains** → **Manage** on your domain. Under **DNS Configuration**, click **Edit**, enter your HE.net nameservers (`NS1`–`NS5`), and click **Save Nameservers**.
+  </Step>
+  <Step title="Verify propagation">
+    ```bash
+    dig NS yourname.indevs.in @8.8.8.8 +short
+    ```
+  </Step>
+</Steps>
 
 ## Resources
 
-- [Hurricane Electric DNS documentation](https://dns.he.net/)
-
-## Need help?
-
-- [Discord community](https://discord.gg/wr7s97cfM7)
-- [Email support](mailto:support@stackryze.com)
+- [Hurricane Electric Free DNS](https://dns.he.net/)
+- [Updating nameservers in Stackryze Domains](/guides/domains/managing-domains#updating-nameservers)

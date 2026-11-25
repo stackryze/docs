@@ -100,39 +100,23 @@ dig @ns1.yourdomain.com yourname.indevs.in
 dig yourname.indevs.in @8.8.8.8
 ```
 
-### Step 4 — Register with Stackryze Domains
+### Step 4 — Delegate in Stackryze Domains
 
-Create your registration in the dashboard:
+If you haven't claimed your subdomain yet, register it first at [domain.stackryze.com/register](https://domain.stackryze.com/register). Then delegate it to your custom nameservers:
 
-```json
-{
-  "owner": {
-    "username": "yourgithubusername",
-    "email": "your@email.com"
-  },
-  "record": {
-    "NS": [
-      "ns1.yourdomain.com",
-      "ns2.yourdomain.com"
-    ]
-  }
-}
-```
-
-Then in the Stackryze Domains dashboard:
-
-1. Open **My Domains** → your domain → **DNS Configuration**.
-2. Replace the nameservers with your custom ones.
-3. Click **Save**.
+1. Open **My Domains** and click **Manage** on your domain.
+2. Scroll to **DNS Configuration** and click **Edit**.
+3. Replace **NS1** and **NS2** (and optionally add up to **NS6** via **+ Add nameserver**) with your authoritative nameserver hostnames (for example `ns1.yourdomain.com`, `ns2.yourdomain.com`).
+4. Click **Save Nameservers**.
 
 ## Best practices
 
 ### Use multiple nameservers
 
-Always configure at least two nameservers for redundancy:
+Always configure at least two unique nameservers (required by Stackryze):
 
-- **Primary:** `ns1.yourdomain.com`
-- **Secondary:** `ns2.yourdomain.com`
+- **NS1:** `ns1.yourdomain.com`
+- **NS2:** `ns2.yourdomain.com`
 
 ### Geographic distribution
 

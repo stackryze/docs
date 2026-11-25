@@ -1,30 +1,36 @@
 ---
 title: "Hetzner"
-description: "Connect a Stackryze Domain to Hetzner DNS."
+description: "Delegate a Stackryze Domain to Hetzner DNS."
 icon: "server"
 ---
 
-Hetzner DNS is a free DNS service from Hetzner with reliable infrastructure and a simple API.
+Use Hetzner DNS for free, API-accessible authoritative DNS hosting for your Stackryze subdomain.
 
-<Note>
-  This guide is in progress. For the most up-to-date instructions, join the [Discord community](https://discord.gg/wr7s97cfM7) or email [support@stackryze.com](mailto:support@stackryze.com).
-</Note>
+## Prerequisites
 
-## Quick setup
+- A registered subdomain on [domain.stackryze.com](https://domain.stackryze.com) (see [Getting started](/guides/domains/getting-started))
+- A [Hetzner](https://www.hetzner.com) account
 
-1. Create a Hetzner account.
-2. Open the Hetzner DNS Console.
-3. Create a zone for your subdomain.
-4. Note your Hetzner nameservers.
-5. Register with Stackryze Domains using your nameservers.
+## Setup steps
 
-For detailed instructions, check back soon, join the Discord community, or contact support.
+<Steps>
+  <Step title="Add a zone in Hetzner DNS Console">
+    Open the Hetzner DNS Console, click **Add new zone**, and enter your full Stackryze subdomain (for example `yourname.indevs.in`).
+  </Step>
+  <Step title="Copy your Hetzner nameservers">
+    Copy the three nameserver hostnames shown for the zone (for example `hydrogen.ns.hetzner.com`, `oxygen.ns.hetzner.com`, `helium.ns.hetzner.de`).
+  </Step>
+  <Step title="Delegate your subdomain in Stackryze Domains">
+    Open [domain.stackryze.com](https://domain.stackryze.com) → **My Domains** → **Manage** on your domain. Under **DNS Configuration**, click **Edit**, replace `NS1`–`NS3` with your Hetzner nameservers, and click **Save Nameservers**.
+  </Step>
+  <Step title="Verify delegation">
+    ```bash
+    dig NS yourname.indevs.in @ns1.stackryze.com +short
+    ```
+  </Step>
+</Steps>
 
 ## Resources
 
 - [Hetzner DNS documentation](https://docs.hetzner.com/dns-console/dns/general)
-
-## Need help?
-
-- [Discord community](https://discord.gg/wr7s97cfM7)
-- [Email support](mailto:support@stackryze.com)
+- [Updating nameservers in Stackryze Domains](/guides/domains/managing-domains#updating-nameservers)

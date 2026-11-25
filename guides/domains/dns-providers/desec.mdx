@@ -1,29 +1,36 @@
 ---
 title: "deSEC"
-description: "Connect a Stackryze Domain to deSEC."
+description: "Delegate a Stackryze Domain to deSEC with built-in DNSSEC support."
 icon: "lock"
 ---
 
-deSEC is a free, privacy-focused DNS service with built-in DNSSEC — a good fit for security-conscious users.
+Use deSEC (`desec.io`) for free, privacy-focused authoritative DNS hosting for your Stackryze subdomain.
 
-<Note>
-  This guide is in progress. For the most up-to-date instructions, join the [Discord community](https://discord.gg/wr7s97cfM7) or email [support@stackryze.com](mailto:support@stackryze.com).
-</Note>
+## Prerequisites
 
-## Quick setup
+- A registered subdomain on [domain.stackryze.com](https://domain.stackryze.com) (see [Getting started](/guides/domains/getting-started))
+- A free [deSEC](https://desec.io) account
 
-1. Create a deSEC account at [desec.io](https://desec.io).
-2. Create a domain for your subdomain.
-3. Note your deSEC nameservers.
-4. Register with Stackryze Domains using your nameservers.
+## Setup steps
 
-For detailed instructions, check back soon, join the Discord community, or contact support.
+<Steps>
+  <Step title="Create your domain in deSEC">
+    Sign in at [desec.io](https://desec.io), open **Domain Management**, click **+**, and enter your full Stackryze subdomain (for example `yourname.indevs.in`).
+  </Step>
+  <Step title="Copy the deSEC nameservers">
+    Note the nameservers displayed by deSEC (`ns1.desec.io` and `ns2.desec.org`, or the exact servers shown for your zone).
+  </Step>
+  <Step title="Delegate your subdomain in Stackryze Domains">
+    Open [domain.stackryze.com](https://domain.stackryze.com) → **My Domains** → **Manage** on your domain. Under **DNS Configuration**, click **Edit**, replace `NS1` and `NS2` (removing optional `NS3` if unused) with your deSEC nameservers, and click **Save Nameservers**.
+  </Step>
+  <Step title="Verify delegation">
+    ```bash
+    dig NS yourname.indevs.in @ns1.stackryze.com +short
+    ```
+  </Step>
+</Steps>
 
 ## Resources
 
 - [deSEC documentation](https://desec.readthedocs.io/)
-
-## Need help?
-
-- [Discord community](https://discord.gg/wr7s97cfM7)
-- [Email support](mailto:support@stackryze.com)
+- [Updating nameservers in Stackryze Domains](/guides/domains/managing-domains#updating-nameservers)

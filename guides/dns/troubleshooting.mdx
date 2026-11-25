@@ -1,0 +1,81 @@
+---
+title: "Troubleshooting"
+description: "Resolve zone verification failures, record validation errors, DNSSEC conflicts, and rate limits on Stackryze DNS."
+icon: "wrench"
+---
+
+Common errors and how to resolve them on [dns.stackryze.com](https://dns.stackryze.com).
+
+## Zone status and verification
+
+### Stuck in `pending_ownership`
+
+**Cause:** You added a Stackryze Domains subdomain (`.indevs.in`, `.sryze.cc`, `.ryzedns.org`, `.nx.kg`, or `.ryzn.pro`), which requires proving you control the subdomain on [domain.stackryze.com](https://domain.stackryze.com) before parent `NS` delegation activates.
+
+**Fix:**
+1. Copy the `sryze-verify-...` code displayed on the zone in [dns.stackryze.com](https://dns.stackryze.com).
+2. Open [domain.stackryze.com](https://domain.stackryze.com) → **My Domains** → click **Manage** on that subdomain.
+3. Paste the code under **DNS Ownership Verification** and click **Save Code**.
+4. Return to [dns.stackryze.com](https://dns.stackryze.com) and click **Verify Ownership**.
+
+### Stuck in `pending_verification`
+
+**Cause:** Uncached external `NS` queries (`8.8.8.8` and fallback public resolvers) do not yet return `ns1.stackryze.com`, `ns2.stackryze.com`, or `ns3.stackryze.com`.
+
+**Fix:**
+1. Confirm your registrar (or [domain.stackryze.com](https://domain.stackryze.com) nameservers) lists `ns1.stackryze.com`, `ns2.stackryze.com`, and `ns3.stackryze.com`.
+2. Test propagation directly:
+
+```bash
+dig NS example.com @8.8.8.8 +short
+```
+
+3. Use the built-in public propagation endpoint `GET /api/dns-checker/propagation/:domain` or wait up to 48 hours for upstream registry propagation, then click **Verify**.
+
+## Record validation errors
+
+### `CNAME cannot coexist with other records`
+
+**Cause:** DNS standards forbid placing a `CNAME` record on the same label as an `A`, `AAAA`, `MX`, `TXT`, or other record type.
+
+**Fix:** Remove conflicting records on that label first, or use `A` / `AAAA` records at the zone apex (`@`) instead of `CNAME`.
+
+### `TTL must be at least 3600 seconds`
+
+**Cause:** Stackryze DNS enforces record TTLs between **`3600` seconds (1 hour)** and **`604800` seconds (1 week)**.
+
+**Fix:** Set `ttl` to `3600` or higher (up to `604800`).
+
+### `Cannot modify SOA or NS records manually`
+
+**Cause:** Root `SOA` (`ns1.stackryze.com. hostmaster.stackryze.com.`) and `NS` records are protected so PowerDNS replication remains consistent.
+
+### Quota limits (`403 Forbidden`)
+
+- **Default zones:** `3` per account. Delete unused zones or email [support@stackryze.com](mailto:support@stackryze.com) to request an increase.
+- **Default records per zone:** `200` (hard system limit: `1,000`). Remove stale records or consolidate redundant entries.
+
+## DNSSEC errors
+
+### `409 Conflict` when enabling DNSSEC
+
+**Cause:** The zone has not yet been provisioned in PowerDNS (or is still awaiting ownership verification).
+
+**Fix:** Complete ownership verification first so the zone exists in PowerDNS, then click **Enable DNSSEC**.
+
+## API and rate limit errors
+
+### `401 Invalid API token` / `403 This token is read-only`
+
+**Fix:** Ensure your `Authorization` header starts with `Bearer sk_dns_...` and that any `POST`, `PUT`, `PATCH`, or `DELETE` call uses a token generated with **`write`** scope.
+
+### `429 Too Many Requests`
+
+| Scope | Limit |
+| --- | --- |
+| Global API | `100` requests / `15` minutes |
+| Record / DNSSEC / schedule mutations | `20` requests / minute |
+| Ownership verification | `5` requests / `15` minutes |
+| Public propagation checker | `5` requests / minute |
+
+Back off and retry after the reset window reported in the `RateLimit-*` response headers.

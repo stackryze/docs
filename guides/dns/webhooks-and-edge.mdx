@@ -1,0 +1,85 @@
+---
+title: "Webhooks & edge monitoring"
+description: "Verify HMAC-signed DNS change webhooks and ingest edge monitoring metrics via the Stackryze DNS API."
+icon: "webhook"
+---
+
+Stackryze DNS supports outbound HTTPS webhooks for zone and record events, plus an Edge Telemetry API for monitoring distributed service endpoints.
+
+## Outbound webhooks
+
+Manage webhooks from [dns.stackryze.com](https://dns.stackryze.com) (up to **10 `https://` endpoints** per account).
+
+### Supported events
+
+| Event | Trigger |
+| --- | --- |
+| `zone.created` | A zone is created |
+| `zone.deleted` | A zone is deleted |
+| `record.created` | A record (or temporary record) is created |
+| `record.deleted` | A record is deleted |
+
+Each webhook payload is delivered via `POST` with a 5-second timeout and three headers:
+
+- `Content-Type: application/json`
+- `X-Stackryze-Event`: event name (for example `record.created`)
+- `X-Stackryze-Signature`: `sha256=<hex-digest>` computed using HMAC-SHA256 over the raw JSON request body with your `whsec_...` webhook secret
+
+<Note>
+  Webhook delivery is fire-and-forget without automatic retries. Stackryze records the latest HTTP `lastStatus` and `lastFiredAt` timestamp in the dashboard.
+</Note>
+
+### Verifying webhook signatures
+
+Always compare the HMAC signature in constant time against your `whsec_...` secret:
+
+<CodeGroup>
+```javascript Node.js (Express)
+import crypto from "crypto";
+
+export function verifyStackryzeWebhook(rawBody, signatureHeader, secret) {
+  const expected =
+    "sha256=" +
+    crypto.createHmac("sha256", secret).update(rawBody).digest("hex");
+
+  const a = Buffer.from(signatureHeader || "");
+  const b = Buffer.from(expected);
+  return a.length === b.length && crypto.timingSafeEqual(a, b);
+}
+```
+
+```python Python
+import hmac, hashlib
+
+def verify_stackryze_webhook(raw_body: bytes, signature_header: str, secret: str) -> bool:
+    digest = hmac.new(secret.encode(), raw_body, hashlib.sha256).hexdigest()
+    expected = f"sha256={digest}"
+    return hmac.compare_digest(signature_header or "", expected)
+```
+</CodeGroup>
+
+## Edge monitoring metrics (`/api/edge`)
+
+Edge agents using a **`write`-scoped** `sk_dns_...` Bearer token can report regional availability and latency rollups for any zone you own:
+
+```bash
+curl -X POST https://api-dns.stackryze.com/api/edge/metrics \
+  -H "Authorization: Bearer $STACKRYZE_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "zoneName": "example.com",
+    "region": "us-east",
+    "agentId": "edge-nyc-01",
+    "checks": 120,
+    "successRate": 99.8,
+    "latencyP50": 14,
+    "latencyP95": 38,
+    "targetsUp": 3,
+    "targetsDown": 0
+  }'
+```
+
+Query aggregated rollups (`read`-scoped Bearer token or SSO session):
+
+- `GET /api/edge/metrics?hours=24&zoneId=&region=` — returns up to `2,000` time-series points over a rolling window (maximum `168` hours / 7 days).
+- `GET /api/edge/overview` — returns the latest snapshot grouped by zone and region plus distinct active regions over the last 24 hours.

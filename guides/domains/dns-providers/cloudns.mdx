@@ -1,29 +1,36 @@
 ---
 title: "ClouDNS"
-description: "Connect a Stackryze Domain to ClouDNS."
+description: "Delegate a Stackryze Domain to ClouDNS."
 icon: "cloud"
 ---
 
-ClouDNS offers free DNS hosting with support for multiple record types and API access.
+Use ClouDNS free DNS hosting as the authoritative nameservers for your Stackryze subdomain.
 
-<Note>
-  This guide is in progress. For the most up-to-date instructions, join the [Discord community](https://discord.gg/wr7s97cfM7) or email [support@stackryze.com](mailto:support@stackryze.com).
-</Note>
+## Prerequisites
 
-## Quick setup
+- A registered subdomain on [domain.stackryze.com](https://domain.stackryze.com) (see [Getting started](/guides/domains/getting-started))
+- A free [ClouDNS](https://www.cloudns.net) account
 
-1. Create a ClouDNS account at [cloudns.net](https://www.cloudns.net).
-2. Add your subdomain as a zone.
-3. Note your ClouDNS nameservers.
-4. Register with Stackryze Domains using your nameservers.
+## Setup steps
 
-For detailed instructions, check back soon, join the Discord community, or contact support.
+<Steps>
+  <Step title="Add a Master Zone in ClouDNS">
+    Sign in to ClouDNS, click **Create Zone → Master Zone**, and enter your full subdomain (for example `yourname.indevs.in`).
+  </Step>
+  <Step title="Copy your ClouDNS nameservers">
+    Copy the authoritative nameserver hostnames shown for your zone (at least 2 and up to 6).
+  </Step>
+  <Step title="Delegate your subdomain in Stackryze Domains">
+    Open [domain.stackryze.com](https://domain.stackryze.com) → **My Domains** → **Manage** on your domain. Under **DNS Configuration**, click **Edit**, enter your ClouDNS nameservers in **NS1**, **NS2** (and **+ Add nameserver** if ClouDNS provides additional servers), then click **Save Nameservers**.
+  </Step>
+  <Step title="Verify propagation">
+    ```bash
+    dig NS yourname.indevs.in @8.8.8.8 +short
+    ```
+  </Step>
+</Steps>
 
 ## Resources
 
 - [ClouDNS documentation](https://www.cloudns.net/wiki/)
-
-## Need help?
-
-- [Discord community](https://discord.gg/wr7s97cfM7)
-- [Email support](mailto:support@stackryze.com)
+- [Updating nameservers in Stackryze Domains](/guides/domains/managing-domains#updating-nameservers)

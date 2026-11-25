@@ -1,29 +1,38 @@
 ---
 title: "Vercel DNS"
-description: "Connect a Stackryze Domain to Vercel DNS."
+description: "Delegate a Stackryze Domain to Vercel DNS."
 icon: "triangle"
 ---
 
-Vercel DNS provides automatic SSL and an edge network — perfect for frontend developers using Vercel.
+Use Vercel DNS for automatic edge TLS and deployment routing on your Stackryze subdomain.
 
-<Note>
-  This guide is in progress. For the most up-to-date instructions, join the [Discord community](https://discord.gg/wr7s97cfM7) or email [support@stackryze.com](mailto:support@stackryze.com).
-</Note>
+## Prerequisites
 
-## Quick setup
+- A registered subdomain on [domain.stackryze.com](https://domain.stackryze.com) (see [Getting started](/guides/domains/getting-started))
+- A [Vercel](https://vercel.com) account and project
 
-1. Create a Vercel account.
-2. Add your subdomain to a Vercel project.
-3. Note your Vercel nameservers.
-4. Register with Stackryze Domains using your nameservers.
+## Setup steps
 
-For detailed instructions, check back soon, join the Discord community, or contact support.
+<Steps>
+  <Step title="Add your subdomain in Vercel">
+    Open your Vercel project → **Settings → Domains**, enter your full Stackryze subdomain (for example `yourname.indevs.in`), and choose the **Nameservers** setup method when prompted.
+  </Step>
+  <Step title="Copy your Vercel nameservers">
+    Note the nameservers shown by Vercel (typically `ns1.vercel-dns.com` and `ns2.vercel-dns.com`).
+  </Step>
+  <Step title="Delegate your subdomain in Stackryze Domains">
+    Open [domain.stackryze.com](https://domain.stackryze.com) → **My Domains** → **Manage** on your domain. Under **DNS Configuration**, click **Edit**, replace **NS1** and **NS2** (removing optional `NS3` if unused) with `ns1.vercel-dns.com` and `ns2.vercel-dns.com`, and click **Save Nameservers**.
+  </Step>
+  <Step title="Verify configuration in Vercel">
+    Return to Vercel and refresh domain status. Allow 5–10 minutes for nameserver propagation and automatic SSL provisioning.
+  </Step>
+</Steps>
+
+<Tip>
+  If you prefer keeping Stackryze DNS or Cloudflare in front, point only a `CNAME` or `A` record as instructed in Vercel instead of delegating root nameservers.
+</Tip>
 
 ## Resources
 
 - [Vercel Domains documentation](https://vercel.com/docs/projects/domains)
-
-## Need help?
-
-- [Discord community](https://discord.gg/wr7s97cfM7)
-- [Email support](mailto:support@stackryze.com)
+- [Updating nameservers in Stackryze Domains](/guides/domains/managing-domains#updating-nameservers)

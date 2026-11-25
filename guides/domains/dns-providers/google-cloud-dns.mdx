@@ -1,30 +1,36 @@
 ---
 title: "Google Cloud DNS"
-description: "Connect a Stackryze Domain to Google Cloud DNS."
+description: "Delegate a Stackryze Domain to Google Cloud DNS."
 icon: "google"
 ---
 
-Google Cloud DNS is a scalable, reliable DNS service running on Google's infrastructure — a good fit for GCP users.
+Use Google Cloud DNS as the authoritative nameservers for your Stackryze subdomain.
 
-<Note>
-  This guide is in progress. For the most up-to-date instructions, join the [Discord community](https://discord.gg/wr7s97cfM7) or email [support@stackryze.com](mailto:support@stackryze.com).
-</Note>
+## Prerequisites
 
-## Quick setup
+- A registered subdomain on [domain.stackryze.com](https://domain.stackryze.com) (see [Getting started](/guides/domains/getting-started))
+- A Google Cloud project with the **Cloud DNS API** enabled
 
-1. Create a Google Cloud account.
-2. Enable the Cloud DNS API.
-3. Create a managed zone for your subdomain.
-4. Note your Cloud DNS nameservers.
-5. Register with Stackryze Domains using your nameservers.
+## Setup steps
 
-For detailed instructions, check back soon, join the Discord community, or contact support.
+<Steps>
+  <Step title="Create a public managed zone">
+    In **Google Cloud Console → Network Services → Cloud DNS**, click **Create Zone**, choose **Public**, and set **DNS name** to your full Stackryze subdomain (for example `yourname.indevs.in`).
+  </Step>
+  <Step title="Copy the four Cloud DNS nameservers">
+    Open your zone's **NS** record and copy the four assigned hostnames (such as `ns-cloud-a1.googledomains.com` through `ns-cloud-a4.googledomains.com`), without trailing dots.
+  </Step>
+  <Step title="Delegate your subdomain in Stackryze Domains">
+    Open [domain.stackryze.com](https://domain.stackryze.com) → **My Domains** → **Manage** on your domain. Under **DNS Configuration**, click **Edit**, replace `NS1`–`NS3` and add `NS4` with your Cloud DNS nameservers, then click **Save Nameservers**.
+  </Step>
+  <Step title="Verify propagation">
+    ```bash
+    dig NS yourname.indevs.in @8.8.8.8 +short
+    ```
+  </Step>
+</Steps>
 
 ## Resources
 
 - [Google Cloud DNS documentation](https://cloud.google.com/dns/docs)
-
-## Need help?
-
-- [Discord community](https://discord.gg/wr7s97cfM7)
-- [Email support](mailto:support@stackryze.com)
+- [Updating nameservers in Stackryze Domains](/guides/domains/managing-domains#updating-nameservers)

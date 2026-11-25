@@ -77,13 +77,12 @@ Cloudflare assigns unique nameservers to your site:
 ## Step 4 — Update nameservers in Stackryze Domains
 
 1. Open [domain.stackryze.com](https://domain.stackryze.com/).
-2. Go to **My Domains**.
-3. Click your domain.
-4. In **DNS Configuration**, click **Edit**.
-5. Replace the nameservers with your Cloudflare ones:
-   - **Primary:** `ava.ns.cloudflare.com`
-   - **Secondary:** `curt.ns.cloudflare.com`
-6. Click **Save**.
+2. Go to **My Domains** and click **Manage** on your domain.
+3. Under **DNS Configuration**, click **Edit**.
+4. Replace the nameservers with your Cloudflare ones (removing optional `NS3` if present):
+   - **NS1:** `ava.ns.cloudflare.com`
+   - **NS2:** `curt.ns.cloudflare.com`
+5. Click **Save Nameservers**.
 
 <Note>
   DNS changes typically propagate in 5–10 minutes, but can take up to 48 hours globally.

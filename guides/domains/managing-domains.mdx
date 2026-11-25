@@ -23,11 +23,11 @@ Every Stackryze Domain supports between **2 and 6 nameservers**. New domains sta
   <Step title="Prepare your DNS provider">
     Create the zone for your full subdomain (for example `myproject.indevs.in`) at your chosen DNS provider first and note the nameserver hostnames it assigns. See [DNS providers](/guides/domains/dns-providers).
   </Step>
-  <Step title="Edit Nameservers">
-    Open **My Domains → Manage → DNS Configuration** and click **Edit Nameservers**.
+  <Step title="Open DNS Configuration in the dashboard">
+    Go to **My Domains** → click **Manage** on your domain, scroll to **DNS Configuration**, and click **Edit**.
   </Step>
   <Step title="Enter 2 to 6 nameserver hostnames">
-    Provide at least `NS1` and `NS2` (and up to `NS6`). Hostnames must be valid public DNS names without `http://`, IP addresses, or duplicates.
+    Replace or update **NS1** and **NS2** (and optionally click **+ Add nameserver** for **NS3** through **NS6**). Hostnames must be valid public DNS names without `http://`, IP addresses, or duplicates.
   </Step>
   <Step title="Save changes">
     Click **Save Nameservers**. Stackryze updates the `NS` RRset in PowerDNS immediately (`TTL 3600`). Allow 5–10 minutes for major resolvers and up to 48 hours for full global cache propagation.

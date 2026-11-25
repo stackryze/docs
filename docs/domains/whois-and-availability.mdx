@@ -1,0 +1,73 @@
+---
+title: "WHOIS & availability lookups"
+description: "Query public WHOIS registration status, EPP states, nameservers, and live subdomain availability."
+icon: "magnifying-glass"
+---
+
+Stackryze Domains exposes public endpoints and a web directory for checking subdomain availability and inspecting public WHOIS registration records without signing in.
+
+## Web lookup
+
+Use the public lookup tool at [domain.stackryze.com/whois](https://domain.stackryze.com/whois) to inspect any registered subdomain under `.indevs.in`, `.sryze.cc`, `.ryzedns.org`, `.nx.kg`, or `.ryzn.pro`.
+
+## Public WHOIS API
+
+Query any registered subdomain (including soft-deleted domains currently in the 7-day cooling-off window):
+
+```text
+GET /subdomains/whois?query=<subdomain>.<extension>
+```
+
+<CodeGroup>
+```bash cURL
+curl "https://api-domains.stackryze.com/subdomains/whois?query=myproject.indevs.in"
+```
+
+```javascript JavaScript
+const res = await fetch(
+  "https://api-domains.stackryze.com/subdomains/whois?query=myproject.indevs.in"
+);
+const whois = await res.json();
+```
+</CodeGroup>
+
+<Note>
+  Confirm the exact public API origin in your environment; all web requests from [domain.stackryze.com/whois](https://domain.stackryze.com/whois) call `/subdomains/whois` on the Domains API.
+</Note>
+
+### Response fields & privacy redaction
+
+| Field | Behavior |
+| --- | --- |
+| `domainName` | Full registered subdomain (`myproject.indevs.in`). |
+| `registrar` | `Stackryze Domains (domain.stackryze.com)`. |
+| `registrarAbuseEmail` | `reportabuse@stackryze.com`. |
+| `createdAt`, `expiresAt`, `updatedAt` | ISO-8601 timestamps for registration, annual expiry, and last update. |
+| `domainStatus` | ICANN-style EPP status mapped from internal domain status. |
+| `registrantName`, `registrantAddress`, `registrantPhone` | Always returned as `REDACTED FOR PRIVACY`. |
+| `registrantEmail` | Returned as `REDACTED FOR PRIVACY` by default (`whoisPrivacy: true`); displays the owner email only if the owner disables WHOIS privacy in **Settings**. |
+| `nameservers` | Delegated `NS` hostnames configured for the subdomain. |
+| `dnssec` | Delegation signing state reported in WHOIS (`unsigned` at parent registry level). |
+
+### EPP status mapping
+
+| Internal domain status | Returned EPP `domainStatus` |
+| --- | --- |
+| `Active` | `ok https://icann.org/epp#ok` |
+| `Expired` | `clientHold https://icann.org/epp#clientHold` |
+| `Suspended` | `clientHold https://icann.org/epp#clientHold` |
+| `Pending Deletion` (or soft-deleted cooling-off) | `pendingDelete https://icann.org/epp#pendingDelete` |
+| `Pending DNS` | `pendingUpdate https://icann.org/epp#pendingUpdate` |
+
+## Public availability checks
+
+Check whether a label is valid and available before logging in:
+
+```text
+GET /subdomains/check/:name?domain=<extension>
+```
+
+- Supported `domain` query values: `indevs.in` (default), `sryze.cc`, `ryzedns.org`, `nx.kg`, `ryzn.pro`.
+- Returns `{ "available": true | false, "message": "..." }`.
+- Checks reserved system/brand labels, profanity rules, active registrations, pending reservations, and the 7-day post-deletion cooling-off period.
+- Rate limited to **20 checks per minute**.
